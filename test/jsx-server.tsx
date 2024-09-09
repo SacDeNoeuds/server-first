@@ -21,7 +21,7 @@ declare module "jsx-server/jsx-runtime" {
 }
 
 const test = () => {
-  const div = (
+  const FakeApp = () => (
     <div class="toto">
       <span hidden aria-hidden="true">
         Test
@@ -34,7 +34,7 @@ const test = () => {
     </div>
   )
 
-  const html = renderToString(div)
+  const html = renderToString(<FakeApp />)
 
   // to test:
   // - string attribute
