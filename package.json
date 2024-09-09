@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit -P tsconfig.json",
-    "test-jsx-server": "tsx ./test/jsx-server.tsx"
+    "test-jsx-server": "tsx ./test/jsx-server-spec.tsx"
   },
   "author": "Me",
   "license": "UNLICENSED",

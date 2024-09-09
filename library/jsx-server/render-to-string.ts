@@ -13,26 +13,19 @@ const selfClosingTags = new Set([
 ])
 
 export function renderToString(element: JSX.Child): string {
-  let html = ""
   if (element === null || typeof element !== "object")
-    return html + primitiveChildToText(element)
-  switch (element.type) {
-    case "fragment":
-      return html + (element.children?.map(renderToString).join("") ?? "")
-    case "element":
-      const attributes = serializeAttributes(element.attributes)
-      const openingTag = `<${[element.tag, attributes]
-        .filter(Boolean)
-        .join(" ")}>`
-      if (selfClosingTags.has(element.tag)) return html + openingTag
-      const closingTag = `</${element.tag}>`
-      return (
-        html +
-        `${openingTag}${element.children
-          .map(renderToString)
-          .join("")}${closingTag}`
-      )
-  }
+    return primitiveChildToText(element)
+
+  if (element.type === "fragment")
+    return element.children?.map(renderToString).join("") ?? ""
+
+  const attributes = serializeAttributes(element.attributes)
+  const openingTag = `<${[element.tag, attributes].filter(Boolean).join(" ")}>`
+  if (selfClosingTags.has(element.tag)) return openingTag
+  const closingTag = `</${element.tag}>`
+  const children = element.children.map(renderToString).join("")
+
+  return openingTag + children + closingTag
 }
 
 type AttributeValue = string | number | boolean | null | undefined
