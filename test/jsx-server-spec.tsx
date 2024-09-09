@@ -4,14 +4,15 @@ import assert from "assert"
 import { renderToString } from "jsx-server/render-to-string"
 
 declare module "jsx-server/jsx-runtime" {
+  // eslint-disable-next-line
   namespace JSX {
     // That's how you fully provide the custom element's attributes, including ones
     // from HTML.
-    interface MyComponentHTMLAttributes extends HTMLAttributes {
+    interface MyComponentAttributes extends HTMLAttributes {
       likelihood: number
     }
     interface IntrinsicElements {
-      "my-component": MyComponentHTMLAttributes
+      "my-component": MyComponentAttributes
     }
 
     interface IntrinsicAttributes {
@@ -28,6 +29,7 @@ const test = () => {
       </span>
       <input min={3} max={undefined} value={null} />
       <>
+        {/* eslint-disable-next-line */}
         {false && "nothing"}
         <my-component likelihood={0.6} />
       </>
