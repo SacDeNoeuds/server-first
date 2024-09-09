@@ -42,7 +42,9 @@ function serializeAttributes(
 function serializeAttribute([key, value]: [string, AttributeValue]):
   | string
   | undefined {
-  if (!value && !key.startsWith("aria-")) return undefined
+  if (typeof value === "boolean" && key.startsWith("aria-"))
+    return `${key}="${value}"`
+  if (!value) return undefined
   if (value === true) return key
   return `${key}="${value}"`
 }
@@ -55,6 +57,11 @@ function primitiveChildToText(
 }
 
 function escapeHtml(text: string): string {
-  // TODO
+  // TODO: May be optimized by using a regex approach with replace groups.
   return text
+    .replaceAll("&", "&amp;") // careful, order matters !
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
 }

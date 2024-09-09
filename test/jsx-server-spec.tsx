@@ -24,8 +24,8 @@ declare module "jsx-server/jsx-runtime" {
 const test = () => {
   const FakeApp = () => (
     <div class="toto">
-      <span hidden aria-hidden="true">
-        Test
+      <span hidden aria-hidden>
+        Test {'<script>alert("hey")</script>'}
       </span>
       <input min={3} max={undefined} value={null} />
       <>
@@ -46,8 +46,8 @@ const test = () => {
   // - custom attribute
   // - custom element
   // - fragment
-  const expected =
-    '<div class="toto"><span hidden aria-hidden="true">Test</span><input min="3"><my-component likelihood="0.6"></my-component></div>'
+  const htmlOfScript = "&lt;script&gt;alert(&quot;hey&quot;)&lt;/script&gt;"
+  const expected = `<div class="toto"><span hidden aria-hidden="true">Test ${htmlOfScript}</span><input min="3"><my-component likelihood="0.6"></my-component></div>`
   assert.strictEqual(html, expected)
   console.info("all good ✅")
   // Yey, that's it !
