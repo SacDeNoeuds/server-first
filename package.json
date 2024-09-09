@@ -1,0 +1,17 @@
+{
+  "name": "server-first",
+  "version": "1.0.0",
+  "description": "server-first apps",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit -P tsconfig.json",
+    "test-jsx-server": "tsx ./test/jsx-server.tsx"
+  },
+  "author": "Me",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}
