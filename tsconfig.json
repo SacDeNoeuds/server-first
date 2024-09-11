@@ -9,8 +9,9 @@
     "jsxImportSource": "jsx-server",
     /* Modules */
     "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
     "rootDir": "./",
-    // "moduleResolution": "node10",
     "paths": {
       "jsx-server/*": [
         "./library/jsx-server/*"
@@ -23,7 +24,6 @@
     "strict": true, /* Enable all strict type-checking options. */
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   }
