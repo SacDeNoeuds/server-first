@@ -18,6 +18,7 @@ export function renderToString(element: JSX.Child): string {
 
   if (element.type === "fragment")
     return element.children?.map(renderToString).join("") ?? ""
+  if (element.type === "rawHtml") return element.children
 
   const attributes = serializeAttributes(element.attributes)
   const openingTag = `<${[element.tag, attributes].filter(Boolean).join(" ")}>`

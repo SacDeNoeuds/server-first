@@ -1,4 +1,4 @@
-import type { JSX } from "jsx-server/jsx-runtime"
+import { RawHtml, type JSX } from "jsx-server/jsx-runtime"
 import { Head } from "./head"
 
 interface Props {
@@ -6,9 +6,12 @@ interface Props {
 }
 export function Html(props: Props) {
   return (
-    <html lang="en">
-      <Head />
-      <body>{props.children}</body>
-    </html>
+    <>
+      <RawHtml>{"<!DOCTYPE html>"}</RawHtml>
+      <html lang="en">
+        <Head />
+        <body>{props.children}</body>
+      </html>
+    </>
   )
 }

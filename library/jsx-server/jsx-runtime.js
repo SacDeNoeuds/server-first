@@ -17,3 +17,7 @@ export { jsx as jsxDEV, jsx as jsxs }
 export function Fragment(props) {
   return { type: "fragment", children: toArray(props.children) }
 }
+
+export function RawHtml(props) {
+  return { type: "rawHtml", children: props.children }
+}

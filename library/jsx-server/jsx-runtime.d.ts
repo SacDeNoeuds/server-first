@@ -13,6 +13,7 @@ export const jsxDEV: typeof jsx
 export type Component<Props> = (props: Props) => JSX.JSXElement
 
 export function Fragment(props: { children: JSX.Child[] }): JSX.JSXElement
+export function RawHtml(props: { children: string }): JSX.JSXElement
 
 /* eslint @typescript-eslint/no-unused-vars: off */
 /**
@@ -23,6 +24,7 @@ declare namespace JSX {
   // Our JSX element cannot be simple string otherwise we can't escape properly HTML.
   export type Child = string | number | boolean | null | undefined | JSXElement
   export type JSXElement =
+    | { type: "rawHtml"; children: string }
     | { type: "fragment"; children: Child[] }
     | {
         type: "element"
