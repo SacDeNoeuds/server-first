@@ -13,3 +13,7 @@
 - [x] implement the server handler definition/type.
 - [x] install h3 and write the handler adapter.
 - [x] implement a simple home page.
+
+### Authentication
+
+- [x] implement dead-simple auth

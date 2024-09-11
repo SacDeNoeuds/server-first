@@ -2,6 +2,7 @@ import {
   defineEventHandler,
   getCookie,
   getHeader,
+  readRawBody,
   sendRedirect,
   setCookie,
   setHeader,
@@ -10,6 +11,7 @@ import { HttpError, NotFound } from "library/std/http-error"
 import { MimeType } from "library/std/mime-type"
 import { isRedirect, type Handler } from "library/std/server-handler"
 import { tryOr } from "library/std/try-or"
+import { parseFormEncodedUrl } from "./parse-form-encoded-url"
 
 function ResponseFromHttpError(error: HttpError) {
   const body = tryOr(
@@ -36,8 +38,10 @@ export function defineHandler(handler: Handler) {
       method,
       url: new URL(event.path, "http://localhost"),
       params: event.context.params ?? {},
-      // TODO: provide the body
-      body: undefined,
+      body:
+        method === "post"
+          ? parseFormEncodedUrl(await readRawBody(event))
+          : undefined,
       getHeader: (name) => getHeader(event, name),
       setHeader: (name, value) => setHeader(event, name, value),
       getCookie: (name) => getCookie(event, name),

@@ -32,7 +32,8 @@ export type HandlerParams = {
   method: "get" | "post"
   /** Route params, for paths like "/users/:id" */
   params: Record<string, string>
-  body: URLSearchParams | undefined
+  /** To be decoded/parsed individually by each endpoint */
+  body: Record<string, unknown> | undefined
   /** get _request_ header */
   getHeader: (name: string) => string | undefined
   /** set _response_ header */
