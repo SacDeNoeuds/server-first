@@ -1,4 +1,11 @@
-import { defineEventHandler, getHeader, sendRedirect, setHeader } from "h3"
+import {
+  defineEventHandler,
+  getCookie,
+  getHeader,
+  sendRedirect,
+  setCookie,
+  setHeader,
+} from "h3"
 import { HttpError, NotFound } from "library/std/http-error"
 import { MimeType } from "library/std/mime-type"
 import { isRedirect, type Handler } from "library/std/server-handler"
@@ -33,6 +40,21 @@ export function defineHandler(handler: Handler) {
       body: undefined,
       getHeader: (name) => getHeader(event, name),
       setHeader: (name, value) => setHeader(event, name, value),
+      getCookie: (name) => getCookie(event, name),
+      setCookie: (name, value, options) =>
+        setCookie(
+          event,
+          name,
+          value,
+          options && {
+            domain: options.domain,
+            httpOnly: options.httpOnly,
+            maxAge: options.maxAgeInSeconds,
+            path: options.path,
+            sameSite: options.sameSite,
+            secure: options.secure,
+          },
+        ),
     })
 
     if (result instanceof HttpError) return ResponseFromHttpError(result)

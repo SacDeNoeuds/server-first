@@ -1,5 +1,6 @@
 import type { JSX } from "jsx-server/jsx-runtime"
 import { renderToString } from "jsx-server/render-to-string"
+import type { CookieOptions } from "./cookie"
 import { HttpError } from "./http-error"
 import { isObject } from "./is-object"
 import { MimeType } from "./mime-type"
@@ -36,6 +37,8 @@ export type HandlerParams = {
   getHeader: (name: string) => string | undefined
   /** set _response_ header */
   setHeader: (name: string, value: string) => void
+  getCookie: (name: string) => string | undefined
+  setCookie: (name: string, value: string, options?: CookieOptions) => void
 }
 export type Handler<Res = Response> = (
   params: HandlerParams,

@@ -1,3 +1,4 @@
+import { escapeHtml } from "library/std/escape-html"
 import type { JSX } from "./jsx-runtime"
 
 /** @type {Set<keyof import("./jsx-runtime").JSX.IntrinsicElements>} */
@@ -55,14 +56,4 @@ function primitiveChildToText(
 ): string {
   if (!child) return ""
   return escapeHtml(String(child))
-}
-
-function escapeHtml(text: string): string {
-  // TODO: May be optimized by using a regex approach with replace groups.
-  return text
-    .replaceAll("&", "&amp;") // careful, order matters !
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
 }

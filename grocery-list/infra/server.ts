@@ -1,4 +1,6 @@
+import { authenticate } from "grocery-list/domain/authentication/handler/authenticate"
 import { getHome } from "grocery-list/handler/home"
+import { getTest } from "grocery-list/handler/test"
 import { createServer } from "http"
 import {
   createApp,
@@ -12,6 +14,8 @@ const router = createRouter()
 app.use(router)
 
 router.get("/", defineHandler(getHome))
+router.get("/test", defineHandler(getTest))
+router.post("/authenticate", defineHandler(authenticate))
 
 const server = createServer(toNodeListener(app))
 const port = 3000
