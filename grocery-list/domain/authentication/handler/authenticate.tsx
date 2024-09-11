@@ -6,12 +6,15 @@ import {
   type Handler,
 } from "library/std/server-handler"
 import { AuthForm } from "../components/auth-form"
+import type { Account } from "../entity/account"
 
-export const withAuthWall = (handler: Handler<JSX.Child>): Handler =>
+export const withAuthWall = (
+  handler: Handler<JSX.Child, { account: Account }>,
+): Handler =>
   JsxHandler((params) => {
     const email = params.getCookie("account-id")
     const referrer = params.getHeader("referer")
-    if (email) return handler(params)
+    if (email) return handler({ ...params, account: { email } })
 
     const jsx = (
       <Html>

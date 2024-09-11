@@ -41,8 +41,8 @@ export type HandlerParams = {
   getCookie: (name: string) => string | undefined
   setCookie: (name: string, value: string, options?: CookieOptions) => void
 }
-export type Handler<Res = Response> = (
-  params: HandlerParams,
+export type Handler<Res = Response, AddedParams = {}> = (
+  params: HandlerParams & AddedParams,
 ) => Promise<HttpError | Res | Redirect>
 
 const Handler =

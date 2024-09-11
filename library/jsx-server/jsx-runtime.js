@@ -15,7 +15,7 @@ const toArray = (value) => (Array.isArray(value) ? value : [value])
 export { jsx as jsxDEV, jsx as jsxs }
 
 export function Fragment(props) {
-  return { type: "fragment", children: toArray(props.children) }
+  return { type: "fragment", children: toArray(props.children).flat() }
 }
 
 export function RawHtml(props) {

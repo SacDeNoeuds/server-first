@@ -17,4 +17,16 @@
 ### Authentication
 
 - [x] implement dead-simple auth
-- [ ] Serve static files, start with CSS.
+- [x] Serve static files, start with CSS.
+
+### Grocery List
+
+Let's (finally) get started with the domain:
+
+- [x] define grocery list entities
+- [x] define grocery list repositories (in-memory & file-system to get started)
+- [x] implement handler to create a grocery list
+- [x] implement a handler to get a grocery list
+- [ ] implement a handler to join a grocery list
+- [ ] implement a handler to add a grocery list item
+- [ ] implement a handler to remove a grocery list item

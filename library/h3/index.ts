@@ -61,7 +61,10 @@ export function defineHandler(handler: Handler) {
 
     const result = await handler({
       method,
-      url: new URL(event.path, "http://localhost"),
+      url: new URL(
+        event.path,
+        getHeader(event, "referer") || "http://localhost",
+      ),
       params: event.context.params ?? {},
       body:
         method === "post"

@@ -25,7 +25,7 @@ export function renderToString(element: JSX.Child): string {
   const openingTag = `<${[element.tag, attributes].filter(Boolean).join(" ")}>`
   if (selfClosingTags.has(element.tag)) return openingTag
   const closingTag = `</${element.tag}>`
-  const children = element.children.map(renderToString).join("")
+  const children = element.children.flat().map(renderToString).join("")
 
   return openingTag + children + closingTag
 }
@@ -35,7 +35,7 @@ function serializeAttributes(
   attributes: Record<string, AttributeValue>,
 ): string {
   // If EVER needed, this can be optimized using array.reduce.
-  return Object.entries(attributes)
+  return Object.entries(attributes ?? {})
     .map(serializeAttribute)
     .filter(Boolean)
     .join(" ")
