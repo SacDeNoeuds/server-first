@@ -1,5 +1,10 @@
 import { withAuthWall } from "grocery-list/domain/authentication/handler/authenticate"
+import { Html } from "grocery-list/ui-kit/html"
 
 export const getTest = withAuthWall(async (params) => {
-  return <div>Hello World! (Test)</div>
+  return (
+    <Html>
+      <div>Hello World! (Test)</div>
+    </Html>
+  )
 })

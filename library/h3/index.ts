@@ -4,13 +4,17 @@ import {
   getHeader,
   readRawBody,
   sendRedirect,
+  serveStatic,
   setCookie,
   setHeader,
+  type ServeStaticOptions,
 } from "h3"
 import { HttpError, NotFound } from "library/std/http-error"
 import { MimeType } from "library/std/mime-type"
 import { isRedirect, type Handler } from "library/std/server-handler"
 import { tryOr } from "library/std/try-or"
+import { readFile, stat } from "node:fs/promises"
+import path from "node:path"
 import { parseFormEncodedUrl } from "./parse-form-encoded-url"
 
 function ResponseFromHttpError(error: HttpError) {
@@ -25,6 +29,27 @@ function ResponseFromHttpError(error: HttpError) {
 }
 
 export { createApp, createRouter, toNodeListener } from "h3"
+
+export function staticHandler(
+  directory: string,
+  options?: Omit<ServeStaticOptions, "getMeta" | "getContents">,
+) {
+  return defineEventHandler((event) =>
+    serveStatic(event, {
+      ...options,
+      getMeta: async (id) => {
+        const stats = await stat(path.join(directory, id))
+        if (!stats || !stats.isFile()) return undefined
+
+        return {
+          size: stats.size,
+          mtime: stats.mtimeMs,
+        }
+      },
+      getContents: (id) => readFile(path.join(directory, id), "utf8"),
+    }),
+  )
+}
 
 export function defineHandler(handler: Handler) {
   return defineEventHandler(async (event) => {

@@ -17,3 +17,4 @@
 ### Authentication
 
 - [x] implement dead-simple auth
+- [ ] Serve static files, start with CSS.
