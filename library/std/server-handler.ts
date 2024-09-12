@@ -26,7 +26,7 @@ export const redirectPermanentlyTo = (location: URL): Redirect => ({
   location,
 })
 
-export type HandlerParams = {
+export type HandlerContext = {
   url: URL
   // only 'get' and 'post' are supported when working with HTML forms
   method: "get" | "post"
@@ -40,16 +40,18 @@ export type HandlerParams = {
   setHeader: (name: string, value: string) => void
   getCookie: (name: string) => string | undefined
   setCookie: (name: string, value: string, options?: CookieOptions) => void
+  /** can be mutated in the handlers */
+  setStatus: (code: number) => void
 }
-export type Handler<Res = Response, AddedParams = {}> = (
-  params: HandlerParams & AddedParams,
+export type Handler<Res = Response, AddedContext = {}> = (
+  context: HandlerContext & AddedContext,
 ) => Promise<HttpError | Res | Redirect>
 
 const Handler =
   <T extends MimeType>(type: T) =>
   (handler: Handler<(Response & { type: T })["body"]>): Handler =>
-  async (params) => {
-    const body = await handler(params)
+  async (ctx) => {
+    const body = await handler(ctx)
     if (body instanceof HttpError) return body
     if (isRedirect(body)) return body
     return { type, body } as Response
@@ -61,8 +63,8 @@ export const PngHandler = Handler(MimeType.Png)
 // a bit more difficult, we want to render to string in the process
 export const JsxHandler =
   (handler: Handler<JSX.Child>): Handler =>
-  async (params) => {
-    const jsx = await handler(params)
+  async (ctx) => {
+    const jsx = await handler(ctx)
     if (jsx instanceof HttpError) return jsx
     if (isRedirect(jsx)) return jsx
     return { type: MimeType.Html, body: renderToString(jsx) }

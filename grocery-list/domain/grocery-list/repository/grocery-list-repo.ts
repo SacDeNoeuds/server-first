@@ -1,4 +1,4 @@
-import type { Repository } from "library/std/repository"
+import type { Repository } from "@/std/repository"
 import type { GroceryList } from "../entity/grocery-list"
 
 export class GroceryListRepository {

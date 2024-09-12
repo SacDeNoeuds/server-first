@@ -1,4 +1,4 @@
-import type { Account } from "grocery-list/domain/authentication/entity/account"
+import type { Account } from "../../authentication/entity/account"
 
 export type GroceryList = {
   id: string

@@ -1,5 +1,3 @@
-// @ts-check
-
 export function jsx(tagOrComponent, props) {
   if (typeof tagOrComponent === "function") return tagOrComponent(props)
   const { children, ...attributes } = props
@@ -10,7 +8,7 @@ export function jsx(tagOrComponent, props) {
     children: toArray(children).flat(),
   }
 }
-const toArray = (value) => (Array.isArray(value) ? value : [value])
+const toArray = (value) => (Array.isArray(value) ? value : value ? [value] : [])
 
 export { jsx as jsxDEV, jsx as jsxs }
 

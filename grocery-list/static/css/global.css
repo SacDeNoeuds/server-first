@@ -13,3 +13,10 @@ body {
   color: var(--text-color);
   min-block-size: 100dvb;
 }
+
+.card {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}

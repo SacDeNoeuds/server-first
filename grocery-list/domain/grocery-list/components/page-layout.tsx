@@ -1,15 +1,63 @@
-import { Html } from "grocery-list/ui-kit/html"
 import type { JSX } from "jsx-server/jsx-runtime"
+import { Html } from "../../../ui-kit/html"
 
 interface Props {
   heading: JSX.Child
   children: JSX.Children
 }
+
+const css = /* css */ `
+body {
+  display: flex;
+  flex-direction: column;
+  justify-items: space-between;
+  gap: 1rem;
+  block-size: 100dvb;
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-block-end: 2px solid black;
+  background: #fff;
+}
+.page-body {
+  inline-size: min(30rem, 95%);
+  margin-inline: auto;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.page-footer {
+  background: var(--text-color);
+  color: var(--background-color);
+  padding: 2rem 4rem;
+  text-align: center;
+}
+`
+
 export function PageLayout(props: Props) {
   return (
     <Html>
-      <h1>{props.heading}</h1>
-      {props.children}
+      <style>{css}</style>
+      <header class="page-header">
+        <a href="/">Home</a>
+        <form method="post" action="/logout">
+          <button>Logout</button>
+        </form>
+      </header>
+      <div class="page-body">
+        <div class="card">
+          <h1>{props.heading}</h1>
+          <div>{props.children}</div>
+        </div>
+      </div>
+
+      <footer class="page-footer">
+        Page Footer. There's no information but it fills up the space.
+      </footer>
     </Html>
   )
 }

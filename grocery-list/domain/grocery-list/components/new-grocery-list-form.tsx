@@ -1,3 +1,5 @@
+import type { JSX } from "jsx-server/jsx-runtime"
+
 interface Props {
   values?: {
     name: string
@@ -7,7 +9,7 @@ interface Props {
   }
 }
 
-export function NewGroceryListForm(props: Props) {
+export function NewGroceryListForm(props: Props): JSX.JSXElement {
   return (
     <form method="post">
       <div class="form-field">

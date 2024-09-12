@@ -1,3 +1,7 @@
+import { HttpError, NotFound } from "@/std/http-error"
+import { MimeType, mimeTypeFromExtension } from "@/std/mime-type"
+import { isRedirect, type Handler } from "@/std/server-handler"
+import { tryOr } from "@/std/try-or"
 import {
   defineEventHandler,
   getCookie,
@@ -9,10 +13,6 @@ import {
   setHeader,
   type ServeStaticOptions,
 } from "h3"
-import { HttpError, NotFound } from "library/std/http-error"
-import { MimeType } from "library/std/mime-type"
-import { isRedirect, type Handler } from "library/std/server-handler"
-import { tryOr } from "library/std/try-or"
 import { readFile, stat } from "node:fs/promises"
 import path from "node:path"
 import { parseFormEncodedUrl } from "./parse-form-encoded-url"
@@ -41,9 +41,11 @@ export function staticHandler(
         const stats = await stat(path.join(directory, id))
         if (!stats || !stats.isFile()) return undefined
 
+        const type = mimeTypeFromExtension[path.extname(id)]
         return {
           size: stats.size,
           mtime: stats.mtimeMs,
+          ...(type && { type }),
         }
       },
       getContents: (id) => readFile(path.join(directory, id), "utf8"),
@@ -59,7 +61,11 @@ export function defineHandler(handler: Handler) {
         NotFound({ message: `Unsupported method: ${method}` }),
       )
 
+    let statusCode = 200
     const result = await handler({
+      setStatus: (code) => {
+        statusCode = code
+      },
       method,
       url: new URL(
         event.path,
@@ -95,6 +101,7 @@ export function defineHandler(handler: Handler) {
       return sendRedirect(event, result.location.href, result.code)
 
     return new Response(result.body, {
+      status: statusCode,
       headers: { "Content-Type": result.type },
     })
   })

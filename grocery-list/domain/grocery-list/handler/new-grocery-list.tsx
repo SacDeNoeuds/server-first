@@ -1,48 +1,39 @@
-import { withAuthWall } from "grocery-list/domain/authentication/handler/authenticate"
-import { getInfra } from "grocery-list/infra/infra"
-import { redirectTo } from "library/std/server-handler"
-import { StringId } from "library/std/string-id"
-import { object, string, trimmed } from "superstruct"
-import { NewGroceryListForm } from "../components/new-grocery-list-form"
-import { PageLayout } from "../components/page-layout"
+import { redirectTo } from "@/std/server-handler"
+import { StringId } from "@/std/string-id"
+import { create, object, string, trimmed } from "superstruct"
+import { getInfra } from "../../../infra/infra"
+import { withAuthWall } from "../../authentication/handler/authenticate"
+import { NewGroceryListPage } from "../components/new-grocery-list-page"
 
-export const newGroceryListPage = withAuthWall(async (params) => {
-  return (
-    <PageLayout heading="Your New Grocery List">
-      <NewGroceryListForm values={{ name: "" }} />
-    </PageLayout>
-  )
+export const getNewGroceryListPage = withAuthWall(async (ctx) => {
+  return <NewGroceryListPage />
 })
 
-export const createGroceryList = withAuthWall(async (params) => {
+export const createGroceryList = withAuthWall(async (ctx) => {
   const Payload = object({
     name: trimmed(string()),
   })
 
-  const [error, body] = Payload.validate(params.body)
-
-  if (body) {
+  try {
+    const body = create(ctx.body, Payload)
     const { repository } = getInfra()
     const id = StringId()
     await repository.groceryList.set({
       id,
       items: [],
       name: body.name,
-      peers: [params.account.email],
+      peers: [ctx.account.email],
     })
-    return redirectTo(new URL(`/grocery-list/${id}`, params.url))
-  }
 
-  console.warn("error", error)
-
-  return (
-    <PageLayout heading="Your New Grocery List">
-      <NewGroceryListForm
-        values={{ name: "" }}
+    return redirectTo(new URL(`/grocery-list/${id}`, ctx.url))
+  } catch (error) {
+    console.warn("error", error)
+    return (
+      <NewGroceryListPage
         errors={{
           name: "We could not create your grocery list, please try again",
         }}
       />
-    </PageLayout>
-  )
+    )
+  }
 })

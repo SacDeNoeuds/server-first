@@ -1,4 +1,4 @@
-import { escapeHtml } from "library/std/escape-html"
+import { escapeHtml } from "@/std/escape-html"
 import type { JSX } from "./jsx-runtime"
 
 /** @type {Set<keyof import("./jsx-runtime").JSX.IntrinsicElements>} */
@@ -13,19 +13,20 @@ const selfClosingTags = new Set([
   "base",
 ])
 
-export function renderToString(element: JSX.Child): string {
-  if (element === null || typeof element !== "object")
-    return primitiveChildToText(element)
+export function renderToString(child: JSX.Child): string {
+  if (child === null || typeof child !== "object")
+    return primitiveChildToText(child)
 
-  if (element.type === "fragment")
-    return element.children?.map(renderToString).join("") ?? ""
-  if (element.type === "rawHtml") return element.children
+  if (Array.isArray(child)) return child.map(renderToString).join("")
+  if (child.type === "fragment")
+    return child.children.flat().map(renderToString).join("") ?? ""
+  if (child.type === "rawHtml") return child.children
 
-  const attributes = serializeAttributes(element.attributes)
-  const openingTag = `<${[element.tag, attributes].filter(Boolean).join(" ")}>`
-  if (selfClosingTags.has(element.tag)) return openingTag
-  const closingTag = `</${element.tag}>`
-  const children = element.children.flat().map(renderToString).join("")
+  const attributes = serializeAttributes(child.attributes)
+  const openingTag = `<${[child.tag, attributes].filter(Boolean).join(" ")}>`
+  if (selfClosingTags.has(child.tag)) return openingTag
+  const closingTag = `</${child.tag}>`
+  const children = child.children.flat().map(renderToString).join("")
 
   return openingTag + children + closingTag
 }

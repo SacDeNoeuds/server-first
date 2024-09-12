@@ -1,5 +1,5 @@
-import type { GroceryListRepository } from "grocery-list/domain/grocery-list/repository/grocery-list-repo"
-import { Context } from "library/std/context"
+import { Context } from "@/std/context"
+import type { GroceryListRepository } from "../domain/grocery-list/repository/grocery-list-repo"
 
 export type Infra = {
   repository: {

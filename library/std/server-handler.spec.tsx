@@ -1,5 +1,5 @@
 import assert from "assert"
-import { JsxHandler, redirectTo, type HandlerParams } from "./server-handler"
+import { JsxHandler, redirectTo, type HandlerContext } from "./server-handler"
 
 async function test() {
   const handler = JsxHandler((params) => {
@@ -8,12 +8,16 @@ async function test() {
 
     return <div>Hello !</div>
   })
-  const mockParams = (method: "get" | "post"): HandlerParams => ({
+  const mockParams = (method: "get" | "post"): HandlerContext => ({
     method,
     url: new URL("http://localhost:3000"),
     body: undefined,
     getHeader: () => undefined,
     setHeader: () => {},
+    getCookie: () => undefined,
+    setCookie: () => {},
+    params: {},
+    setStatus: () => {},
   })
   const resultOfGet = await handler(mockParams("get"))
   assert.deepStrictEqual(resultOfGet, {

@@ -11,6 +11,7 @@ export const jsxs: typeof jsx
 export const jsxDEV: typeof jsx
 
 export type Component<Props> = (props: Props) => JSX.JSXElement
+export type ComponentProps<T> = T extends Component<infer Props> ? Props : never
 
 export function Fragment(props: { children: JSX.Child[] }): JSX.JSXElement
 export function RawHtml(props: { children: string }): JSX.JSXElement

@@ -1,5 +1,5 @@
 interface Props {
-  // later we'll add stylesheets & scripts
+  scripts?: string[]
 }
 export function Head(props: Props) {
   return (

@@ -1,13 +1,11 @@
-import { GroceryListRepository } from "grocery-list/domain/grocery-list/repository/grocery-list-repo"
-import { InMemoryRepository } from "library/std/repository-in-memory"
+import { InMemoryRepository } from "@/std/repository-in-memory"
+import { GroceryListRepository } from "../domain/grocery-list/repository/grocery-list-repo"
 import type { Infra } from "./infra"
 
 export const InfraInMemory = (): Infra => ({
   repository: {
     groceryList: new GroceryListRepository(
-      new InMemoryRepository({
-        mapId: (list) => list.id,
-      }),
+      new InMemoryRepository({ mapId: (list) => list.id }),
     ),
   },
 })

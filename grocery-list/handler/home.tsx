@@ -1,5 +1,5 @@
-import { Html } from "grocery-list/ui-kit/html"
-import { JsxHandler } from "library/std/server-handler"
+import { JsxHandler } from "@/std/server-handler"
+import { Html } from "../ui-kit/html"
 
 const styles = /* css */ `
 body {
@@ -16,6 +16,7 @@ export const getHome = JsxHandler(async (params) => {
         This is where you'll find (later on) demos, videos etc. to promote that
         tool.
       </p>
+      <a href="/new-grocery-list">Create a new grocery list</a>
     </Html>
   )
 })
