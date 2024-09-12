@@ -8,7 +8,8 @@
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "target": "ES2023",
     "lib": [
-      "ES2023"
+      "ES2023",
+      "DOM",
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "jsx-server",

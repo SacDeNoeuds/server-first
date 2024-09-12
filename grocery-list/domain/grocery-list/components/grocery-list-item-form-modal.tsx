@@ -6,6 +6,7 @@ type FormProps = Pick<
   "groceryListId" | "values"
 >
 interface Props extends FormProps {
+  class?: string
   children: JSX.Children
 }
 
@@ -17,17 +18,20 @@ export function GroceryListItemFormModal(props: Props): JSX.JSXElement {
     <>
       <button
         type="button"
+        class={props.class}
         popovertarget={popoverId}
         popovertargetaction="show"
       >
         {props.children}
       </button>
       <dialog popover id={popoverId}>
-        <GroceryListItemForm
-          id={formId}
-          groceryListId={props.groceryListId}
-          values={props.values}
-        />
+        <main>
+          <GroceryListItemForm
+            id={formId}
+            groceryListId={props.groceryListId}
+            values={props.values}
+          />
+        </main>
 
         <footer>
           <button popovertarget={popoverId} popovertargetaction="hide">

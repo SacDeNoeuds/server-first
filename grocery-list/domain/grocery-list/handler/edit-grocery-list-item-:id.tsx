@@ -12,7 +12,6 @@ export const editGroceryListItem = withGroceryList(async (ctx) => {
   })
   try {
     const body = create(ctx.body, Payload)
-    console.info("body", body)
     const nextItems = ctx.groceryList.items.map((item, index) => {
       if (index !== body.index) return item
       return { name: body.name, quantity: body.quantity }

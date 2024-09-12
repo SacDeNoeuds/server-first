@@ -1,5 +1,4 @@
 // @ts-check
-
 // @ts-ignore
 class CopyButtonElement extends HTMLElement {
   get copyTarget() {

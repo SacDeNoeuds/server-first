@@ -4,6 +4,7 @@ import { Html } from "../../../ui-kit/html"
 interface Props {
   heading: JSX.Child
   children: JSX.Children
+  class?: string
 }
 
 const css = /* css */ `
@@ -49,9 +50,9 @@ export function PageLayout(props: Props) {
         </form>
       </header>
       <div class="page-body">
-        <div class="card">
+        <div class={props.class ?? "card"}>
           <h1>{props.heading}</h1>
-          <div>{props.children}</div>
+          {props.children}
         </div>
       </div>
 

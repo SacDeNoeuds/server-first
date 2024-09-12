@@ -13,6 +13,7 @@ export function GroceryListItemForm(props: Props): JSX.JSXElement {
     <form
       id={props.id}
       method="post"
+      class="column gap-m"
       action={`/${action}-grocery-list-item/${props.groceryListId}`}
     >
       {props.values && <input hidden name="index" value={props.values.index} />}
