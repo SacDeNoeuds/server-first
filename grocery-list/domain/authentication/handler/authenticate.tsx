@@ -1,39 +1,43 @@
 import { JsxHandler, redirectTo, type Handler } from "@/std/server-handler"
 import type { JSX } from "jsx-server/jsx-runtime"
-import { Html } from "../../../ui-kit/html"
+import { getInfra } from "../../../infra/infra"
 import { AuthForm } from "../components/auth-form"
+import { AuthPage } from "../components/auth-page"
 import type { Account } from "../entity/account"
 
 export const withAuthWall = (
   handler: Handler<JSX.Child, { account: Account }>,
 ): Handler =>
-  JsxHandler((ctx) => {
+  JsxHandler(async (ctx) => {
     const email = ctx.getCookie("account-id")
     const referrer = ctx.getHeader("referer")
-    if (email) return handler({ ...ctx, account: { email } })
+    const { repository } = getInfra()
+    const account = email && (await repository.account.findByEmail(email))
+    if (account) return handler({ ...ctx, account })
 
-    const jsx = (
-      <Html>
+    return (
+      <AuthPage>
         <AuthForm redirectTo={referrer} />
-      </Html>
+      </AuthPage>
     )
-    return jsx
   })
 
-export const authenticate = JsxHandler((ctx) => {
+export const authenticate = JsxHandler(async (ctx) => {
   // exceptionally, no need for fancy parsing/decoding considering
   // we have just one property.
   const email = ctx.body?.email
   const hrefOrPath =
     ctx.url.searchParams.get("redirectTo") || ctx.getHeader("referer") || "/"
-  const redirectUrl = new URL(hrefOrPath, ctx.getHeader("origin"))
+  const redirectUrl = new URL(hrefOrPath, ctx.url)
 
   if (typeof email === "string" && email) {
-    ctx.setCookie("account-id", email)
+    const { repository } = getInfra()
+    const account = await repository.account.getOrCreate(email)
+    ctx.setCookie("account-id", account.email)
     return redirectTo(redirectUrl)
   }
   return (
-    <Html>
+    <AuthPage>
       <AuthForm
         redirectTo={redirectUrl.href}
         errors={{
@@ -42,6 +46,6 @@ export const authenticate = JsxHandler((ctx) => {
             : "Please provide an email",
         }}
       />
-    </Html>
+    </AuthPage>
   )
 })

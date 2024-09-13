@@ -11,7 +11,12 @@ interface Props {
 
 export function NewGroceryListForm(props: Props): JSX.JSXElement {
   return (
-    <form method="post">
+    <form
+      class="column gap-s"
+      method="post"
+      action="/new-grocery-list"
+      autocomplete="off"
+    >
       <div class="form-field">
         <label for="name-control">List name</label>
         <input

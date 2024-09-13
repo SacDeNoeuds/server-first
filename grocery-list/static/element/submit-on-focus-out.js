@@ -26,6 +26,7 @@ export class SubmitOnFocusOutElement extends HTMLElement {
       const type = elements.form.enctype
       // @ts-ignore
       const body = new URLSearchParams(new FormData(elements.form))
+      console.info(new FormData(elements.form))
       elements.pending.hidden = false
       // TODO: Use `fetchHtml` from /library.js
       const response = await fetch(action, {

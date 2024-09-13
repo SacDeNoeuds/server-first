@@ -16,7 +16,9 @@ export function GroceryListItemForm(props: Props): JSX.JSXElement {
       class="column gap-m"
       action={`/${action}-grocery-list-item/${props.groceryListId}`}
     >
-      {props.values && <input hidden name="index" value={props.values.index} />}
+      {props.values && (
+        <input type="hidden" name="index" value={props.values.index} />
+      )}
       <div class="form-field">
         <label for="name-control">Item name</label>
         <input

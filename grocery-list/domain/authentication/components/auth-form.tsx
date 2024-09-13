@@ -12,7 +12,7 @@ export function AuthForm({ values, errors, redirectTo }: Props) {
     ? `?redirectTo=${encodeURIComponent(redirectTo)}`
     : ""
   return (
-    <form method="post" action={`/authenticate${search}`}>
+    <form class="column gap-m" method="post" action={`/authenticate${search}`}>
       <div class="form-field">
         <label for="email-control">Email</label>
         <input
@@ -20,6 +20,7 @@ export function AuthForm({ values, errors, redirectTo }: Props) {
           type="email"
           name="email"
           value={values?.email ?? ""}
+          placeholder="john.doe@example.com"
           required
         />
         {errors?.email && <small class="form-error">{errors.email}</small>}

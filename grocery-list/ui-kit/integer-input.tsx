@@ -15,6 +15,7 @@ export function IntegerInput(props: Props): JSX.JSXElement {
       <input
         {...props}
         readonly
+        tabindex={-1}
         type="number"
         step={props.step ?? 1}
         style="border: none; inline-size: 1.2rem; appearance: textfield; padding: 0"

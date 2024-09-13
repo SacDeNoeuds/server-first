@@ -47,7 +47,7 @@ function serializeAttribute([key, value]: [string, AttributeValue]):
   | undefined {
   if (typeof value === "boolean" && key.startsWith("aria-"))
     return `${key}="${value}"`
-  if (!value) return undefined
+  if (value === undefined || value === null) return undefined
   if (value === true) return key
   return `${key}="${value}"`
 }

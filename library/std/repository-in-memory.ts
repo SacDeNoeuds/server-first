@@ -10,6 +10,7 @@ export class InMemoryRepository<T> implements Repository<T> {
 
   set = async (item: T) => {
     this.store.set(this.options.mapId(item), item)
+    return item
   }
 
   list = async () => {

@@ -17,8 +17,8 @@ export function QuantityForm(props: Props): JSX.JSXElement {
         method="post"
         action={`/edit-grocery-list-item/${props.groceryListId}`}
       >
-        <input hidden name="index" value={props.values.index} />
-        <input hidden name="name" value={props.values.name} />
+        <input type="hidden" name="index" value={props.values.index} />
+        <input type="hidden" name="name" value={props.values.name} />
         <div class="flex align-center">
           {"×"}
           <IntegerInput

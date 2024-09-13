@@ -25,6 +25,9 @@ export function GroceryListItemFormModal(props: Props): JSX.JSXElement {
         {props.children}
       </button>
       <dialog popover id={popoverId}>
+        <header>
+          <h3>{props.values ? "Edit item" : "Add item"}</h3>
+        </header>
         <main>
           <GroceryListItemForm
             id={formId}

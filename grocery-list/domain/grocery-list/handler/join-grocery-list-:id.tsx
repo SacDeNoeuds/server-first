@@ -20,10 +20,7 @@ export const joinGroceryList = withAuthWall(async (ctx) => {
     )
   }
 
-  await repository.groceryList.set({
-    ...groceryList,
-    peers: [...groceryList.peers, ctx.account.email],
-  })
+  await repository.account.addGroceryList(ctx.account.email, groceryList.id)
 
   return redirectTo(new URL(`/grocery-list/${id}`, ctx.url))
 })

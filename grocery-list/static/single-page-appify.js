@@ -101,6 +101,11 @@ function mergeHead(head) {
     if (!document.head.querySelector(`link[href="${href}"]`))
       document.head.append(link)
   }
+
+  const scripts = /** @type {HTMLScriptElement[]} */ (
+    Array.from(head.querySelectorAll('script[type="module"][src]'))
+  )
+  for (const script of scripts) import(script.src)
 }
 
 /**

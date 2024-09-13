@@ -13,7 +13,7 @@ export class FileSystemRepository<T extends Record<string, any>>
 
   findById = async (id: string) => {
     const filePath = this.#getFilePath(id)
-    const content = await readFile(filePath, "utf-8")
+    const content = await readFile(filePath, "utf-8").catch(() => undefined)
     return content && JSON.parse(content)
   }
 
@@ -21,6 +21,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     const id = this.options.mapId(item)
     const filePath = this.#getFilePath(id)
     await writeFile(filePath, JSON.stringify(item), "utf-8")
+    return item
   }
 
   list = async () => {

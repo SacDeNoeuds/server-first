@@ -7,7 +7,7 @@ body {
 }
 `.trim()
 
-export const getHome = JsxHandler(async (params) => {
+export const getHomePage = JsxHandler(async (ctx) => {
   return (
     <Html>
       <style>{styles}</style>
@@ -16,7 +16,7 @@ export const getHome = JsxHandler(async (params) => {
         This is where you'll find (later on) demos, videos etc. to promote that
         tool.
       </p>
-      <a href="/new-grocery-list">Create a new grocery list</a>
+      <a href="/grocery-lists">See your grocery lists</a>
     </Html>
   )
 })

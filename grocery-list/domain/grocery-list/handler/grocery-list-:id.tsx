@@ -16,7 +16,7 @@ export const withGroceryList = (
     if (!id) return BadRequest({ message: "please provide an id" })
     const { repository } = getInfra()
     const groceryList = await repository.groceryList.find(id)
-    if (!groceryList || !groceryList.peers.includes(ctx.account.email)) {
+    if (!groceryList || !ctx.account.groceryLists.includes(groceryList.id)) {
       ctx.setStatus(404)
       return <NotFoundPage message={`grocery list "${id}" does not exist 🧐`} />
     }

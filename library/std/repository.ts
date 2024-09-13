@@ -4,7 +4,7 @@ export type RepositoryInit<T> = {
 
 export interface Repository<T> {
   findById: (id: string) => Promise<T | undefined>
-  set: (item: T) => Promise<void>
+  set: (item: T) => Promise<T>
   list: () => Promise<T[]>
   remove: (id: string) => Promise<void>
 }

@@ -3,11 +3,8 @@ import { StringId } from "@/std/string-id"
 import { create, object, string, trimmed } from "superstruct"
 import { getInfra } from "../../../infra/infra"
 import { withAuthWall } from "../../authentication/handler/authenticate"
-import { NewGroceryListPage } from "../components/new-grocery-list-page"
-
-export const getNewGroceryListPage = withAuthWall(async (ctx) => {
-  return <NewGroceryListPage />
-})
+import { NewGroceryListForm } from "../components/new-grocery-list-form"
+import { PageLayout } from "../components/page-layout"
 
 export const createGroceryList = withAuthWall(async (ctx) => {
   const Payload = object({
@@ -18,22 +15,22 @@ export const createGroceryList = withAuthWall(async (ctx) => {
     const body = create(ctx.body, Payload)
     const { repository } = getInfra()
     const id = StringId()
-    await repository.groceryList.set({
-      id,
-      items: [],
-      name: body.name,
-      peers: [ctx.account.email],
-    })
+    await Promise.all([
+      repository.groceryList.set({ id, items: [], name: body.name }),
+      repository.account.addGroceryList(ctx.account.email, id),
+    ])
 
     return redirectTo(new URL(`/grocery-list/${id}`, ctx.url))
   } catch (error) {
     console.warn("error", error)
     return (
-      <NewGroceryListPage
-        errors={{
-          name: "We could not create your grocery list, please try again",
-        }}
-      />
+      <PageLayout heading="New Grocery List">
+        <NewGroceryListForm
+          errors={{
+            name: "We could not create your grocery list, please try again",
+          }}
+        />
+      </PageLayout>
     )
   }
 })
