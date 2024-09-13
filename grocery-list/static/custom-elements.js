@@ -15,4 +15,6 @@ export const harvestCustomElements = (markup) => {
 export const customElementsImportMap = {
   "copy-button": "/static/element/copy-button.js",
   "submit-on-focus-out": "/static/element/submit-on-focus-out.js",
+  "replace-element": "/static/element/replace-element.js",
+  "insert-children": "/static/element/insert-children.js",
 }

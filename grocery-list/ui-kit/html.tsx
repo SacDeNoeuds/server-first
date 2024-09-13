@@ -21,7 +21,7 @@ export function Html(props: Props) {
     <>
       <RawHtml>{"<!DOCTYPE html>"}</RawHtml>
       <html lang="en">
-        <Head scripts={scripts} />
+        <Head />
         <body>
           <RawHtml>{markup}</RawHtml>
           {scripts.map((src) => (

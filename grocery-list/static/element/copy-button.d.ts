@@ -1,11 +1,6 @@
-import "./copy-button"
+import type { CopyButtonElement } from "./copy-button"
 
 declare global {
-  class CopyButtonElement extends HTMLElement {
-    get copyTarget(): HTMLElement | null
-    copyTextOfTarget: () => void
-  }
-
   interface HTMLElementTagNameMap {
     "copy-button": CopyButtonElement
   }

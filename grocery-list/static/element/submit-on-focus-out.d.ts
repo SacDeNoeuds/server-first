@@ -1,8 +1,7 @@
-import "./copy-button"
+import type { SubmitOnFocusOutElement } from "./submit-on-focus-out"
 
 declare global {
-  class SubmitOnFocusOutElement extends HTMLElement {}
-
+  // class SubmitOnFocusOutElement extends HTMLElement {}
   interface HTMLElementTagNameMap {
     "submit-on-focus-out": SubmitOnFocusOutElement
   }

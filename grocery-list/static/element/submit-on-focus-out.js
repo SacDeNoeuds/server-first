@@ -1,6 +1,6 @@
 // @ts-check
-// @ts-ignore
-class SubmitOnFocusOutElement extends HTMLElement {
+
+export class SubmitOnFocusOutElement extends HTMLElement {
   get #feedbackDelayInSeconds() {
     const value = this.getAttribute("feedback-delay")
     const delay = Number(value)
@@ -27,6 +27,7 @@ class SubmitOnFocusOutElement extends HTMLElement {
       // @ts-ignore
       const body = new URLSearchParams(new FormData(elements.form))
       elements.pending.hidden = false
+      // TODO: Use `fetchHtml` from /library.js
       const response = await fetch(action, {
         method,
         headers: { "Content-Type": type },
@@ -51,4 +52,4 @@ class SubmitOnFocusOutElement extends HTMLElement {
 
 Object.assign(globalThis, { SubmitOnFocusOutElement })
 
-globalThis.customElements.define("submit-on-focus-out", SubmitOnFocusOutElement)
+customElements.define("submit-on-focus-out", SubmitOnFocusOutElement)

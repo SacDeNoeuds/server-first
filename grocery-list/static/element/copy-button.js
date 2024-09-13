@@ -1,6 +1,5 @@
 // @ts-check
-// @ts-ignore
-class CopyButtonElement extends HTMLElement {
+export class CopyButtonElement extends HTMLElement {
   get copyTarget() {
     const selector = this.getAttribute("copy-target")
     return selector && document.querySelector(selector)
@@ -39,4 +38,4 @@ class CopyButtonElement extends HTMLElement {
 
 Object.assign(globalThis, { CopyButtonElement })
 
-globalThis.customElements.define("copy-button", CopyButtonElement)
+customElements.define("copy-button", CopyButtonElement)

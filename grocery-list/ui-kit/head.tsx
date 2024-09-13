@@ -1,6 +1,4 @@
-interface Props {
-  scripts?: string[]
-}
+interface Props {}
 export function Head(props: Props) {
   return (
     <head>
@@ -8,6 +6,7 @@ export function Head(props: Props) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Grocery List</title>
       <link rel="stylesheet" href="/static/css/global.css" />
+      <script type="module" src="/static/single-page-appify.js" defer async />
     </head>
   )
 }

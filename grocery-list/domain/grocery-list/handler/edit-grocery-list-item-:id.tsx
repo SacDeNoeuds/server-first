@@ -22,7 +22,9 @@ export const editGroceryListItem = withGroceryList(async (ctx) => {
       ...ctx.groceryList,
       items: nextItems,
     })
-    return redirectTo(new URL(ctx.getHeader("referer") ?? "/", ctx.url))
+    const url = new URL(ctx.getHeader("referer") ?? "/", ctx.url)
+    url.searchParams.set("jack", "o-lantern")
+    return redirectTo(url)
   } catch (cause) {
     return BadRequest({ message: "failed to decode body", cause })
   }
