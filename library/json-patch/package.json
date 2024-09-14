@@ -1,0 +1,13 @@
+{
+  "name": "@library/json-patch",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "just-diff": "^6.0.2",
+    "just-diff-apply": "^5.5.0"
+  }
+}
