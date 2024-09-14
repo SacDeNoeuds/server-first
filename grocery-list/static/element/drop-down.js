@@ -6,13 +6,6 @@ export class DropDownElement extends HTMLElement {
     const { trigger, popover, form } = this.#getElements()
     this.id ||= createRandomId()
     const anchorName = `--${this.id}`
-    // To explore:
-    // Avoid using the popover API nor a polyfill for it and use direct anchor positioning:
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning/Using
-    // <div id="the-anchor" />
-    // <div id="the-popover" anchor="the-anchor" />
-    // toggle display.none on the popover ?
-    // I might encounter new issues regarding placement and size.
     this.#addInlineStyle(this, `anchor-name: ${anchorName}`)
     this.#addInlineStyle(
       popover,
