@@ -20,6 +20,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: unset;
+  color: unset;
 }
 
 body {
@@ -80,7 +87,17 @@ dialog {
   }
 }
 
-button, .button {
+a:not([class]), .link {
+  color: var(--text-color);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  &:is(:hover, :focus) {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+}
+
+button:not([class], [role]), .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -161,6 +178,7 @@ button, .button {
 .justify-end { justify-content: end; }
 
 .text-center { text-align: center; }
+.text-left { text-align: left; }
 .flex-1 { flex: 1; }
 .flex-2 { flex: 2; }
 .flex-3 { flex: 3; }
@@ -174,4 +192,22 @@ button, .button {
   --template: repeat(var(--column-count), minmax(min-content, 1fr));
   display: grid;
   grid-template-columns: var(--template);
+}
+
+[popover] [role="option"] {
+  display: block;
+  padding: var(--space-s);
+  transition: background-color 0.2s ease;
+
+  &:not(:disabled, [aria-disabled="true"]) {
+    cursor: pointer;
+
+    &:is(:hover, :focus) {
+      background-color: var(--secondary-color);
+    }
+  }
+}
+
+[popover]:not(:popover-open) {
+  display: none !important;
 }

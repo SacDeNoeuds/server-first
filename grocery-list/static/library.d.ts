@@ -18,3 +18,7 @@ export type FetchHtmlAction = {
   redirect: URL | undefined
   controller: AbortController
 }
+
+export function css(rules: TemplateStringsArray): CSSStyleSheet
+
+export function createRandomId(): string

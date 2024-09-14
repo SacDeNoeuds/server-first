@@ -30,3 +30,16 @@ export function fetchHtml({ controller = new AbortController(), ...init }) {
     },
   }
 }
+
+export function css(rules) {
+  const sheet = new CSSStyleSheet()
+  sheet.replaceSync(rules.join())
+  document.adoptedStyleSheets.push(sheet)
+  return sheet
+}
+
+export function createRandomId() {
+  const id = Math.random().toString(36).slice(2)
+  if (document.getElementById(id)) return createId()
+  return id
+}

@@ -17,4 +17,5 @@ export const customElementsImportMap = {
   "submit-on-focus-out": "/static/element/submit-on-focus-out.js",
   "replace-element": "/static/element/replace-element.js",
   "insert-children": "/static/element/insert-children.js",
+  "drop-down": "/static/element/drop-down.js",
 }

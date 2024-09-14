@@ -1,4 +1,5 @@
 import type { GroceryList } from "../entity/grocery-list"
+import { DropdownTest } from "./dropdown-test"
 import { GroceryListItemFormModal } from "./grocery-list-item-form-modal"
 import { PageLayout } from "./page-layout"
 import { QuantityForm } from "./quantity-form"
@@ -11,6 +12,8 @@ interface Props {
 export function GroceryListPage({ groceryList, joinUrl }: Props) {
   return (
     <PageLayout class="card column gap-l" heading={groceryList.name}>
+      <DropdownTest />
+
       {groceryList.items.length === 0 && (
         <div>You don’t have any item yet.</div>
       )}
