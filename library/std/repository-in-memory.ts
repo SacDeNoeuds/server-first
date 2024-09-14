@@ -1,15 +1,14 @@
-import type { Repository, RepositoryInit } from "./repository"
+import type { Repository } from "./repository"
 
 export class InMemoryRepository<T> implements Repository<T> {
   readonly store = new Map<string, T>()
-  constructor(private options: RepositoryInit<T>) {}
 
   findById = async (id: string) => {
     return this.store.get(id) ?? undefined
   }
 
-  set = async (item: T) => {
-    this.store.set(this.options.mapId(item), item)
+  set = async (id: string, item: T): Promise<T> => {
+    this.store.set(id, item)
     return item
   }
 

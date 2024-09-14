@@ -11,7 +11,10 @@ interface Props extends FormProps {
 }
 
 export function GroceryListItemFormModal(props: Props): JSX.JSXElement {
-  const baseId = props.values ? `edit-item-${props.values.index}` : "add-item"
+  const slugify = (str: string) => str.toLowerCase().replaceAll(" ", "-").trim()
+  const baseId = props.values
+    ? `edit-item-${slugify(props.values.name)}`
+    : "add-item"
   const formId = `${baseId}-form`
   const popoverId = `${baseId}-popover`
   return (

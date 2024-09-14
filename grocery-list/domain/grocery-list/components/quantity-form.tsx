@@ -4,7 +4,6 @@ import { IntegerInput } from "../../../ui-kit/integer-input"
 interface Props {
   groceryListId: string
   values: {
-    index: number
     quantity: number
     name: string
   }
@@ -17,7 +16,7 @@ export function QuantityForm(props: Props): JSX.JSXElement {
         method="post"
         action={`/edit-grocery-list-item/${props.groceryListId}`}
       >
-        <input type="hidden" name="index" value={props.values.index} />
+        <input type="hidden" name="previousName" value={props.values.name} />
         <input type="hidden" name="name" value={props.values.name} />
         <div class="flex align-center">
           {"×"}

@@ -7,7 +7,8 @@ export class AccountRepository {
   getOrCreate = async (email: Account["email"]) => {
     const existingAccount = await this.repo.findById(email)
     const account =
-      existingAccount || (await this.repo.set({ email, groceryLists: [] }))
+      existingAccount ||
+      (await this.repo.set(email, { email, groceryLists: [] }))
     return account
   }
 
@@ -20,7 +21,7 @@ export class AccountRepository {
     if (!account) return new AccountNotFound(email)
 
     account.groceryLists.push(groceryListId)
-    await this.repo.set(account)
+    await this.repo.set(account.email, account)
     return account
   }
 }

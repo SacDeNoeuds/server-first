@@ -1,6 +1,6 @@
 import { readFile, readdir, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
-import type { Repository, RepositoryInit } from "./repository"
+import type { Repository } from "./repository"
 
 type Init = {
   directory: string
@@ -9,7 +9,7 @@ type Init = {
 export class FileSystemRepository<T extends Record<string, any>>
   implements Repository<T>
 {
-  constructor(private options: RepositoryInit<T> & Init) {}
+  constructor(private options: Init) {}
 
   findById = async (id: string) => {
     const filePath = this.#getFilePath(id)
@@ -17,8 +17,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     return content && JSON.parse(content)
   }
 
-  set = async (item: T) => {
-    const id = this.options.mapId(item)
+  set = async (id: string, item: T): Promise<T> => {
     const filePath = this.#getFilePath(id)
     await writeFile(filePath, JSON.stringify(item), "utf-8")
     return item

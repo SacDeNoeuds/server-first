@@ -1,11 +1,15 @@
-import type { Repository } from "@/std/repository"
+import type { JsonPatchRepository } from "@/json-patch/repository"
 import type { GroceryList } from "../entity/grocery-list"
 
 export class GroceryListRepository {
-  constructor(private repo: Repository<GroceryList>) {}
+  constructor(private repo: JsonPatchRepository<GroceryList>) {}
 
-  set = async (groceryList: GroceryList): Promise<void> => {
-    await this.repo.set(groceryList)
+  set = async (
+    author: string,
+    at: Date,
+    groceryList: GroceryList,
+  ): Promise<void> => {
+    await this.repo.set(author, at, groceryList.id, groceryList)
   }
 
   find = async (id: string): Promise<GroceryList | undefined> => {

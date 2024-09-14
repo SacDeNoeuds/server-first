@@ -5,7 +5,7 @@ import type { GroceryListItem } from "../entity/grocery-list"
 interface Props {
   id: string
   groceryListId: string
-  values?: Pick<GroceryListItem, "name" | "quantity"> & { index: number }
+  values?: Pick<GroceryListItem, "name" | "quantity">
 }
 export function GroceryListItemForm(props: Props): JSX.JSXElement {
   const action = props.values ? "edit" : "add"
@@ -17,8 +17,9 @@ export function GroceryListItemForm(props: Props): JSX.JSXElement {
       action={`/${action}-grocery-list-item/${props.groceryListId}`}
     >
       {props.values && (
-        <input type="hidden" name="index" value={props.values.index} />
+        <input type="hidden" name="previousName" value={props.values.name} />
       )}
+      <input type="hidden" name="at" value={new Date().toISOString()} />
       <div class="form-field">
         <label for="name-control">Item name</label>
         <input

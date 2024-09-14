@@ -14,7 +14,7 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
     <PageLayout class="card column gap-l" heading={groceryList.name}>
       <DropdownTest />
 
-      {groceryList.items.length === 0 && (
+      {Object.keys(groceryList.items).length === 0 && (
         <div>You don’t have any item yet.</div>
       )}
 
@@ -22,26 +22,26 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
         class="grid align-center gap-xs"
         style="--template: min-content 1fr min-content;"
       >
-        {groceryList.items.map((item, index) => (
+        {Object.entries(groceryList.items).map(([itemName, item], index) => (
           <>
-            <span>{item.name}</span>
+            <span>{itemName}</span>
 
             <QuantityForm
               groceryListId={groceryList.id}
-              values={{ ...item, index }}
+              values={{ name: itemName, ...item }}
             />
 
             <small class="flex align-center gap-xs">
               <GroceryListItemFormModal
                 groceryListId={groceryList.id}
-                values={{ ...item, index }}
+                values={{ name: itemName, ...item }}
               >
                 Edit
               </GroceryListItemFormModal>
               <span>{"•"}</span>
               <TickGroceryListItemButton
                 groceryListId={groceryList.id}
-                index={index}
+                itemName={itemName}
               />
             </small>
           </>

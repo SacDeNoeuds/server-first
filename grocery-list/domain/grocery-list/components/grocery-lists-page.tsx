@@ -7,6 +7,7 @@ interface Props {
   groceryLists: GroceryList[]
 }
 export function GroceryListsPage(props: Props): JSX.JSXElement {
+  const itemsCount = (list: GroceryList) => Object.keys(list.items).length
   return (
     <PageLayout heading="Your Grocery Lists" class="column gap-m card">
       <div class="column gap-s">
@@ -18,7 +19,7 @@ export function GroceryListsPage(props: Props): JSX.JSXElement {
               {props.groceryLists.map((groceryList) => (
                 <li>
                   <a href={`/grocery-list/${groceryList.id}`}>
-                    {groceryList.name} ({groceryList.items.length} items)
+                    {groceryList.name} ({itemsCount(groceryList)} items)
                   </a>
                 </li>
               ))}

@@ -16,7 +16,11 @@ export const createGroceryList = withAuthWall(async (ctx) => {
     const { repository } = getInfra()
     const id = StringId()
     await Promise.all([
-      repository.groceryList.set({ id, items: [], name: body.name }),
+      repository.groceryList.set(ctx.account.email, new Date(), {
+        id,
+        items: {},
+        name: body.name,
+      }),
       repository.account.addGroceryList(ctx.account.email, id),
     ])
 

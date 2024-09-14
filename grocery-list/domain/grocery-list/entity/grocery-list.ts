@@ -1,7 +1,7 @@
 export type GroceryList = {
   id: string
   name: string
-  items: GroceryListItem[]
+  items: Record<GroceryListItem["name"], Omit<GroceryListItem, "name">>
 }
 
 export type GroceryListItem = {
