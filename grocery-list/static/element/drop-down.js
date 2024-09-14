@@ -12,9 +12,6 @@ export class DropDownElement extends HTMLElement {
       `position-anchor: ${anchorName}; top: anchor(${anchorName} bottom); left: anchor(${anchorName} left); width: anchor-size(width)`,
     )
     popover.popover = "manual" // ensure this.
-    this.contains(document.activeElement)
-      ? popover.showPopover()
-      : popover.hidePopover()
 
     this.addEventListener("focusin", () => popover.showPopover())
     this.addEventListener("focusout", () => {
