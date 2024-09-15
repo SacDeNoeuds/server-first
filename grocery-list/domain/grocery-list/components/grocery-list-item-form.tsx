@@ -1,10 +1,10 @@
 import type { JSX } from "jsx-server/jsx-runtime"
 import { IntegerInput } from "../../../ui-kit/integer-input"
-import type { GroceryListItem } from "../entity/grocery-list"
+import type { GroceryList, GroceryListItem } from "../entity/grocery-list"
 
 interface Props {
   id: string
-  groceryListId: string
+  groceryList: Pick<GroceryList, "id" | "lastUpdate">
   values?: Pick<GroceryListItem, "name" | "quantity">
 }
 export function GroceryListItemForm(props: Props): JSX.JSXElement {
@@ -14,12 +14,16 @@ export function GroceryListItemForm(props: Props): JSX.JSXElement {
       id={props.id}
       method="post"
       class="column gap-m"
-      action={`/${action}-grocery-list-item/${props.groceryListId}`}
+      action={`/${action}-grocery-list-item/${props.groceryList.id}`}
     >
       {props.values && (
         <input type="hidden" name="previousName" value={props.values.name} />
       )}
-      <input type="hidden" name="at" value={new Date().toISOString()} />
+      <input
+        type="hidden"
+        name="editedVersion"
+        value={props.groceryList.lastUpdate.toISOString()}
+      />
       <div class="form-field">
         <label for="name-control">Item name</label>
         <input

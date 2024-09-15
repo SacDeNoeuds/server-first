@@ -53,56 +53,70 @@ export function staticHandler(
   )
 }
 
-export function defineHandler(handler: Handler) {
-  return defineEventHandler(async (event) => {
-    const method = event.method.toLowerCase()
-    if (method !== "get" && method !== "post")
-      return ResponseFromHttpError(
-        NotFound({ message: `Unsupported method: ${method}` }),
-      )
+export type HandlerConfig = {
+  protocol: "http" | "https"
+}
+export function DefineHandler(config: HandlerConfig) {
+  return function defineHandler(handler: Handler) {
+    return defineEventHandler(async (event) => {
+      const method = event.method.toLowerCase()
+      if (method !== "get" && method !== "post")
+        return ResponseFromHttpError(
+          NotFound({ message: `Unsupported method: ${method}` }),
+        )
 
-    let statusCode = 200
-    const result = await handler({
-      setStatus: (code) => {
-        statusCode = code
-      },
-      method,
-      url: new URL(
-        event.path,
-        getHeader(event, "referer") || "http://localhost",
-      ),
-      params: event.context.params ?? {},
-      body:
-        method === "post"
-          ? parseFormEncodedUrl(await readRawBody(event))
-          : undefined,
-      getHeader: (name) => getHeader(event, name),
-      setHeader: (name, value) => setHeader(event, name, value),
-      getCookie: (name) => getCookie(event, name),
-      setCookie: (name, value, options) =>
-        setCookie(
-          event,
-          name,
-          value,
-          options && {
-            domain: options.domain,
-            httpOnly: options.httpOnly,
-            maxAge: options.maxAgeInSeconds,
-            path: options.path,
-            sameSite: options.sameSite,
-            secure: options.secure,
-          },
+      let statusCode = 200
+      const result = await handler({
+        setStatus: (code) => {
+          statusCode = code
+        },
+        method,
+        url: new URL(
+          event.path,
+          getHeader(event, "referer") ||
+            getHrefFromHost(config.protocol, getHeader(event, "Host")) ||
+            "http://localhost",
         ),
+        params: event.context.params ?? {},
+        body:
+          method === "post"
+            ? parseFormEncodedUrl(await readRawBody(event))
+            : undefined,
+        getHeader: (name) => getHeader(event, name),
+        setHeader: (name, value) => setHeader(event, name, value),
+        getCookie: (name) => getCookie(event, name),
+        setCookie: (name, value, options) =>
+          setCookie(
+            event,
+            name,
+            value,
+            options && {
+              domain: options.domain,
+              httpOnly: options.httpOnly,
+              maxAge: options.maxAgeInSeconds,
+              path: options.path,
+              sameSite: options.sameSite,
+              secure: options.secure,
+            },
+          ),
+      })
+
+      if (result instanceof HttpError) return ResponseFromHttpError(result)
+
+      if (isRedirect(result))
+        return sendRedirect(event, result.location.href, result.code)
+
+      return new Response(result.body, {
+        status: statusCode,
+        headers: { "Content-Type": result.type },
+      })
     })
+  }
+}
 
-    if (result instanceof HttpError) return ResponseFromHttpError(result)
-
-    if (isRedirect(result))
-      return sendRedirect(event, result.location.href, result.code)
-
-    return new Response(result.body, {
-      status: statusCode,
-      headers: { "Content-Type": result.type },
-    })
-  })
+function getHrefFromHost(
+  protocol: string,
+  host: string | undefined,
+): string | undefined {
+  return host ? `${protocol}://${host}` : undefined
 }

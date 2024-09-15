@@ -1,8 +1,9 @@
 import type { JSX } from "jsx-server/jsx-runtime"
 import { IntegerInput } from "../../../ui-kit/integer-input"
+import type { GroceryList } from "../entity/grocery-list"
 
 interface Props {
-  groceryListId: string
+  groceryList: Pick<GroceryList, "id" | "lastUpdate">
   values: {
     quantity: number
     name: string
@@ -14,10 +15,15 @@ export function QuantityForm(props: Props): JSX.JSXElement {
       <form
         class="quantity-form"
         method="post"
-        action={`/edit-grocery-list-item/${props.groceryListId}`}
+        action={`/edit-grocery-list-item/${props.groceryList.id}`}
       >
         <input type="hidden" name="previousName" value={props.values.name} />
         <input type="hidden" name="name" value={props.values.name} />
+        <input
+          type="hidden"
+          name="editedVersion"
+          value={props.groceryList.lastUpdate.toISOString()}
+        />
         <div class="flex align-center">
           {"×"}
           <IntegerInput

@@ -10,20 +10,31 @@ export const editGroceryListItem = withGroceryList(async (ctx) => {
     previousName: string(),
     name: trimmed(string()),
     quantity: coerce(number(), string(), Number),
-    at: DateFromString,
+    editedVersion: DateFromString,
   })
   try {
-    const { at, name, previousName, ...body } = create(ctx.body, Payload)
+    const { editedVersion, name, previousName, ...body } = create(
+      ctx.body,
+      Payload,
+    )
     const { [previousName]: _, ...nextItems } = ctx.groceryList.items
     nextItems[name] = body
 
     const { repository } = getInfra()
-    const nextGroceryList = { ...ctx.groceryList, items: nextItems }
-    await repository.groceryList.set(ctx.account.email, at, nextGroceryList)
+    const { lastUpdate, ...nextGroceryList } = ctx.groceryList
+    nextGroceryList.items = nextItems
+    await repository.groceryList.set(
+      ctx.account.email,
+      editedVersion,
+      nextGroceryList,
+    )
+
     const url = new URL(ctx.getHeader("referer") ?? "/", ctx.url)
     url.searchParams.set("jack", "o-lantern")
     return redirectTo(url)
   } catch (cause) {
+    console.info(ctx.body)
+    console.error(cause)
     return BadRequest({ message: "failed to decode body", cause })
   }
 })

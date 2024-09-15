@@ -1,7 +1,7 @@
 import {
   createApp,
   createRouter,
-  defineHandler,
+  DefineHandler,
   staticHandler,
   toNodeListener,
 } from "@/h3"
@@ -27,6 +27,8 @@ const app = createApp({ debug: true })
 const router = createRouter()
 app.use("/static", staticHandler(staticFolder))
 app.use(router)
+
+const defineHandler = DefineHandler({ protocol: "http" })
 
 router.get("/", defineHandler(getHomePage))
 router.post("/authenticate", defineHandler(authenticate))

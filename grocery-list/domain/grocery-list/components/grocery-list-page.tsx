@@ -27,20 +27,20 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
             <span>{itemName}</span>
 
             <QuantityForm
-              groceryListId={groceryList.id}
+              groceryList={groceryList}
               values={{ name: itemName, ...item }}
             />
 
             <small class="flex align-center gap-xs">
               <GroceryListItemFormModal
-                groceryListId={groceryList.id}
+                groceryList={groceryList}
                 values={{ name: itemName, ...item }}
               >
                 Edit
               </GroceryListItemFormModal>
               <span>{"•"}</span>
               <TickGroceryListItemButton
-                groceryListId={groceryList.id}
+                groceryList={groceryList}
                 itemName={itemName}
               />
             </small>
@@ -48,7 +48,7 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
         ))}
       </div>
 
-      <GroceryListItemFormModal groceryListId={groceryList.id}>
+      <GroceryListItemFormModal groceryList={groceryList}>
         Add
       </GroceryListItemFormModal>
 

@@ -2,18 +2,21 @@ import type { JsonPatchRepository } from "@/json-patch/repository"
 import type { GroceryList } from "../entity/grocery-list"
 
 export class GroceryListRepository {
-  constructor(private repo: JsonPatchRepository<GroceryList>) {}
+  constructor(
+    private repo: JsonPatchRepository<Omit<GroceryList, "lastUpdate">>,
+  ) {}
 
   set = async (
     author: string,
     at: Date,
-    groceryList: GroceryList,
+    groceryList: Omit<GroceryList, "lastUpdate">,
   ): Promise<void> => {
     await this.repo.set(author, at, groceryList.id, groceryList)
   }
 
   find = async (id: string): Promise<GroceryList | undefined> => {
-    return this.repo.findById(id)
+    const [value, lastUpdate] = await this.repo.findById(id)
+    return value && { ...value, lastUpdate }
   }
 
   remove = (id: string): Promise<void> => {

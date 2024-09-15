@@ -1,5 +1,6 @@
 import { readFile, readdir, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
+import { parseJson, stringifyJson } from "./json"
 import type { Repository } from "./repository"
 
 type Init = {
@@ -14,12 +15,12 @@ export class FileSystemRepository<T extends Record<string, any>>
   findById = async (id: string) => {
     const filePath = this.#getFilePath(id)
     const content = await readFile(filePath, "utf-8").catch(() => undefined)
-    return content && JSON.parse(content)
+    return content ? (parseJson(content) as T) : undefined
   }
 
   set = async (id: string, item: T): Promise<T> => {
     const filePath = this.#getFilePath(id)
-    await writeFile(filePath, JSON.stringify(item), "utf-8")
+    await writeFile(filePath, stringifyJson(item), "utf-8")
     return item
   }
 
@@ -28,7 +29,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     const filePaths = filePathsWithExt.map((filePath) =>
       path.basename(filePath, path.extname(filePath)),
     )
-    const promises = filePaths.map(this.findById)
+    const promises = filePaths.map(this.findById) as Promise<T>[]
     return Promise.all(promises)
   }
 

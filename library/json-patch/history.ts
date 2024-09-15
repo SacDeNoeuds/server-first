@@ -27,3 +27,10 @@ export function reconstructFromHistory<T>(
 
   return applyPatch(initial as object, patch) as T
 }
+
+export function addHistoryEntry(
+  history: JsonPatchHistory,
+  entry: JsonPatchHistory[number],
+): JsonPatchHistory {
+  return [...history, entry].sort((a, b) => a.date.valueOf() - b.date.valueOf())
+}

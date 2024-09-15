@@ -9,17 +9,20 @@ export const addGroceryListItem = withGroceryList(async (ctx) => {
   const Payload = object({
     name: trimmed(string()),
     quantity: coerce(number(), string(), Number),
-    at: DateFromString,
+    editedVersion: DateFromString,
   })
   try {
-    const { at, name, ...body } = create(ctx.body, Payload)
+    const { editedVersion, name, ...body } = create(ctx.body, Payload)
 
     const { repository } = getInfra()
-    const nextValue = {
-      ...ctx.groceryList,
-      items: { ...ctx.groceryList.items, [name]: body },
-    }
-    await repository.groceryList.set(ctx.account.email, at, nextValue)
+    const { lastUpdate, ...nextGroceryList } = ctx.groceryList
+    nextGroceryList.items = { ...ctx.groceryList.items, [name]: body }
+    await repository.groceryList.set(
+      ctx.account.email,
+      editedVersion,
+      nextGroceryList,
+    )
+
     return redirectTo(new URL(ctx.getHeader("referer") ?? "/", ctx.url))
   } catch (cause) {
     console.info(ctx.body)

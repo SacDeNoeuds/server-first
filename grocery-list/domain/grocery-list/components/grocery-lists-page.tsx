@@ -8,6 +8,11 @@ interface Props {
 }
 export function GroceryListsPage(props: Props): JSX.JSXElement {
   const itemsCount = (list: GroceryList) => Object.keys(list.items).length
+  const formatter = new Intl.DateTimeFormat(undefined, {
+    dateStyle: "short",
+    timeStyle: "short",
+  })
+
   return (
     <PageLayout heading="Your Grocery Lists" class="column gap-m card">
       <div class="column gap-s">
@@ -17,10 +22,13 @@ export function GroceryListsPage(props: Props): JSX.JSXElement {
           <nav>
             <ul>
               {props.groceryLists.map((groceryList) => (
-                <li>
+                <li class="flex justify-between">
                   <a href={`/grocery-list/${groceryList.id}`}>
                     {groceryList.name} ({itemsCount(groceryList)} items)
                   </a>
+                  <span>
+                    Last Update: {formatter.format(groceryList.lastUpdate)}
+                  </span>
                 </li>
               ))}
             </ul>
