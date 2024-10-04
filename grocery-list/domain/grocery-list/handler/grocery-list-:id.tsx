@@ -9,7 +9,7 @@ import { NotFoundPage } from "../components/not-found-page"
 import type { GroceryList } from "../entity/grocery-list"
 
 export const withGroceryList = (
-  handler: Handler<JSX.Child, { account: Account; groceryList: GroceryList }>,
+  handler: Handler<JSX.Element, { account: Account; groceryList: GroceryList }>,
 ): Handler =>
   withAuthWall(async (ctx) => {
     const id = ctx.params.id

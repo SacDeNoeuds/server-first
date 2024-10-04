@@ -1,5 +1,4 @@
 import { RawHtml, type JSX } from "jsx-server/jsx-runtime"
-import { renderToString } from "jsx-server/render-to-string"
 import {
   customElementsImportMap,
   harvestCustomElements,
@@ -9,9 +8,13 @@ import { Head } from "./head"
 interface Props {
   children: JSX.Children
 }
+
+const toArray = <T extends any>(value: T | T[]): T[] =>
+  Array.isArray(value) ? value : [value]
+
 export function Html(props: Props) {
-  const markup = [props.children].flat().map(renderToString).join("")
-  const customElements = harvestCustomElements(markup)
+  const html = <>{props.children}</>
+  const customElements = harvestCustomElements(html.toString())
   const elementsMap = customElementsImportMap as Record<string, string>
   const scripts = Array.from(customElements)
     .map((element) => elementsMap[element] ?? "")
@@ -22,9 +25,7 @@ export function Html(props: Props) {
       <RawHtml>{"<!DOCTYPE html>"}</RawHtml>
       <html lang="en">
         <Head scripts={scripts} />
-        <body>
-          <RawHtml>{markup}</RawHtml>
-        </body>
+        <body>{html}</body>
       </html>
     </>
   )

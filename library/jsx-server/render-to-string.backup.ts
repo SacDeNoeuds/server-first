@@ -1,5 +1,5 @@
 import { escapeHtml } from "@/std/escape-html"
-import type { JSX } from "./jsx-runtime"
+import type { JSX } from "./jsx-runtime.backup"
 
 /** @type {Set<keyof import("./jsx-runtime").JSX.IntrinsicElements>} */
 const selfClosingTags = new Set([

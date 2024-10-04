@@ -1,3 +1,5 @@
+// import type { JSX } from "jsx-server/jsx-runtime"
+
 interface Props {
   scripts?: string[]
 }

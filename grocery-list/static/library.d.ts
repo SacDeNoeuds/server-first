@@ -7,7 +7,6 @@ export function getBySelector(
 
 export interface FetchHtmlOpts
   extends Omit<RequestInit, "headers" | "redirect" | "signal" | "credentials"> {
-  controller?: AbortController
   url: string | URL
   headers?: Record<string, string | undefined>
 }

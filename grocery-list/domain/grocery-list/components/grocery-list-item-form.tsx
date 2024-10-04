@@ -1,4 +1,3 @@
-import type { JSX } from "jsx-server/jsx-runtime"
 import { IntegerInput } from "../../../ui-kit/integer-input"
 import type { GroceryList, GroceryListItem } from "../entity/grocery-list"
 
@@ -7,7 +6,7 @@ interface Props {
   groceryList: Pick<GroceryList, "id" | "lastUpdate">
   values?: Pick<GroceryListItem, "name" | "quantity">
 }
-export function GroceryListItemForm(props: Props): JSX.JSXElement {
+export function GroceryListItemForm(props: Props) {
   const action = props.values ? "edit" : "add"
   return (
     <form
@@ -37,7 +36,7 @@ export function GroceryListItemForm(props: Props): JSX.JSXElement {
         />
       </div>
       <div class="form-field">
-        <label for="quantity-control">Qty</label>
+        <label for="quantity-control">Quantity</label>
         <IntegerInput
           id="quantity-control"
           name="quantity"

@@ -1,12 +1,11 @@
 import { JsxHandler, redirectTo, type Handler } from "@/std/server-handler"
-import type { JSX } from "jsx-server/jsx-runtime"
 import { getInfra } from "../../../infra/infra"
 import { AuthForm } from "../components/auth-form"
 import { AuthPage } from "../components/auth-page"
 import type { Account } from "../entity/account"
 
 export const withAuthWall = (
-  handler: Handler<JSX.Child, { account: Account }>,
+  handler: Handler<JSX.Element, { account: Account }>,
 ): Handler =>
   JsxHandler(async (ctx) => {
     const email = ctx.getCookie("account-id")

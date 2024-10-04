@@ -1,4 +1,3 @@
-import type { JSX } from "jsx-server/jsx-runtime"
 import { IntegerInput } from "../../../ui-kit/integer-input"
 import type { GroceryList } from "../entity/grocery-list"
 
@@ -9,7 +8,7 @@ interface Props {
     name: string
   }
 }
-export function QuantityForm(props: Props): JSX.JSXElement {
+export function QuantityForm(props: Props) {
   return (
     <submit-on-focus-out feedback-delay={2}>
       <form
@@ -24,16 +23,18 @@ export function QuantityForm(props: Props): JSX.JSXElement {
           name="editedVersion"
           value={props.groceryList.lastUpdate.toISOString()}
         />
-        <div class="flex align-center">
-          {"×"}
-          <IntegerInput
-            id="quantity-control"
-            name="quantity"
-            min={1}
-            step={1}
-            value={props.values.quantity}
-            required
-          />
+        <div class="flex gap-xs align-center">
+          <div class="flex align-center">
+            <span>{"×"}</span>
+            <IntegerInput
+              id="quantity-control"
+              name="quantity"
+              min={1}
+              step={1}
+              value={props.values.quantity}
+              required
+            />
+          </div>
           <span hidden slot="pending">
             …
           </span>

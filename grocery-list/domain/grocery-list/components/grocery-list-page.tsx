@@ -1,8 +1,8 @@
 import type { GroceryList } from "../entity/grocery-list"
-import { DropdownTest } from "./dropdown-test"
 import { GroceryListItemFormModal } from "./grocery-list-item-form-modal"
 import { PageLayout } from "./page-layout"
 import { QuantityForm } from "./quantity-form"
+import { Sandbox } from "./sandbox"
 import { TickGroceryListItemButton } from "./tick-grocery-list-item-button"
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 export function GroceryListPage({ groceryList, joinUrl }: Props) {
   return (
     <PageLayout class="card column gap-l" heading={groceryList.name}>
-      <DropdownTest />
+      <Sandbox />
 
       {Object.keys(groceryList.items).length === 0 && (
         <div>You don’t have any item yet.</div>
@@ -24,7 +24,7 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
       >
         {Object.entries(groceryList.items).map(([itemName, item], index) => (
           <>
-            <span>{itemName}</span>
+            <span style="min-inline-size: 5em">{itemName}</span>
 
             <QuantityForm
               groceryList={groceryList}

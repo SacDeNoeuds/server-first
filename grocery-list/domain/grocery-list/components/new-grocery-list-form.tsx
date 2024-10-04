@@ -1,5 +1,3 @@
-import type { JSX } from "jsx-server/jsx-runtime"
-
 interface Props {
   values?: {
     name: string
@@ -9,7 +7,7 @@ interface Props {
   }
 }
 
-export function NewGroceryListForm(props: Props): JSX.JSXElement {
+export function NewGroceryListForm(props: Props) {
   return (
     <form
       class="column gap-s"

@@ -4,7 +4,7 @@ import { Html } from "../../../ui-kit/html"
 interface Props {
   children?: JSX.Children
 }
-export function AuthPage(props: Props): JSX.JSXElement {
+export function AuthPage(props: Props) {
   return (
     <Html>
       <div

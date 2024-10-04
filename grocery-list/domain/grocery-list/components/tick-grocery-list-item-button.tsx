@@ -1,4 +1,4 @@
-import type { JSX } from "jsx-server/jsx-runtime"
+// import type { JSX } from "jsx-server/jsx-runtime"
 import type { GroceryList } from "../entity/grocery-list"
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   itemName: string
   children?: JSX.Children
 }
-export function TickGroceryListItemButton(props: Props): JSX.JSXElement {
+export function TickGroceryListItemButton(props: Props) {
   const action = `/tick-grocery-list-item/${props.groceryList.id}`
   return (
     <form method="post" action={action}>

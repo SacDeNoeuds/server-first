@@ -18,4 +18,5 @@ export const customElementsImportMap = {
   "replace-element": "/static/element/replace-element.js",
   "insert-children": "/static/element/insert-children.js",
   "drop-down": "/static/element/drop-down.js",
+  "remote-html": "/static/element/remote-html.js",
 }

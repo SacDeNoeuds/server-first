@@ -30,7 +30,6 @@ export const editGroceryListItem = withGroceryList(async (ctx) => {
     )
 
     const url = new URL(ctx.getHeader("referer") ?? "/", ctx.url)
-    url.searchParams.set("jack", "o-lantern")
     return redirectTo(url)
   } catch (cause) {
     console.info(ctx.body)

@@ -2,7 +2,7 @@ import assert from "assert"
 import { JsxHandler, redirectTo, type HandlerContext } from "./server-handler"
 
 async function test() {
-  const handler = JsxHandler((params) => {
+  const handler = JsxHandler(async (params) => {
     if (params.method === "post")
       return redirectTo(new URL("http://localhost:3000/redirection"))
 

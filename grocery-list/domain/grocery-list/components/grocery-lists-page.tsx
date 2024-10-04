@@ -1,4 +1,3 @@
-import type { JSX } from "jsx-server/jsx-runtime"
 import type { GroceryList } from "../entity/grocery-list"
 import { NewGroceryListForm } from "./new-grocery-list-form"
 import { PageLayout } from "./page-layout"
@@ -6,7 +5,7 @@ import { PageLayout } from "./page-layout"
 interface Props {
   groceryLists: GroceryList[]
 }
-export function GroceryListsPage(props: Props): JSX.JSXElement {
+export function GroceryListsPage(props: Props) {
   const itemsCount = (list: GroceryList) => Object.keys(list.items).length
   const formatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "short",

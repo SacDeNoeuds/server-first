@@ -9,7 +9,7 @@ interface Props {
   step?: number
   required?: boolean
 }
-export function IntegerInput(props: Props): JSX.JSXElement {
+export function IntegerInput(props: Props): JSX.Html {
   return (
     <div class="inline-flex gap-xs align-center">
       <input
@@ -18,7 +18,7 @@ export function IntegerInput(props: Props): JSX.JSXElement {
         tabindex={-1}
         type="number"
         step={props.step ?? 1}
-        style="border: none; inline-size: 1.2rem; appearance: textfield; padding: 0"
+        style="border: none; inline-size: 2em; appearance: textfield; padding: 0"
       />
       <button
         type="button"

@@ -1,7 +1,4 @@
-// The test must be located outside the jsx-server folder.
-
 import assert from "assert"
-import { renderToString } from "jsx-server/render-to-string"
 
 declare module "jsx-server/jsx-runtime" {
   // eslint-disable-next-line
@@ -36,7 +33,7 @@ const test = () => {
     </div>
   )
 
-  const html = renderToString(<FakeApp />)
+  const html = <FakeApp />
 
   // to test:
   // - string attribute
@@ -48,7 +45,7 @@ const test = () => {
   // - fragment
   const htmlOfScript = "&lt;script&gt;alert(&quot;hey&quot;)&lt;/script&gt;"
   const expected = `<div class="toto"><span hidden aria-hidden="true">Test ${htmlOfScript}</span><input min="3"><my-component likelihood="0.6"></my-component></div>`
-  assert.strictEqual(html, expected)
+  assert.strictEqual(html.toString(), expected)
   console.info("all good ✅")
   // Yey, that's it !
 }

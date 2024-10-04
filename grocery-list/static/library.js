@@ -5,17 +5,18 @@ export function getBySelector(selector, root = document) {
   throw new Error(`no element matches "${selector}"`)
 }
 
-export function fetchHtml({ controller = new AbortController(), ...init }) {
+export function fetchHtml({ url, ...init }) {
+  const controller = new AbortController()
   /** @type {URL | undefined} */
   let redirect
   const trigger = async () => {
-    const response = await fetch(init.url, {
+    const response = await fetch(url, {
       ...init,
       signal: controller.signal,
       credentials: "include",
       headers: { ...init.headers, Accept: "text/html" },
     })
-    if (response.url !== init.url.toString()) redirect = new URL(response.url)
+    if (response.url !== url.toString()) redirect = new URL(response.url)
     const html = await response.text()
     // Detect new custom elements to import here.
     // Or leave that responsibility to the caller.

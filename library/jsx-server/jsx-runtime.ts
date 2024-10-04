@@ -1,55 +1,138 @@
-/// <reference lib="dom" />
+// @ts-check
 
-// jsxImportSource needs 3 exports: `jsx`, `jsxs` and `jsxDEV`.
-// In our case they'll be the same.
+export type Component<Props> = (props: Props) => JSX.Element
+export type ComponentProps<T> = T extends Component<infer Props> ? Props : never
+
 export function jsx<Tag extends keyof JSX.IntrinsicElements>(
   tagOrComponent: Tag | Component<any>,
   props: JSX.IntrinsicElements[Tag],
-): JSX.JSXElement
+) {
+  if (typeof tagOrComponent === "function") return tagOrComponent(props)
 
-export const jsxs: typeof jsx
-export const jsxDEV: typeof jsx
+  const { children, ...attributes } = props
+  // @ts-ignore the tests pass.
+  const attributesAsHtml = serializeAttributes(attributes)
+  const openingTag = `<${[tagOrComponent, attributesAsHtml]
+    .filter(Boolean)
+    .join(" ")}>`
+  if (selfClosingTags.has(tagOrComponent)) return toHtml(openingTag)
 
-export type Component<Props> = (props: Props) => JSX.JSXElement
-export type ComponentProps<T> = T extends Component<infer Props> ? Props : never
+  const closingTag = `</${tagOrComponent}>`
+  const childList = childrenToListOfChild(children)
+  const childrenAsHtml = childList.map(primitiveChildToHtml).join("")
 
-export function Fragment(props: { children: JSX.Child[] }): JSX.JSXElement
-export function RawHtml(props: { children: string }): JSX.JSXElement
+  return toHtml(openingTag + childrenAsHtml + closingTag)
+}
+
+const toArray = <T>(value: T | T[]): T[] =>
+  Array.isArray(value) ? value : value ? [value] : []
+
+function childrenToListOfChild(children: JSX.Children) {
+  return toArray(children).flat() as JSX.Child[]
+}
+
+export { jsx as jsxDEV, jsx as jsxs }
+
+export function Fragment(props: { children: JSX.Children }): JSX.Element {
+  const children = childrenToListOfChild(props.children)
+  const markup = children.map(primitiveChildToHtml).join("")
+  return toHtml(markup)
+}
+
+export function RawHtml(props: { children: string }): JSX.Element {
+  return toHtml(props.children)
+}
+
+const selfClosingTags = new Set<keyof JSX.IntrinsicElements>([
+  "input",
+  "hr",
+  "br",
+  "img",
+  "link",
+  "meta",
+  "area",
+  "base",
+])
+
+type AttributeValue = string | number | boolean | null | undefined
+function serializeAttributes(
+  attributes: Record<string, AttributeValue>,
+): string {
+  // If EVER needed, this can be optimized using array.reduce.
+  return Object.entries(attributes ?? {})
+    .map(serializeAttribute)
+    .filter(Boolean)
+    .join(" ")
+}
+
+type AttributeEntry = [key: string, value: AttributeValue]
+
+function serializeAttribute([key, value]: AttributeEntry): string | undefined {
+  if (typeof value === "boolean" && key.startsWith("aria-"))
+    return `${key}="${value}"`
+  if (value === undefined || value === null) return undefined
+  if (value === true) return key
+  return `${key}="${value}"`
+}
+
+function primitiveChildToHtml(child: JSX.Child): JSX.Html {
+  if (child === undefined || child === null || typeof child === "boolean")
+    return toHtml("")
+  if (typeof child === "number") return toHtml(String(child))
+  child
+  if (typeof child === "string") return escapeHtml(String(child))
+  if ("_type" in child && child._type === "html") return child
+  console.error("unknown child:", child)
+  throw new Error("unknown child")
+}
+
+function escapeHtml(text: string): JSX.Html {
+  // TODO: May be optimized by using a regex approach with replace groups.
+  const html = text
+    .replaceAll("&", "&amp;") // careful, order matters !
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+  return toHtml(html)
+}
+
+function toHtml(html: string): JSX.Html {
+  return {
+    _type: "html",
+    toString() {
+      return html
+    },
+  }
+}
 
 /* eslint @typescript-eslint/no-unused-vars: off */
 /**
  * Adapted from Astro’s TypeScript definition from DefinitelyTyped.
  * @see https://github.com/withastro/astro/blob/main/packages/astro/astro-jsx.d.ts
  */
-declare namespace JSX {
-  // Our JSX element cannot be simple string otherwise we can't escape properly HTML.
-  export type Child = string | number | boolean | null | undefined | JSXElement
-  export type JSXElement =
-    | { type: "rawHtml"; children: string }
-    | { type: "fragment"; children: Child[] }
-    | {
-        type: "element"
-        tag: keyof JSX.IntrinsicElements
-        attributes: Record<string, any>
-        children: Child[]
-      }
-  export type Children = Child | Child[]
 
-  interface ElementChildrenAttribute {
+export namespace JSX {
+  export type Html = { _type: "html"; toString(): string }
+  export type Child = Html | string | number | boolean | null | undefined
+  export type Children = Child | Child[] | Children[]
+  export type Element = Html
+
+  export interface ElementChildrenAttribute {
     children: {}
   }
 
   /**
    * This interface can be augmented to register custom attributes.
    */
-  interface IntrinsicAttributes {
+  export interface IntrinsicAttributes {
     children?: Children
   }
 
   // This is an unfortunate use of `any`, but unfortunately we can't make a type that works for every framework
   // without importing every single framework's types (which comes with its own set of problems).
   // Using any isn't that bad here however as in Astro files the return type of a component isn't relevant in most cases
-  type Element = HTMLElement | any
+  // type Element = HTMLElement | any
 
   interface DOMAttributes {
     children?: Children
@@ -501,22 +584,22 @@ declare namespace JSX {
     | "treegrid"
     | "treeitem"
 
-  type CssProperty = keyof Omit<
-    CSSStyleDeclaration,
-    | "item"
-    | "setProperty"
-    | "removeProperty"
-    | "getPropertyValue"
-    | "getPropertyPriority"
-    | "parentRule"
-    | "length"
-    | "cssFloat"
-    | "cssText"
-    | typeof Symbol.iterator
-    | number
-  >
+  // export type CssProperty = keyof Omit<
+  //   CSSStyleDeclaration,
+  //   | "item"
+  //   | "setProperty"
+  //   | "removeProperty"
+  //   | "getPropertyValue"
+  //   | "getPropertyPriority"
+  //   | "parentRule"
+  //   | "length"
+  //   | "cssFloat"
+  //   | "cssText"
+  //   | typeof Symbol.iterator
+  //   | number
+  // >
 
-  interface HTMLAttributes extends AriaAttributes, DOMAttributes {
+  export interface HTMLAttributes extends AriaAttributes, DOMAttributes {
     // Standard HTML Attributes
     accesskey?: string | undefined | null
     autocapitalize?: string | undefined | null
@@ -1092,7 +1175,7 @@ declare namespace JSX {
   //   - "number | string"
   //   - "string"
   //   - union of string literals
-  interface SVGAttributes extends AriaAttributes, DOMAttributes {
+  export interface SVGAttributes extends AriaAttributes, DOMAttributes {
     // Attributes which are also defined in HTMLAttributes
     class?: string | undefined | null
     color?: string | undefined | null
@@ -1404,7 +1487,7 @@ declare namespace JSX {
   /**
    * This is the interface we will augment to add custom elements and web components.
    */
-  interface IntrinsicElements {
+  export interface IntrinsicElements {
     // HTML
     a: AnchorHTMLAttributes
     abbr: HTMLAttributes
@@ -1508,6 +1591,7 @@ declare namespace JSX {
     table: TableHTMLAttributes
     tbody: HTMLAttributes
     td: TdHTMLAttributes
+    template: HTMLAttributes
     textarea: TextareaHTMLAttributes
     tfoot: HTMLAttributes
     th: ThHTMLAttributes
