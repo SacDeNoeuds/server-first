@@ -18,6 +18,11 @@ export class FileSystemRepository<T extends Record<string, any>>
     return content ? (parseJson(content) as T) : undefined
   }
 
+  findByKey = async <Key extends keyof T>(key: Key, value: T[Key]) => {
+    const items = await this.list()
+    return items.find((item) => item[key] === value)
+  }
+
   set = async (id: string, item: T): Promise<T> => {
     const filePath = this.#getFilePath(id)
     await writeFile(filePath, stringifyJson(item), "utf-8")

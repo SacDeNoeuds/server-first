@@ -10,15 +10,22 @@ import { separateFailingOperations } from "./separate-failing-operations"
 export class JsonPatchRepository<T extends object> {
   constructor(private repo: Repository<JsonPatchHistory>) {}
 
+  #reconstruct = (
+    history: JsonPatchHistory,
+  ): { value: T; lastUpdate: Date } | undefined => {
+    const lastUpdate = history?.at(-1)?.date
+    if (!lastUpdate) return undefined
+    const value = reconstructFromHistory<T>(history)
+    return value && { value, lastUpdate }
+  }
+
   findById = async (
     id: string,
-  ): Promise<[T, Date] | [undefined, undefined]> => {
+  ): Promise<{ value: T; lastUpdate: Date } | undefined> => {
     const history = await this.repo.findById(id)
-    const lastUpdate = history?.at(-1)?.date
-    if (!lastUpdate) return [undefined, undefined]
-    const value = reconstructFromHistory<T>(history)
-    return value ? [value, lastUpdate] : [undefined, undefined]
+    return history && this.#reconstruct(history)
   }
+
   set = async (
     author: string,
     editedVersion: Date,
@@ -61,14 +68,12 @@ export class JsonPatchRepository<T extends object> {
     return reconstructed
   }
 
-  list = async (): Promise<T[]> => {
+  list = async (): Promise<Array<{ value: T; lastUpdate: Date }>> => {
     const histories = await this.repo.list()
     const isDefined = Boolean as unknown as <T>(
       value: T | undefined,
     ) => value is T
-    return histories
-      .map((history) => reconstructFromHistory<T>(history))
-      .filter(isDefined)
+    return histories.map(this.#reconstruct).filter(isDefined)
   }
 
   remove = async (id: string): Promise<void> => {

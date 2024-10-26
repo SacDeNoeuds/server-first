@@ -1,5 +1,19 @@
 // import { computeJsonPatch } from "./get-patch";
 
+// broken !
+// console.dir({
+//   map: computePatch(
+//     new Map([
+//       ["a", 12],
+//       ["b", 42],
+//     ]),
+//     new Map([
+//       ["a", 42],
+//       ["b", 62],
+//     ]),
+//   ),
+// })
+
 // function test() {
 //   const original = {
 //     email: "thomas",

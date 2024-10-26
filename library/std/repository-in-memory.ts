@@ -3,6 +3,12 @@ import type { Repository } from "./repository"
 export class InMemoryRepository<T> implements Repository<T> {
   readonly store = new Map<string, T>()
 
+  findByKey = async <Key extends keyof T>(key: Key, value: T[Key]) => {
+    for (const item of this.store.values()) {
+      if (item[key] === value) return item
+    }
+    return undefined
+  }
   findById = async (id: string) => {
     return this.store.get(id) ?? undefined
   }

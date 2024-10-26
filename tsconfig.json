@@ -20,12 +20,9 @@
     "rootDir": "./",
     "outDir": "./dist",
     "paths": {
-      "jsx-server/*": [
-        "./library/jsx-server/*"
-      ],
-      "@/*": [
-        "./library/*"
-      ]
+      "jsx-server/*": ["./library/jsx-server/*"],
+      "@/*": ["./library/*"],
+      "@grocery-list/*": ["./grocery-list/*"]
     },
     "typeRoots": [
       "./node_modules/@types",
