@@ -1,1 +1,1 @@
-export * as authentication from "./main"
+export * as authentication from "./domain"

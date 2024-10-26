@@ -2,7 +2,7 @@ import { BadRequest } from "@/std/http-error"
 import { redirectTo } from "@/std/server-handler"
 import { DateFromString } from "@/superstruct"
 import { coerce, create, number, object, string, trimmed } from "superstruct"
-import { useCase } from "../../../domain/use-case"
+import { useCase } from "../../../domain"
 import { withGroceryList } from "../middleware/with-grocery-list"
 
 export const addGroceryListItem = withGroceryList(async (ctx) => {

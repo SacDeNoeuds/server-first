@@ -1,1 +1,1 @@
-export * as groceryList from "./mod"
+export * as groceryList from "./domain"

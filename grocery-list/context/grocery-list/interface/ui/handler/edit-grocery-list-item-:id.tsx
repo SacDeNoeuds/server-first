@@ -1,7 +1,7 @@
 import { BadRequest } from "@/std/http-error"
 import { redirectTo } from "@/std/server-handler"
 import { DateFromString } from "@/superstruct"
-import { useCase } from "@grocery-list/context/grocery-list/domain/use-case"
+import { useCase } from "@grocery-list/context/grocery-list/domain"
 import { coerce, create, number, object, string, trimmed } from "superstruct"
 import { withGroceryList } from "../middleware/with-grocery-list"
 

@@ -1,5 +1,5 @@
 import { JsxHandler, redirectTo } from "@/std/server-handler"
-import { useCase } from "../../domain/use-case"
+import { useCase } from "../../domain"
 import { AuthForm } from "./components/auth-form"
 import { AuthPage } from "./components/auth-page"
 

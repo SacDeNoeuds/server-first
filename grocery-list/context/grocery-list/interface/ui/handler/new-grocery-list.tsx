@@ -1,6 +1,6 @@
 import { redirectTo } from "@/std/server-handler"
 import { withAuthWall } from "@grocery-list/context/authentication/interface/ui"
-import { useCase } from "@grocery-list/context/grocery-list/domain/use-case"
+import { useCase } from "@grocery-list/context/grocery-list/domain"
 import { create, object, string, trimmed } from "superstruct"
 import { NewGroceryListForm } from "../components/new-grocery-list-form"
 import { PageLayout } from "../components/page-layout"

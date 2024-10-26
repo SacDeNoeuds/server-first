@@ -2,9 +2,9 @@ import { BadRequest } from "@/std/http-error"
 import type { Handler } from "@/std/server-handler"
 import type { authentication } from "@grocery-list/context/authentication"
 import { withAuthWall } from "@grocery-list/context/authentication/interface/ui"
+import { useCase } from "@grocery-list/context/grocery-list/domain"
 import type { GroceryList } from "@grocery-list/context/grocery-list/domain/grocery-list"
 import type { GroceryListId } from "@grocery-list/context/grocery-list/domain/grocery-list/grocery-list"
-import { useCase } from "@grocery-list/context/grocery-list/domain/use-case"
 import { NotFoundPage } from "../components/not-found-page"
 
 export const withGroceryList = (
