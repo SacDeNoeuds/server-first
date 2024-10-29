@@ -1,5 +1,5 @@
-import { BadRequest } from "@/std/http-error"
-import { redirectTo } from "@/std/server-handler"
+import { BadRequest } from "@/std/web/http-error"
+import { redirectTo } from "@/std/web/server-handler"
 import { authentication } from "@grocery-list/context/authentication"
 import { useCase } from "@grocery-list/context/grocery-list/domain"
 import { GroceryListNotFound } from "@grocery-list/context/grocery-list/domain/grocery-list"

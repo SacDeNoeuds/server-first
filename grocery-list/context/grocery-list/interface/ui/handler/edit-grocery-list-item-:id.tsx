@@ -1,35 +1,39 @@
-import { BadRequest } from "@/std/http-error"
-import { redirectTo } from "@/std/server-handler"
-import { DateFromString } from "@/superstruct"
+import { std } from "@/std"
+import { schema as S } from "@/std/schema"
+import { BadRequest } from "@/std/web/http-error"
+import { redirectTo } from "@/std/web/server-handler"
 import { useCase } from "@grocery-list/context/grocery-list/domain"
-import { coerce, create, number, object, string, trimmed } from "superstruct"
+import {
+  ItemName,
+  ItemQuantity,
+} from "@grocery-list/context/grocery-list/domain/grocery-list"
 import { withGroceryList } from "../middleware/with-grocery-list"
 
 export const editGroceryListItem = withGroceryList(async (ctx) => {
-  const Payload = object({
-    previousName: string(),
-    name: trimmed(string()),
-    quantity: coerce(number(), string(), Number),
-    editedVersion: DateFromString,
+  const Payload = S.object({
+    previousName: ItemName,
+    name: ItemName,
+    quantity: std.pipe(S.numberFromString, S.compose(ItemQuantity)),
+    editedVersion: S.date,
   })
-  try {
-    const body = create(ctx.body, Payload)
-    await useCase.editGroceryListItem({
-      account: ctx.account,
-      editedVersion: body.editedVersion,
-      groceryList: ctx.groceryList,
-      previousName: body.previousName,
-      item: {
-        name: body.name,
-        quantity: body.quantity,
-      },
-    })
-
-    const url = new URL(ctx.getHeader("referer") ?? "/", ctx.url)
-    return redirectTo(url)
-  } catch (cause) {
+  const body = Payload.decode(ctx.body)
+  if (S.isFailure(body)) {
     console.info(ctx.body)
-    console.error(cause)
-    return BadRequest({ message: "failed to decode body", cause })
+    console.error(body)
+    return BadRequest({ message: "failed to decode body", cause: body })
   }
+
+  await useCase.editGroceryListItem({
+    account: ctx.account,
+    editedVersion: body.value.editedVersion,
+    groceryList: ctx.groceryList,
+    previousName: body.value.previousName,
+    item: {
+      name: body.value.name,
+      quantity: body.value.quantity,
+    },
+  })
+
+  const url = new URL(ctx.getHeader("referer") ?? "/", ctx.url)
+  return redirectTo(url)
 })

@@ -1,6 +1,7 @@
 import type { authentication } from "@grocery-list/context/authentication"
 import {
   GroceryList,
+  GroceryListApi,
   GroceryListNotFound,
   type GroceryListRepository,
 } from "../grocery-list"
@@ -17,7 +18,7 @@ export const JoinGroceryList =
   async (input) => {
     const groceryList = await repository.groceryList.find(input.groceryListId)
     if (!groceryList) return new GroceryListNotFound(input.groceryListId)
-    const nextGroceryList = GroceryList.join({
+    const nextGroceryList = GroceryListApi.join({
       groceryList,
       participant: input.account.id,
     })

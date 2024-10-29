@@ -1,9 +1,4 @@
-import {
-  defineUseCases,
-  UseCasesProxy,
-  type DepsOf,
-  type UseCasesOf,
-} from "@/std/use-cases"
+import { defineUseCases, type DepsOf, type UseCasesOf } from "@/std/use-cases"
 import { Authenticate } from "./authenticate"
 import { SignInOrUp } from "./sign-in-or-up"
 
@@ -12,9 +7,9 @@ const useCasesToMake = {
   signInOrUp: SignInOrUp,
 }
 
-export const useCase = UseCasesProxy<AuthUseCases>("AuthUseCases")
+export const useCase = {} as AuthUseCases
 
 export type AuthUseCases = UseCasesOf<typeof useCasesToMake>
 export function registerUseCases(deps: DepsOf<typeof useCasesToMake>) {
-  Object.assign(useCase, defineUseCases(useCasesToMake, deps))
+  defineUseCases(useCase, useCasesToMake, deps)
 }

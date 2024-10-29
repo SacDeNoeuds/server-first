@@ -1,7 +1,7 @@
-import { HttpError, NotFound } from "@/std/http-error"
-import { MimeType, mimeTypeFromExtension } from "@/std/mime-type"
-import { isRedirect, type Handler } from "@/std/server-handler"
-import { tryOr } from "@/std/try-or"
+import { std } from "@/std"
+import { HttpError, NotFound } from "@/std/web/http-error"
+import { MimeType, mimeTypeFromExtension } from "@/std/web/mime-type"
+import { isRedirect, type Handler } from "@/std/web/server-handler"
 import {
   defineEventHandler,
   getCookie,
@@ -18,9 +18,9 @@ import path from "node:path"
 import { parseFormEncodedUrl } from "./parse-form-encoded-url"
 
 function ResponseFromHttpError(error: HttpError) {
-  const body = tryOr(
-    () => JSON.stringify(error),
-    () => JSON.stringify({ message: error.message }),
+  const body = std.tryOr(
+    () => std.json.stringify(error),
+    () => std.json.stringify({ message: error.message }),
   )
   return new Response(body, {
     status: error.code,
@@ -66,50 +66,58 @@ export function DefineHandler(config: HandlerConfig) {
         )
 
       let statusCode = 200
-      const result = await handler({
-        setStatus: (code) => {
-          statusCode = code
-        },
-        method,
-        url: new URL(
-          event.path,
-          getHeader(event, "referer") ||
-            getHrefFromHost(config.protocol, getHeader(event, "Host")) ||
-            "http://localhost",
-        ),
-        params: event.context.params ?? {},
-        body:
-          method === "post"
-            ? parseFormEncodedUrl(await readRawBody(event))
-            : undefined,
-        getHeader: (name) => getHeader(event, name),
-        setHeader: (name, value) => setHeader(event, name, value),
-        getCookie: (name) => getCookie(event, name),
-        setCookie: (name, value, options) =>
-          setCookie(
-            event,
-            name,
-            value,
-            options && {
-              domain: options.domain,
-              httpOnly: options.httpOnly,
-              maxAge: options.maxAgeInSeconds,
-              path: options.path,
-              sameSite: options.sameSite,
-              secure: options.secure,
-            },
+      try {
+        const result = await handler({
+          setStatus: (code) => {
+            statusCode = code
+          },
+          method,
+          url: new URL(
+            event.path,
+            getHeader(event, "referer") ||
+              getHrefFromHost(config.protocol, getHeader(event, "Host")) ||
+              "http://localhost",
           ),
-      })
+          params: event.context.params ?? {},
+          body:
+            method === "post"
+              ? parseFormEncodedUrl(await readRawBody(event))
+              : undefined,
+          getHeader: (name) => getHeader(event, name),
+          setHeader: (name, value) => setHeader(event, name, value),
+          getCookie: (name) => getCookie(event, name),
+          setCookie: (name, value, options) =>
+            setCookie(
+              event,
+              name,
+              value,
+              options && {
+                domain: options.domain,
+                httpOnly: options.httpOnly,
+                maxAge: options.maxAgeInSeconds,
+                path: options.path,
+                sameSite: options.sameSite,
+                secure: options.secure,
+              },
+            ),
+        })
 
-      if (result instanceof HttpError) return ResponseFromHttpError(result)
+        if (result instanceof HttpError) {
+          console.dir(result, { depth: null })
+          return ResponseFromHttpError(result)
+        }
 
-      if (isRedirect(result))
-        return sendRedirect(event, result.location.href, result.code)
+        if (isRedirect(result))
+          return sendRedirect(event, result.location.href, result.code)
 
-      return new Response(result.body, {
-        status: statusCode,
-        headers: { "Content-Type": result.type },
-      })
+        return new Response(result.body, {
+          status: statusCode,
+          headers: { "Content-Type": result.type },
+        })
+      } catch (error) {
+        if (error instanceof Error) console.error(error.stack)
+        throw error
+      }
     })
   }
 }

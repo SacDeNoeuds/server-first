@@ -1,7 +1,11 @@
 import { diff, jsonPatchPathConverter } from "just-diff"
 import type { JsonPatch } from "./operation"
 
-type DiffAble = unknown[] | Record<PropertyKey, unknown> | null | undefined
+export type DiffAble =
+  | unknown[]
+  | Record<PropertyKey, unknown>
+  | null
+  | undefined
 export const computePatch = (
   original: DiffAble,
   updated: DiffAble,

@@ -1,5 +1,9 @@
 import type { authentication } from "@grocery-list/context/authentication"
-import { GroceryList, type GroceryListItem } from "../grocery-list/grocery-list"
+import {
+  GroceryList,
+  GroceryListApi,
+  type GroceryListItem,
+} from "../grocery-list/grocery-list"
 import type { GroceryListRepository } from "../grocery-list/grocery-list-repo"
 
 export type AddGroceryListItem = (input: {
@@ -12,7 +16,7 @@ export type AddGroceryListItem = (input: {
 export const AddGroceryListItem =
   (repository: { groceryList: GroceryListRepository }): AddGroceryListItem =>
   async (input) => {
-    const nextGroceryList = GroceryList.addItem({
+    const nextGroceryList = GroceryListApi.addItem({
       groceryList: input.groceryList,
       item: input.item,
     })

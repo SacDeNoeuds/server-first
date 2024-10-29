@@ -1,7 +1,8 @@
 import { coerce, date, refine, string } from "superstruct"
 
+const dateFromString = coerce(date(), string(), (value) => new Date(value))
 export const DateFromString = refine(
-  coerce(date(), string(), (string) => new Date(string)),
+  dateFromString,
   "DateFromString",
   (value) => !Number.isNaN(value.getTime()),
 )

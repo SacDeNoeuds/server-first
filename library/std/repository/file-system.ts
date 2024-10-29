@@ -1,21 +1,24 @@
 import { readFile, readdir, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
-import { parseJson, stringifyJson } from "./json"
-import type { Repository } from "./repository"
+import { json } from "../core"
+import { schema as S } from "../schema"
+import type { Repository } from "./definition"
 
-type Init = {
+type Init<T> = {
   directory: string
+  schema: S.Schema<T>
 }
 
 export class FileSystemRepository<T extends Record<string, any>>
   implements Repository<T>
 {
-  constructor(private options: Init) {}
+  constructor(private options: Init<T>) {}
 
-  findById = async (id: string) => {
+  findById = async (id: string | String) => {
     const filePath = this.#getFilePath(id)
     const content = await readFile(filePath, "utf-8").catch(() => undefined)
-    return content ? (parseJson(content) as T) : undefined
+    if (!content) return undefined
+    return S.unsafeDecode(json.parse(content), this.options.schema)
   }
 
   findByKey = async <Key extends keyof T>(key: Key, value: T[Key]) => {
@@ -23,9 +26,9 @@ export class FileSystemRepository<T extends Record<string, any>>
     return items.find((item) => item[key] === value)
   }
 
-  set = async (id: string, item: T): Promise<T> => {
+  set = async (id: string | String, item: T): Promise<T> => {
     const filePath = this.#getFilePath(id)
-    await writeFile(filePath, stringifyJson(item), "utf-8")
+    await writeFile(filePath, json.stringify(item), "utf-8")
     return item
   }
 
@@ -38,7 +41,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     return Promise.all(promises)
   }
 
-  remove = async (id: string) => {
+  remove = async (id: string | String) => {
     const filePath = this.#getFilePath(id)
     try {
       await rm(filePath)
@@ -47,7 +50,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     }
   }
 
-  #getFilePath(id: string) {
-    return path.join(this.options.directory, id)
+  #getFilePath(id: string | String) {
+    return path.join(this.options.directory, id.valueOf())
   }
 }

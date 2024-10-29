@@ -1,7 +1,7 @@
 import type { JSX } from "jsx-server/jsx-runtime"
+import { object } from "../core"
 import type { CookieOptions } from "./cookie"
 import { HttpError } from "./http-error"
-import { isObject } from "./is-object"
 import { MimeType } from "./mime-type"
 
 // Let's just add what we will use for now.
@@ -14,7 +14,7 @@ export type Redirect = {
   location: URL
 }
 export const isRedirect = (value: unknown): value is Redirect => {
-  return isObject(value) && (value.code === 301 || value.code === 302)
+  return object.isObject(value) && (value.code === 301 || value.code === 302)
 }
 export const redirectTo = (location: URL): Redirect => ({
   code: 302,

@@ -1,14 +1,14 @@
-export class HttpError {
-  readonly code!: number
+import { TaggedClass } from "../branded-types"
+
+export class HttpError extends TaggedClass("HttpError")<{
+  readonly code: number
   readonly message?: string
   readonly cause?: unknown
-  constructor(init: HttpError) {
-    Object.assign(this, init)
-  }
-
-  static fromCode = (code: number) => (init?: Omit<HttpError, "code">) => {
-    return new HttpError({ code, ...init })
-  }
+}> {
+  static fromCode =
+    (code: number) => (init?: Pick<HttpError, "message" | "cause">) => {
+      return new HttpError({ code, ...init })
+    }
 }
 
 export const BadRequest = HttpError.fromCode(400)

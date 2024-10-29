@@ -1,15 +1,20 @@
 import type { authentication } from "@grocery-list/context/authentication"
-import { GroceryList, type GroceryListRepository } from "../grocery-list"
+import {
+  GroceryList,
+  GroceryListApi,
+  ListName,
+  type GroceryListRepository,
+} from "../grocery-list"
 
 export type CreateGroceryList = (input: {
   account: authentication.Account
-  name: string
+  name: ListName
 }) => Promise<Omit<GroceryList, "lastUpdate">>
 
 export const CreateGroceryList =
   (repository: { groceryList: GroceryListRepository }): CreateGroceryList =>
   async (input) => {
-    const groceryList = GroceryList.create({
+    const groceryList = GroceryListApi.create({
       name: input.name,
       participant: input.account.id,
     })

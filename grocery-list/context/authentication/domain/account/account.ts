@@ -1,11 +1,17 @@
-import type { Opaque } from "@/std/types"
+import { std } from "@/std"
+import { schema as S } from "@/std/schema"
 
-export type AccountId = Opaque<string>
-export const AccountId = {
-  fromString: (id: string) => id as AccountId,
-}
+export type AccountId = std.Tagged<"AccountId", string>
+export const AccountId = std.EntityValue<AccountId>("AccountId", {
+  schema: S.string,
+})
 
-export type Account = {
+export type Account = std.Kinded<{
+  _kind: "Account"
   id: AccountId
-  email: string
-}
+  email: std.Email
+}>
+export const Account = std.EntityObject<Account>("Account", {
+  id: AccountId,
+  email: std.Email,
+})

@@ -1,19 +1,15 @@
 import type { JsonPatchRepository } from "@/json-patch/repository"
-import type {
-  GroceryList,
-  GroceryListItem,
-  GroceryListParticipant,
+import {
+  GroceryListApi,
+  type GroceryList,
+  type GroceryListParticipant,
 } from "./grocery-list"
 
-type StoredValue = Omit<GroceryList, "lastUpdate" | "items"> & {
-  items: Record<GroceryListItem["name"], Omit<GroceryListItem, "name">>
-}
 export class GroceryListRepository {
-  constructor(private repo: JsonPatchRepository<StoredValue>) {}
+  constructor(private repo: JsonPatchRepository<GroceryList>) {}
 
-  #revive = (item: { value: StoredValue; lastUpdate: Date }): GroceryList => ({
+  #revive = (item: { value: GroceryList; lastUpdate: Date }): GroceryList => ({
     ...item.value,
-    items: new Map(Object.entries(item.value.items)),
     lastUpdate: item.lastUpdate,
   })
 
@@ -24,7 +20,7 @@ export class GroceryListRepository {
   ): Promise<void> => {
     await this.repo.set(author, at, groceryList.id, {
       ...groceryList,
-      items: Object.fromEntries(groceryList.items),
+      lastUpdate: at,
     })
   }
 
@@ -42,7 +38,7 @@ export class GroceryListRepository {
   ): Promise<GroceryList[]> => {
     const list = await this.repo.list()
     return list
-      .filter((item) => item.value.participants.has(participant))
+      .filter((item) => GroceryListApi.hasParticipant(item.value, participant))
       .map(this.#revive)
   }
 }

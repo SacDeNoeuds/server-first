@@ -1,28 +1,50 @@
-import { GroceryList, GroceryListId } from "./grocery-list"
+import {
+  GroceryList,
+  GroceryListApi,
+  GroceryListId,
+  ItemName,
+  ItemQuantity,
+  ListName,
+} from "./grocery-list"
 
-const make = (parts?: Partial<GroceryList>): GroceryList => ({
-  id: GroceryListId.fromString("toto"),
-  name: "Le chateau",
-  participants: new Set(),
-  items: new Map(),
-  lastUpdate: new Date(),
-  ...parts,
-})
+const make = (parts?: Partial<GroceryList>) =>
+  GroceryList({
+    id: GroceryListId("toto"),
+    name: ListName("Le chateau"),
+    participants: new Set(),
+    items: new Map(),
+    lastUpdate: new Date(),
+    ...parts,
+  })
 
 const original = make({
-  items: new Map([["bread", { quantity: 2 }]]),
+  items: new Map([[ItemName("bread"), { quantity: ItemQuantity(2) }]]),
 })
 console.dir(
   {
     original,
-    updated: GroceryList.editItem({
+    updated: GroceryListApi.editItem({
       groceryList: original,
-      previousName: "bread",
-      item: { name: "bread", quantity: 3 },
+      previousName: ItemName("bread"),
+      item: { name: ItemName("bread"), quantity: ItemQuantity(3) },
     }),
-    added: GroceryList.addItem({
+    added: GroceryListApi.addItem({
       groceryList: original,
-      item: { name: "butternut", quantity: 10 },
+      item: { name: ItemName("butternut"), quantity: ItemQuantity(10) },
+    }),
+  },
+  { depth: null },
+)
+
+console.dir(
+  {
+    decoded: GroceryList.decode({
+      _kind: "GroceryList",
+      id: "f6s46bshkuj",
+      items: new Map(),
+      name: "Le Teau-Châ",
+      lastUpdate: new Date("2024-10-29T14:10:10.463Z"),
+      participants: new Set(["y7oyi3d3kv8"]),
     }),
   },
   { depth: null },

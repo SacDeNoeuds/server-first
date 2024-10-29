@@ -1,5 +1,5 @@
 import assert from "assert"
-import { parseJson, stringifyJson } from "./json"
+import { parse, stringify } from "./json"
 
 function test() {
   const demo = {
@@ -17,7 +17,7 @@ function test() {
     regexp: /^hello(?:(world|42))$/g,
   }
 
-  assert.deepStrictEqual(demo, parseJson(stringifyJson(demo)))
+  assert.deepStrictEqual(demo, parse(stringify(demo)))
   console.info("All good ✅")
 }
 test()

@@ -1,4 +1,4 @@
-import { JsxHandler } from "@/std/server-handler"
+import { JsxHandler } from "@/std/web/server-handler"
 import { Html } from "@grocery-list/shared/ui/kit/html"
 
 const styles = /* css */ `

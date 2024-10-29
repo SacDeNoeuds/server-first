@@ -1,5 +1,5 @@
 import assert from "assert"
-import { isObject } from "./is-object"
+import { isObject } from "./object"
 
 function test() {
   assert.strictEqual(isObject({}), true, "empty record is a record")

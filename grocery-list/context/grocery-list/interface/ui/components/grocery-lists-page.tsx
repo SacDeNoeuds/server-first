@@ -6,7 +6,6 @@ interface Props {
   groceryLists: GroceryList[]
 }
 export function GroceryListsPage(props: Props) {
-  const itemsCount = (list: GroceryList) => Object.keys(list.items).length
   const formatter = new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "short",
     timeStyle: "short",
@@ -23,7 +22,7 @@ export function GroceryListsPage(props: Props) {
               {props.groceryLists.map((groceryList) => (
                 <li class="flex gap-m justify-between">
                   <a href={`/grocery-list/${groceryList.id}`}>
-                    {groceryList.name} ({itemsCount(groceryList)} items)
+                    {groceryList.name} ({groceryList.items.size} items)
                   </a>
                   <span>
                     Last Update: {formatter.format(groceryList.lastUpdate)}

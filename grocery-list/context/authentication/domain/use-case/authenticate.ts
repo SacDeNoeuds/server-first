@@ -1,6 +1,7 @@
+import type { std } from "@/std"
 import type { Account, AccountRepository } from "../account"
 
-export type Authenticate = (email: string) => Promise<Account | undefined>
+export type Authenticate = (email: std.Email) => Promise<Account | undefined>
 export const Authenticate =
   (repository: { account: AccountRepository }): Authenticate =>
   async (email) => {

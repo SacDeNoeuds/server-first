@@ -78,9 +78,11 @@ function serializeAttribute([key, value]: AttributeEntry): string | undefined {
 function primitiveChildToHtml(child: JSX.Child): JSX.Html {
   if (child === undefined || child === null || typeof child === "boolean")
     return toHtml("")
-  if (typeof child === "number") return toHtml(String(child))
+  if (typeof child === "number" || child instanceof Number)
+    return toHtml(String(child))
   child
-  if (typeof child === "string") return escapeHtml(String(child))
+  if (typeof child === "string" || child instanceof String)
+    return escapeHtml(String(child))
   if ("_type" in child && child._type === "html") return child
   console.error("unknown child:", child)
   throw new Error("unknown child")

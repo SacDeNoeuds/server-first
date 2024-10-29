@@ -1,9 +1,4 @@
-import {
-  defineUseCases,
-  UseCasesProxy,
-  type DepsOf,
-  type UseCasesOf,
-} from "@/std/use-cases"
+import { defineUseCases, type DepsOf, type UseCasesOf } from "@/std/use-cases"
 import { AddGroceryListItem } from "./add-grocery-list-item"
 import { CreateGroceryList } from "./create-grocery-list"
 import { EditGroceryListItem } from "./edit-grocery-list-item"
@@ -26,8 +21,8 @@ const useCasesToMake = {
 
 type GroceryListUseCases = UseCasesOf<typeof useCasesToMake>
 
-export const useCase = UseCasesProxy<GroceryListUseCases>("GroceryListUseCases")
+export const useCase = {} as GroceryListUseCases
 
 export function registerUseCases(deps: DepsOf<typeof useCasesToMake>) {
-  Object.assign(useCase, defineUseCases(useCasesToMake, deps))
+  defineUseCases(useCase, useCasesToMake, deps)
 }

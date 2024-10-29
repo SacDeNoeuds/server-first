@@ -1,17 +1,22 @@
 import type { authentication } from "@grocery-list/context/authentication"
-import { GroceryList, type GroceryListRepository } from "../grocery-list"
+import {
+  GroceryList,
+  GroceryListApi,
+  ItemName,
+  type GroceryListRepository,
+} from "../grocery-list"
 
 export type TickGroceryListItem = (input: {
   account: authentication.Account
   groceryList: GroceryList
   editedVersion: Date
-  itemName: string
+  itemName: ItemName
 }) => Promise<Omit<GroceryList, "lastUpdate">>
 
 export const TickGroceryListItem =
   (repository: { groceryList: GroceryListRepository }): TickGroceryListItem =>
   async (input) => {
-    const nextGroceryList = GroceryList.tickItem({
+    const nextGroceryList = GroceryListApi.tickItem({
       groceryList: input.groceryList,
       itemName: input.itemName,
     })
