@@ -1,9 +1,5 @@
 import type { JsonPatchRepository } from "@/json-patch/repository"
-import {
-  GroceryListApi,
-  type GroceryList,
-  type GroceryListParticipant,
-} from "./grocery-list"
+import { type GroceryList, type GroceryListParticipant } from "./grocery-list"
 
 export class GroceryListRepository {
   constructor(private repo: JsonPatchRepository<GroceryList>) {}
@@ -38,7 +34,7 @@ export class GroceryListRepository {
   ): Promise<GroceryList[]> => {
     const list = await this.repo.list()
     return list
-      .filter((item) => GroceryListApi.hasParticipant(item.value, participant))
+      .filter((item) => item.value.participants.has(participant))
       .map(this.#revive)
   }
 }

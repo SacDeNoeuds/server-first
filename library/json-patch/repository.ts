@@ -44,7 +44,7 @@ export class JsonPatchRepository<T extends object> {
     )
   }
 
-  async #getUnRevivedHistory(id: string | String) {
+  async #getUnRevivedHistory(id: string) {
     const history = await this.repo.findById(id)
     return (
       history &&
@@ -53,7 +53,7 @@ export class JsonPatchRepository<T extends object> {
   }
 
   findById = async (
-    id: string | String,
+    id: string,
   ): Promise<{ value: T; lastUpdate: Date } | undefined> => {
     const history = await this.#getUnRevivedHistory(id)
     return history && this.#reconstruct(history)

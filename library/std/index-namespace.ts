@@ -1,13 +1,13 @@
 export {
+  BrandedEntity,
   Email,
-  EntityObject,
-  EntityValue,
-  Kinded,
   Tagged,
   TaggedClass,
-  type KindOf,
-  type KindedShape,
-  type TagOf,
+  TaggedEntity,
+  type Branded,
+  type TagOfBranded,
+  type TaggedShape,
+  type ValueOfBranded,
   type ValueOfTagged,
 } from "./branded-types"
 export * from "./core"

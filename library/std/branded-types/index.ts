@@ -1,9 +1,13 @@
+export type {
+  Branded,
+  TagOf as TagOfBranded,
+  ValueOf as ValueOfBranded,
+} from "./branded"
 export { Email } from "./email"
-export { EntityObject, EntityValue } from "./entity"
-export { Kinded, type KindOf, type KindedShape } from "./kinded"
+export { BrandedEntity, TaggedEntity } from "./entity"
 export {
   Tagged,
   TaggedClass,
-  type TagOf,
-  type ValueOf as ValueOfTagged,
+  type TaggedShape,
+  type ValueOfTagged,
 } from "./tagged"

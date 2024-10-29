@@ -9,12 +9,12 @@ export class InMemoryRepository<T> implements Repository<T> {
     }
     return undefined
   }
-  findById = async (id: string | String) => {
-    return this.store.get(id.valueOf()) ?? undefined
+  findById = async (id: string) => {
+    return this.store.get(id) ?? undefined
   }
 
-  set = async (id: string | String, item: T): Promise<T> => {
-    this.store.set(id.valueOf(), item)
+  set = async (id: string, item: T): Promise<T> => {
+    this.store.set(id, item)
     return item
   }
 
@@ -22,7 +22,7 @@ export class InMemoryRepository<T> implements Repository<T> {
     return [...this.store.values()]
   }
 
-  remove = async (id: string | String) => {
-    this.store.delete(id.valueOf())
+  remove = async (id: string) => {
+    this.store.delete(id)
   }
 }

@@ -11,7 +11,7 @@ export class AccountRepository {
     const account =
       existingAccount ||
       (await this.repo.set(
-        email.valueOf(),
+        email,
         Account({
           id: AccountId(StringId()),
           email,

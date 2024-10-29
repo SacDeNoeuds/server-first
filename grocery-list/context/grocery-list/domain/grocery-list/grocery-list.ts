@@ -1,28 +1,27 @@
 import { std } from "@/std"
-import { EntityValue, type Tagged } from "@/std/branded-types"
 import { schema as S } from "@/std/schema"
 import { StringId } from "@/std/string-id"
 import { authentication } from "@grocery-list/context/authentication"
 
-export type GroceryListId = Tagged<"GroceryListId", string>
-export const GroceryListId = EntityValue<GroceryListId>("GroceryListId", {
+export type GroceryListId = std.Branded<string, "GroceryListId">
+export const GroceryListId = std.BrandedEntity<GroceryListId>("GroceryListId", {
   schema: S.string,
 })
 
 export type GroceryListParticipant = authentication.AccountId
 export const GroceryListParticipant = authentication.AccountId
 
-export type ListName = std.Tagged<"ListName", string>
-export const ListName = std.EntityValue<ListName>("ListName", {
+export type ListName = std.Branded<string, "ListName">
+export const ListName = std.BrandedEntity<ListName>("ListName", {
   schema: S.string,
 })
 
-export type ItemName = std.Tagged<"ItemName", string>
-export const ItemName = std.EntityValue<ItemName>("ItemName", {
+export type ItemName = std.Branded<string, "ItemName">
+export const ItemName = std.BrandedEntity<ItemName>("ItemName", {
   schema: S.string,
 })
-export type ItemQuantity = std.Tagged<"ItemQuantity", number>
-export const ItemQuantity = std.EntityValue<ItemQuantity>("ItemQuantity", {
+export type ItemQuantity = std.Branded<number, "ItemQuantity">
+export const ItemQuantity = std.BrandedEntity<ItemQuantity>("ItemQuantity", {
   schema: S.number,
 })
 
@@ -37,15 +36,15 @@ export const GroceryListItems = S.Map<GroceryListItems>(
   S.object({ quantity: ItemQuantity }),
 )
 
-export type GroceryList = std.Kinded<{
-  _kind: "GroceryList"
+export type GroceryList = std.Tagged<{
+  _tag: "GroceryList"
   id: GroceryListId
   name: ListName
   items: GroceryListItems
   lastUpdate: Date
   participants: Set<GroceryListParticipant>
 }>
-export const GroceryList = std.EntityObject<GroceryList>("GroceryList", {
+export const GroceryList = std.TaggedEntity<GroceryList>("GroceryList", {
   id: GroceryListId,
   name: ListName,
   items: GroceryListItems,
@@ -59,7 +58,6 @@ export const GroceryListApi = {
   editItem,
   tickItem,
   join,
-  hasParticipant,
 }
 
 function create(input: {
@@ -112,13 +110,4 @@ function tickItem(input: { groceryList: GroceryList; itemName: ItemName }) {
   nextItems.delete(input.itemName)
   const { lastUpdate: _, ...nextGroceryList } = input.groceryList
   return Object.assign(nextGroceryList, { items: nextItems })
-}
-
-function hasParticipant(
-  groceryList: GroceryList,
-  participant: GroceryListParticipant,
-): boolean {
-  return [...groceryList.participants]
-    .map((p) => p.valueOf())
-    .includes(participant.valueOf())
 }

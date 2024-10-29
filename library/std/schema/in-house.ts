@@ -1,4 +1,4 @@
-import { TaggedClass } from "../branded-types/tagged"
+import { TaggedClass } from "../branded-types/tagged-weird-idea-I-keep-for-history"
 import * as core from "../core"
 
 export interface Issue {
@@ -192,7 +192,7 @@ export function literal<L extends [Literal, ...Literal[]]>(...literals: L) {
 }
 
 export function instanceOf<T>(constructor: new () => T) {
-  return fromPredicate("instance of", core.isInstanceOf(constructor))
+  return fromPredicate(constructor.name, core.isInstanceOf(constructor))
 }
 
 export const date = core.pipe(

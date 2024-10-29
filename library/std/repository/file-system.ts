@@ -14,7 +14,7 @@ export class FileSystemRepository<T extends Record<string, any>>
 {
   constructor(private options: Init<T>) {}
 
-  findById = async (id: string | String) => {
+  findById = async (id: string) => {
     const filePath = this.#getFilePath(id)
     const content = await readFile(filePath, "utf-8").catch(() => undefined)
     if (!content) return undefined
@@ -26,7 +26,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     return items.find((item) => item[key] === value)
   }
 
-  set = async (id: string | String, item: T): Promise<T> => {
+  set = async (id: string, item: T): Promise<T> => {
     const filePath = this.#getFilePath(id)
     await writeFile(filePath, json.stringify(item), "utf-8")
     return item
@@ -41,7 +41,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     return Promise.all(promises)
   }
 
-  remove = async (id: string | String) => {
+  remove = async (id: string) => {
     const filePath = this.#getFilePath(id)
     try {
       await rm(filePath)
@@ -50,7 +50,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     }
   }
 
-  #getFilePath(id: string | String) {
-    return path.join(this.options.directory, id.valueOf())
+  #getFilePath(id: string) {
+    return path.join(this.options.directory, id)
   }
 }

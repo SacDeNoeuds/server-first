@@ -1,5 +1,5 @@
 import * as S from "superstruct"
-import { TaggedClass } from "../branded-types/tagged"
+import { TaggedClass } from "../branded-types/tagged-weird-idea-I-keep-for-history"
 import { flow, pipe } from "../core/functions"
 import { map as mapStruct } from "../core/object"
 

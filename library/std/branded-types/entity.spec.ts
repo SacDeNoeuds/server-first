@@ -1,11 +1,11 @@
 import { pipe } from "../core"
 import { schema as S } from "../schema"
-import { EntityObject, EntityValue } from "./entity"
-import type { Kinded } from "./kinded"
+import type { Branded } from "./branded"
+import { BrandedEntity, TaggedEntity } from "./entity"
 import type { Tagged } from "./tagged"
 
-type PersonName = Tagged<"PersonName", string>
-const PersonName = EntityValue<PersonName>("PersonName", {
+type PersonName = Branded<string, "PersonName">
+const PersonName = BrandedEntity<PersonName>("PersonName", {
   schema: S.string,
 })
 
@@ -18,8 +18,8 @@ const subtractYears = (date: Date, n: number) => {
   return copy
 }
 
-type BirthDate = Tagged<"BirthDate", Date>
-const BirthDate = EntityValue<BirthDate>("BirthDate", {
+type BirthDate = Branded<Date, "BirthDate">
+const BirthDate = BrandedEntity<BirthDate>("BirthDate", {
   schema: pipe(
     S.date,
     S.refine("must be 18+", (date) => {
@@ -30,23 +30,28 @@ const BirthDate = EntityValue<BirthDate>("BirthDate", {
 })
 
 const result2 = BirthDate.decode(new Date("1992-09-15T00:00:00.000Z"))
-// @ts-ignore
 console.dir({ result2 }, { depth: null })
 
-type Person = Kinded<{
-  _kind: "Person"
+type Person = Tagged<{
+  _tag: "Person"
   name: PersonName
   birthDate: BirthDate
 }>
-const Person = EntityObject<Person>("Person", {
+const Person = TaggedEntity<Person>("Person", {
   name: PersonName,
   birthDate: BirthDate,
 })
 
 const result3 = Person.decode({
-  _kind: "Person",
+  _tag: "Person",
   name: "hello",
   birthDate: new Date("1992-09-15T00:00:00.000Z"),
 })
 
 console.dir({ result3 }, { depth: null })
+
+const person = Person({
+  birthDate: BirthDate(new Date("2000-01-01T00:00:00.000Z")),
+  name: PersonName("hello"),
+})
+console.dir({ person })

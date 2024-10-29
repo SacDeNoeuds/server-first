@@ -1,43 +1,47 @@
+import type { TagOfBranded, ValueOfBranded } from "."
 import { pipe } from "../core"
 import { schema as S } from "../schema"
-import { Kinded, type KindedShape } from "./kinded"
-import { Tagged, type TagOf, type ValueOf } from "./tagged"
+import type { Branded, ValueOf } from "./branded"
+import { Tagged, type TaggedShape } from "./tagged"
 
-export type EntityValue<E extends Tagged<string, any>> = S.Schema<E> & {
+export type BrandedEntity<E extends Branded<unknown, string>> = S.Schema<E> & {
   (value: ValueOf<E>): E
-  tag: TagOf<E>
+  tag: TagOfBranded<E>
 }
 
-export function EntityValue<E extends Tagged<string, any>>(
-  tag: TagOf<E> & string,
+export function BrandedEntity<E extends Branded<unknown, string>>(
+  tag: TagOfBranded<E>,
   options: {
     schema: S.Schema<ValueOf<E>>
   },
-): EntityValue<E> {
-  const fn = Tagged<E>(tag)
-  const schema = pipe(options.schema, S.map(fn))
+): BrandedEntity<E> {
+  const schema = pipe(
+    options.schema,
+    S.map((value) => value as E),
+  )
+  const fn = (value: ValueOfBranded<E>) => S.unsafeDecode(value, schema)
   return Object.assign(fn, {
     ...schema,
     tag,
-  }) as unknown as EntityValue<E>
+  }) as unknown as BrandedEntity<E>
 }
 
-export type EntityObject<E extends Tagged<string, any>> = S.Schema<E> & {
-  (value: Omit<ValueOf<E>, "_kind">): E
-  tag: TagOf<E>
+export type TaggedEntity<E extends Tagged<TaggedShape>> = S.Schema<E> & {
+  (value: Omit<ValueOf<E>, "_tag"> & { _tag?: E["_tag"] }): E
+  tag: E["_tag"]
 }
-export function EntityObject<E extends Kinded<KindedShape>>(
-  kind: TagOf<E> & string,
-  props: S.PropsOf<Omit<ValueOf<E>, "_kind">>,
-): EntityObject<E> {
-  const fn = Kinded<E>(kind)
+export function TaggedEntity<E extends Tagged<TaggedShape>>(
+  tag: E["_tag"],
+  props: S.PropsOf<Omit<ValueOf<E>, "_tag">>,
+): TaggedEntity<E> {
+  const fn = Tagged<E>(tag)
   const schema = pipe(
-    S.object(props),
-    S.object.concat({ _kind: S.literal(kind) }),
+    S.object({ _tag: S.literal(tag) }),
+    S.object.concat(props),
     S.map(fn),
   )
   return Object.assign(fn, {
     ...schema,
-    tag: kind,
-  }) as unknown as EntityObject<E>
+    tag,
+  }) as unknown as TaggedEntity<E>
 }

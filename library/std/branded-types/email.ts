@@ -1,10 +1,10 @@
 import isEmail from "is-email"
 import { pipe } from "../core"
 import { schema as S } from "../schema"
-import { EntityValue } from "./entity"
-import type { Tagged } from "./tagged"
+import type { Branded } from "./branded"
+import { BrandedEntity } from "./entity"
 
-export type Email = Tagged<"Email", string>
-export const Email = EntityValue<Email>("Email", {
+export type Email = Branded<string, "Email">
+export const Email = BrandedEntity<Email>("Email", {
   schema: pipe(S.string, S.refine("Email", isEmail)),
 })
