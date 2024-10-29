@@ -1,6 +1,5 @@
 import type { std } from "@/std"
 import type { Repository } from "@/std/repository"
-import { StringId } from "@/std/string-id"
 import { Account, AccountId } from "./account"
 
 export class AccountRepository {
@@ -13,7 +12,7 @@ export class AccountRepository {
       (await this.repo.set(
         email,
         Account({
-          id: AccountId(StringId()),
+          id: AccountId.new(),
           email,
         }),
       ))

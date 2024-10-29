@@ -1,6 +1,8 @@
 export {
   BrandedEntity,
+  BrandedId,
   Email,
+  StringId,
   Tagged,
   TaggedClass,
   TaggedEntity,
@@ -16,6 +18,5 @@ export {
   InMemoryRepository,
   type Repository,
 } from "./repository"
-export { StringId } from "./string-id"
 export type { Simplify } from "./types"
 export { defineUseCases, type DepsOf, type UseCasesOf } from "./use-cases"

@@ -1,12 +1,9 @@
 import { std } from "@/std"
 import { schema as S } from "@/std/schema"
-import { StringId } from "@/std/string-id"
 import { authentication } from "@grocery-list/context/authentication"
 
 export type GroceryListId = std.Branded<string, "GroceryListId">
-export const GroceryListId = std.BrandedEntity<GroceryListId>("GroceryListId", {
-  schema: S.string,
-})
+export const GroceryListId = std.BrandedId<GroceryListId>("GroceryListId")
 
 export type GroceryListParticipant = authentication.AccountId
 export const GroceryListParticipant = authentication.AccountId
@@ -65,7 +62,7 @@ function create(input: {
   participant: GroceryListParticipant
 }): Omit<GroceryList, "lastUpdate"> {
   return GroceryList({
-    id: GroceryListId(StringId()),
+    id: GroceryListId.new(),
     items: new Map(),
     name: input.name,
     lastUpdate: new Date(),

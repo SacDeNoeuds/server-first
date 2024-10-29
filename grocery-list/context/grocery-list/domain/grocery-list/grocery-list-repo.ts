@@ -2,9 +2,14 @@ import type { JsonPatchRepository } from "@/json-patch/repository"
 import { type GroceryList, type GroceryListParticipant } from "./grocery-list"
 
 export class GroceryListRepository {
-  constructor(private repo: JsonPatchRepository<GroceryList>) {}
+  constructor(
+    private repo: JsonPatchRepository<Omit<GroceryList, "lastUpdate">>,
+  ) {}
 
-  #revive = (item: { value: GroceryList; lastUpdate: Date }): GroceryList => ({
+  #revive = (item: {
+    value: Omit<GroceryList, "lastUpdate">
+    lastUpdate: Date
+  }): GroceryList => ({
     ...item.value,
     lastUpdate: item.lastUpdate,
   })
@@ -14,10 +19,7 @@ export class GroceryListRepository {
     at: Date,
     groceryList: Omit<GroceryList, "lastUpdate">,
   ): Promise<void> => {
-    await this.repo.set(author, at, groceryList.id, {
-      ...groceryList,
-      lastUpdate: at,
-    })
+    await this.repo.set(author, at, groceryList.id, groceryList)
   }
 
   find = async (id: string): Promise<GroceryList | undefined> => {

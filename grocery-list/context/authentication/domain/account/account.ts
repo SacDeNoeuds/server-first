@@ -1,10 +1,7 @@
 import { std } from "@/std"
-import { schema as S } from "@/std/schema"
 
 export type AccountId = std.Branded<string, "AccountId">
-export const AccountId = std.BrandedEntity<AccountId>("AccountId", {
-  schema: S.string,
-})
+export const AccountId = std.BrandedId<AccountId>("AccountId")
 
 export type Account = std.Tagged<{
   _tag: "Account"
