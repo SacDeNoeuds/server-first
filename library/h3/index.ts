@@ -1,7 +1,7 @@
-import { std } from "@/std"
-import { HttpError, NotFound } from "@/std/web/http-error"
-import { MimeType, mimeTypeFromExtension } from "@/std/web/mime-type"
-import { isRedirect, type Handler } from "@/std/web/server-handler"
+import { std } from "../std"
+import { HttpError, NotFound } from "../std/web/http-error"
+import { MimeType, mimeTypeFromExtension } from "../std/web/mime-type"
+import { isRedirect, type Handler } from "../std/web/server-handler"
 import {
   defineEventHandler,
   getCookie,

@@ -1,0 +1,20 @@
+{
+  "extends": ["../tsconfig.base.json"],
+  "include": [".", "../library"],
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "jsx-server",
+    "outDir": "../dist",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "jsx-server/*": ["../library/jsx-server/*"],
+      "@/*": ["../library/*"],
+      "@domain/*": ["./context/*"],
+      "@shared/*": ["./shared/*"],
+    },
+  }
+}

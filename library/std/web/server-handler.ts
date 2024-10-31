@@ -1,4 +1,3 @@
-import type { JSX } from "jsx-server/jsx-runtime"
 import { object } from "../core"
 import type { CookieOptions } from "./cookie"
 import { HttpError } from "./http-error"
@@ -61,7 +60,9 @@ export const PngHandler = Handler(MimeType.Png)
 
 // a bit more difficult, we want to render to string in the process
 export const JsxHandler =
-  (handler: Handler<JSX.Element>): Handler =>
+  <Element extends { toString(): string }>(
+    handler: Handler<Element>,
+  ): Handler =>
   async (ctx) => {
     const jsx = await handler(ctx)
     if (jsx instanceof HttpError) return jsx

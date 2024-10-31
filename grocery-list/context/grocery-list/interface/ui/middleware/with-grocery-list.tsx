@@ -1,10 +1,14 @@
 import { BadRequest } from "@/std/web/http-error"
 import type { Handler } from "@/std/web/server-handler"
-import type { authentication } from "@grocery-list/context/authentication"
-import { withAuthWall } from "@grocery-list/context/authentication/interface/ui"
-import { useCase } from "@grocery-list/context/grocery-list/domain"
-import type { GroceryList } from "@grocery-list/context/grocery-list/domain/grocery-list"
-import { type GroceryListId } from "@grocery-list/context/grocery-list/domain/grocery-list/grocery-list"
+import type { authentication } from "@domain/authentication"
+import { withAuthWall } from "@domain/authentication/interface/ui"
+import { useCase } from "@domain/grocery-list/domain"
+import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
+import {
+  Participant,
+  type GroceryListId,
+} from "@domain/grocery-list/domain/grocery-list/grocery-list"
+import type { JSX } from "jsx-server/jsx-runtime"
 import { NotFoundPage } from "../components/not-found-page"
 
 export const withGroceryList = (
@@ -18,13 +22,8 @@ export const withGroceryList = (
     if (!id) return BadRequest({ message: "please provide an id" })
 
     const groceryList = await useCase.findGroceryList(id)
-    console.dir(
-      {
-        groceryList,
-      },
-      { depth: null },
-    )
-    if (!groceryList || !groceryList.participants.has(ctx.account.id)) {
+    const participant = Participant(ctx.account.id)
+    if (!groceryList || !groceryList.participants.has(participant)) {
       ctx.setStatus(404)
       return <NotFoundPage message={`grocery list "${id}" does not exist 🧐`} />
     }

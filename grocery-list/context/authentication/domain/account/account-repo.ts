@@ -1,11 +1,11 @@
-import type { std } from "@/std"
+import type { Email } from "@/std"
 import type { Repository } from "@/std/repository"
 import { Account, AccountId } from "./account"
 
 export class AccountRepository {
   constructor(private repo: Repository<Account>) {}
 
-  getOrCreate = async (email: std.Email) => {
+  getOrCreate = async (email: Email) => {
     const existingAccount = await this.repo.findByKey("email", email)
     const account =
       existingAccount ||

@@ -1,6 +1,6 @@
-import { std } from "@/std"
-import type { Repository } from "@/std/repository/definition"
-import { schema as S } from "@/std/schema"
+import { std } from "../std"
+import type { Repository } from "../std/repository/definition"
+import { schema as S } from "../std/schema"
 import { computePatch, type DiffAble } from "./compute-patch"
 import {
   addHistoryEntry,

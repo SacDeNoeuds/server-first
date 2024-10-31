@@ -5,7 +5,7 @@ import { redirectTo } from "@/std/web/server-handler"
 import {
   ItemName,
   ItemQuantity,
-} from "@grocery-list/context/grocery-list/domain/grocery-list"
+} from "@domain/grocery-list/domain/grocery-list"
 import { useCase } from "../../../domain"
 import { withGroceryList } from "../middleware/with-grocery-list"
 
@@ -28,10 +28,8 @@ export const addGroceryListItem = withGroceryList(async (ctx) => {
     account: ctx.account,
     editedVersion: body.value.editedVersion,
     groceryList: ctx.groceryList,
-    item: {
-      name: body.value.name,
-      quantity: body.value.quantity,
-    },
+    itemName: body.value.name,
+    itemQuantity: body.value.quantity,
   })
 
   return redirectTo(new URL(ctx.getHeader("referer") ?? "/", ctx.url))

@@ -1,10 +1,11 @@
-import type { authentication } from "@grocery-list/context/authentication"
+import type { authentication } from "@domain/authentication"
 import {
   GroceryList,
   GroceryListApi,
   ListName,
   type GroceryListRepository,
 } from "../grocery-list"
+import { Participant } from "../grocery-list/grocery-list"
 
 export type CreateGroceryList = (input: {
   account: authentication.Account
@@ -16,7 +17,7 @@ export const CreateGroceryList =
   async (input) => {
     const groceryList = GroceryListApi.create({
       name: input.name,
-      participant: input.account.id,
+      participant: Participant(input.account.id),
     })
     await repository.groceryList.set(
       input.account.email,

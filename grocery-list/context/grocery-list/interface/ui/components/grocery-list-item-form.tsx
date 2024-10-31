@@ -1,13 +1,14 @@
 import type {
   GroceryList,
-  GroceryListItem,
-} from "@grocery-list/context/grocery-list/domain/grocery-list"
-import { IntegerInput } from "@grocery-list/shared/ui/kit/integer-input"
+  ItemName,
+  ItemQuantity,
+} from "@domain/grocery-list/domain/grocery-list"
+import { IntegerInput } from "@shared/ui/kit/integer-input"
 
 interface Props {
   id: string
   groceryList: Pick<GroceryList, "id" | "lastUpdate">
-  values?: Pick<GroceryListItem, "name" | "quantity">
+  values?: { name: ItemName; quantity: ItemQuantity }
 }
 export function GroceryListItemForm(props: Props) {
   const action = props.values ? "edit" : "add"

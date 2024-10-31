@@ -1,0 +1,22 @@
+{
+	// Place your server-first workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"EntityValue": {
+		"scope": "typescript",
+		"prefix": "brandedentitywithrules",
+		"body": [
+			"export type ${1:YourEntity} = std.Branded<${2:string}, '${1:YourEntity}'>;",
+			"export const ${1:YourEntity} = std.pipe(",
+			"  S.${2:string},",
+			"  S.${3:nonEmpty('')},",
+			"  std.BrandedEntity<${1:YourEntity}>,",
+			")",
+		],
+		"description": "Helper to write a branded entity with rules"
+	}
+}

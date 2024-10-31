@@ -45,7 +45,7 @@ const ArrayOfLength3 = pipe(
 const SetOfSize3 = pipe(S.Set(S.number), S.size({ min: 3, reason: "because" }))
 const DateAfter2000 = pipe(
   S.date,
-  S.min(new Date(2000, 0, 1), "because I decided so"),
+  S.greaterThan(new Date(2000, 0, 1), "because I decided so"),
 )
 const numberBetween12And42 = pipe(
   S.number,

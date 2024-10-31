@@ -1,4 +1,4 @@
-import { std } from "@/std"
+import { Email } from "@/std"
 import { schema as S } from "@/std/schema"
 import { JsxHandler, redirectTo } from "@/std/web/server-handler"
 import { useCase } from "../../domain"
@@ -6,7 +6,7 @@ import { AuthForm } from "./components/auth-form"
 import { AuthPage } from "./components/auth-page"
 
 export const authenticate = JsxHandler(async (ctx) => {
-  const email = std.Email.decode(ctx.body?.email)
+  const email = Email.decode(ctx.body?.email)
   const hrefOrPath =
     ctx.url.searchParams.get("redirectTo") || ctx.getHeader("referer") || "/"
   const redirectUrl = new URL(hrefOrPath, ctx.url)

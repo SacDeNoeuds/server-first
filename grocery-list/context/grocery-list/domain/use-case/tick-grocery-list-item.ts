@@ -1,4 +1,4 @@
-import type { authentication } from "@grocery-list/context/authentication"
+import type { authentication } from "@domain/authentication"
 import {
   GroceryList,
   GroceryListApi,

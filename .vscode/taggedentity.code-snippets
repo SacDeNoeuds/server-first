@@ -8,16 +8,16 @@
 	// Example:
 	"EntityObject": {
 		"scope": "typescript",
-		"prefix": "entityobject",
+		"prefix": "taggedentity",
 		"body": [
-			"export type ${1:YourEntity} = std.Kinded<{",
-			"	 _kind: '${1:YourEntity}'",
+			"export type ${1:YourEntity} = std.Tagged<{",
+			"	 _tag: '${1:YourEntity}'",
 			"	 $2: $3",
 			"}>",
-			"export const ${1:YourEntity} = std.EntityObject<${1:YourEntity}>('${1:YourEntity}', {",
+			"export const ${1:YourEntity} = std.TaggedEntity<${1:YourEntity}>('${1:YourEntity}', {",
 			"  $2: $3,",
 			"})"
 		],
-		"description": "Helper to write an EntityObject"
+		"description": "Helper to write a tagged entity"
 	}
 }

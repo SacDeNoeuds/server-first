@@ -1,10 +1,10 @@
 import { BadRequest } from "@/std/web/http-error"
 import { redirectTo } from "@/std/web/server-handler"
-import { authentication } from "@grocery-list/context/authentication"
-import { useCase } from "@grocery-list/context/grocery-list/domain"
-import { GroceryListNotFound } from "@grocery-list/context/grocery-list/domain/grocery-list"
-import type { GroceryListId } from "@grocery-list/context/grocery-list/domain/grocery-list/grocery-list"
-import { Html } from "@grocery-list/shared/ui/kit/html"
+import { authentication } from "@domain/authentication"
+import { useCase } from "@domain/grocery-list/domain"
+import { GroceryListNotFound } from "@domain/grocery-list/domain/grocery-list"
+import type { GroceryListId } from "@domain/grocery-list/domain/grocery-list/grocery-list"
+import { Html } from "@shared/ui/kit/html"
 
 export const joinGroceryList = authentication.ui.withAuthWall(async (ctx) => {
   const id = ctx.params.id as GroceryListId | undefined

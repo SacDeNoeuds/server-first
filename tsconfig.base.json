@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    /* Modules */
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "rootDir": ".",
+    "outDir": "./dist",
+    "allowJs": true,
+    "esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+    "verbatimModuleSyntax": true,
+    /* Type Checking */
+    "strict": true, /* Enable all strict type-checking options. */
+    "noUncheckedIndexedAccess": true,
+    /* Completeness */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+  }
+}

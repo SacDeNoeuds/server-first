@@ -1,5 +1,5 @@
-import type { GroceryList } from "@grocery-list/context/grocery-list/domain/grocery-list"
-import { IntegerInput } from "@grocery-list/shared/ui/kit/integer-input"
+import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
+import { IntegerInput } from "@shared/ui/kit/integer-input"
 
 interface Props {
   groceryList: Pick<GroceryList, "id" | "lastUpdate">

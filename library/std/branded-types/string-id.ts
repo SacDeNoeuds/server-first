@@ -1,28 +1,27 @@
 import { pipe } from "../core"
+import { lengthOfStringId, StringId } from "../core/functions"
 import { schema as S } from "../schema"
-import type { Branded, TagOf } from "./branded"
-import { BrandedEntity } from "./entity"
+import type { Brand } from "./brand"
+import { type ValueEntity, fromSchema } from "./entity"
 
-const length = 16
+type Shape = Brand<string, any>
 
-export function StringId(): string {
-  return Math.random()
-    .toString(36)
-    .substring(2, 2 + length)
-}
+export type Id<T extends string | number, Tag = symbol> = Brand<T, Tag>
 
-type Shape = Branded<string, string>
-export interface BrandedId<Id extends Shape> extends BrandedEntity<Id> {
+export interface IdFor<Id extends Shape> extends ValueEntity<Id> {
   new: () => Id
 }
-export function BrandedId<T extends Shape>(tag: TagOf<T>) {
-  const entity = BrandedEntity(tag, {
-    schema: pipe(
-      S.string,
-      S.size({ min: length, max: length, reason: "StringId" }),
-    ),
-  })
+export function IdFor<T extends Shape>() {
+  const schema = pipe(
+    S.string,
+    S.size({
+      min: lengthOfStringId,
+      max: lengthOfStringId,
+      reason: "StringId",
+    }),
+  )
+  const entity = fromSchema(schema)
   return Object.assign(entity, {
     new: StringId as () => T,
-  }) as BrandedId<T>
+  }) as IdFor<T>
 }

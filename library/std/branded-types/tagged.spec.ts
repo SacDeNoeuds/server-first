@@ -1,15 +1,23 @@
 import { pipe } from "../core"
-import type { Branded } from "./branded"
-import { Tagged, TaggedClass } from "./tagged"
+import type { Brand } from "./brand"
+import {
+  Class,
+  fold,
+  foldAll,
+  fromTag,
+  match,
+  matchAll,
+  type Tagged,
+} from "./tagged"
 
-type PersonName = Branded<string, "PersonName">
+type PersonName = Brand<string, "PersonName">
 type Person = Tagged<{
   _tag: "Person"
   name: PersonName
   birthDate: Date
   age: number
 }>
-const Person = Tagged<Person>("Person")
+const Person = fromTag<Person>("Person")
 const Jack = Person({
   name: "jack" as PersonName,
   birthDate: new Date(),
@@ -20,7 +28,7 @@ console.info("value", Jack)
 console.info("name", Jack.name)
 console.info()
 
-class PersonNotFound extends TaggedClass("PersonNotFound")<{
+class PersonNotFound extends Class("PersonNotFound")<{
   name: PersonName
 }> {}
 const err = new PersonNotFound({ name: "Jack" as PersonName })
@@ -33,22 +41,22 @@ type Input = Person | PersonNotFound
 const input = Jack as Input
 console.info("--- match ---")
 console.info({
-  match: Tagged.match(input, {
+  match: match(input, {
     Person: (person) => person.name,
   }),
-  matchAll: Tagged.matchAll(input, {
+  matchAll: matchAll(input, {
     Person: (person) => person.name,
     PersonNotFound: (err) => err.name,
   }),
   fold: pipe(
     input,
-    Tagged.fold({
+    fold({
       Person: (person) => person.name,
     }),
   ),
   foldAll: pipe(
     input,
-    Tagged.foldAll({
+    foldAll({
       Person: (person) => person.name,
       PersonNotFound: (err) => err._tag,
     }),

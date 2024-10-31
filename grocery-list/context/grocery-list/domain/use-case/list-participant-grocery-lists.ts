@@ -1,8 +1,8 @@
 import type { GroceryList, GroceryListRepository } from "../grocery-list"
-import type { GroceryListParticipant } from "../grocery-list/grocery-list"
+import type { Participant } from "../grocery-list/grocery-list"
 
 export type ListParticipantGroceryLists = (
-  participant: GroceryListParticipant,
+  participant: Participant,
 ) => Promise<GroceryList[]>
 
 export const ListParticipantGroceryLists = (repository: {

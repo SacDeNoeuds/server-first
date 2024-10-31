@@ -363,10 +363,16 @@ function Map_<T extends Map<PropertyKey, any>>(
   }
 }
 
-export function min<T extends { valueOf(): number }>(min: T, reason: string) {
+export function greaterThan<T extends { valueOf(): number }>(
+  min: T,
+  reason: string,
+) {
   return refine<T>(reason, (value) => value.valueOf() > min.valueOf())
 }
-export function max<T extends { valueOf(): number }>(max: T, reason: string) {
+export function lowerThan<T extends { valueOf(): number }>(
+  max: T,
+  reason: string,
+) {
   return refine<T>(reason, (value) => value.valueOf() < max.valueOf())
 }
 export function between<T extends { valueOf(): number }>(

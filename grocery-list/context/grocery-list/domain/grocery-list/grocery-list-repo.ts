@@ -1,5 +1,5 @@
 import type { JsonPatchRepository } from "@/json-patch/repository"
-import { type GroceryList, type GroceryListParticipant } from "./grocery-list"
+import { type GroceryList, type Participant } from "./grocery-list"
 
 export class GroceryListRepository {
   constructor(
@@ -32,7 +32,7 @@ export class GroceryListRepository {
   }
 
   listByParticipant = async (
-    participant: GroceryListParticipant,
+    participant: Participant,
   ): Promise<GroceryList[]> => {
     const list = await this.repo.list()
     return list

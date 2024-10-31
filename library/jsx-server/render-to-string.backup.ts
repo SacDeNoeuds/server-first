@@ -1,4 +1,4 @@
-import { escapeHtml } from "@/std/web/escape-html"
+import { escapeHtml } from "../std/web/escape-html"
 import type { JSX } from "./jsx-runtime.backup"
 
 /** @type {Set<keyof import("./jsx-runtime").JSX.IntrinsicElements>} */

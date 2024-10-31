@@ -1,6 +1,5 @@
-// import type { JSX } from "jsx-server/jsx-runtime"
-
-import type { GroceryList } from "@grocery-list/context/grocery-list/domain/grocery-list"
+import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
+import type { JSX } from "jsx-server/jsx-runtime"
 
 interface Props {
   class?: string

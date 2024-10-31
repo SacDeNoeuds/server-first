@@ -1,8 +1,8 @@
 import { schema as S } from "@/std/schema"
 import { redirectTo } from "@/std/web/server-handler"
-import { withAuthWall } from "@grocery-list/context/authentication/interface/ui"
-import { useCase } from "@grocery-list/context/grocery-list/domain"
-import { ListName } from "@grocery-list/context/grocery-list/domain/grocery-list"
+import { withAuthWall } from "@domain/authentication/interface/ui"
+import { useCase } from "@domain/grocery-list/domain"
+import { ListName } from "@domain/grocery-list/domain/grocery-list"
 import { NewGroceryListForm } from "../components/new-grocery-list-form"
 import { PageLayout } from "../components/page-layout"
 

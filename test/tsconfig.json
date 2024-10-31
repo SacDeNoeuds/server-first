@@ -1,0 +1,16 @@
+{
+  "extends": ["../tsconfig.base.json"],
+  "include": ["../test", "../library"],
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": "../dist/test",
+    "jsx": "react-jsx",
+    "rootDir": "../",
+    "jsxImportSource": "jsx-server",
+    "paths": {
+      "@std/*": ["../library/std/*"],
+      "jsx-server/*": ["../library/jsx-server/*"],
+    },
+  }
+}

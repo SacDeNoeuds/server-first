@@ -1,12 +1,10 @@
+export * as GroceryListApi from "./behavior"
 export {
   GroceryList,
-  GroceryListApi,
   GroceryListId,
-  GroceryListItems,
-  GroceryListParticipant,
+  Participant as GroceryListParticipant,
   ItemName,
   ItemQuantity,
   ListName,
-  type GroceryListItem,
 } from "./grocery-list"
 export { GroceryListNotFound, GroceryListRepository } from "./grocery-list-repo"

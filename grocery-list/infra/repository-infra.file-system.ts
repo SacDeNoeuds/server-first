@@ -1,11 +1,12 @@
 import type { JsonPatchHistory } from "@/json-patch/history"
 import { JsonPatchRepository } from "@/json-patch/repository"
+import { std } from "@/std"
 import { FileSystemRepository } from "@/std/repository"
 import { schema as S } from "@/std/schema"
-import { authentication } from "@grocery-list/context/authentication"
-import { AccountRepository } from "@grocery-list/context/authentication/domain/account"
-import { groceryList } from "@grocery-list/context/grocery-list"
-import { GroceryListRepository } from "@grocery-list/context/grocery-list/domain/grocery-list"
+import { authentication } from "@domain/authentication"
+import { AccountRepository } from "@domain/authentication/domain/account"
+import { groceryList } from "@domain/grocery-list"
+import { GroceryListRepository } from "@domain/grocery-list/domain/grocery-list"
 import path from "path"
 import type { RepositoryInfra } from "./repository-infra"
 
@@ -24,7 +25,7 @@ export const RepositoryInfraFileSystem = (): RepositoryInfra => ({
         directory: db("grocery-list"),
         schema: S.cast<JsonPatchHistory>("JsonPatchHistory"),
       }),
-      schema: groceryList.GroceryList,
+      schema: std.pipe(groceryList.GroceryList, S.object.omit("lastUpdate")),
     }),
   ),
 })

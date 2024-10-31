@@ -1,13 +1,9 @@
 import { pipe } from "../core"
 import { schema as S } from "../schema"
-import type { Branded } from "./branded"
-import { BrandedEntity, TaggedEntity } from "./entity"
-import type { Tagged } from "./tagged"
+import * as entity from "./entity"
 
-type PersonName = Branded<string, "PersonName">
-const PersonName = BrandedEntity<PersonName>("PersonName", {
-  schema: S.string,
-})
+type PersonName = entity.OfType<string>
+const PersonName = entity.fromSchema<PersonName>(S.string)
 
 const result1 = PersonName.decode("hello")
 console.dir({ result1 }, { depth: null })
@@ -18,26 +14,25 @@ const subtractYears = (date: Date, n: number) => {
   return copy
 }
 
-type BirthDate = Branded<Date, "BirthDate">
-const BirthDate = BrandedEntity<BirthDate>("BirthDate", {
-  schema: pipe(
-    S.date,
-    S.refine("must be 18+", (date) => {
-      const min = subtractYears(new Date(), 18)
-      return date.valueOf() < min.valueOf()
-    }),
-  ),
-})
+type BirthDate = entity.OfType<Date, "BirthDate">
+const BirthDate = pipe(
+  S.date,
+  S.refine("must be 18+", (date) => {
+    const min = subtractYears(new Date(), 18)
+    return date.valueOf() < min.valueOf()
+  }),
+  entity.fromSchema<BirthDate>,
+)
 
 const result2 = BirthDate.decode(new Date("1992-09-15T00:00:00.000Z"))
 console.dir({ result2 }, { depth: null })
 
-type Person = Tagged<{
+type Person = entity.Object<{
   _tag: "Person"
   name: PersonName
   birthDate: BirthDate
 }>
-const Person = TaggedEntity<Person>("Person", {
+const Person = entity.Object<Person>("Person", {
   name: PersonName,
   birthDate: BirthDate,
 })

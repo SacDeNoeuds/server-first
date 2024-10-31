@@ -8,13 +8,11 @@
 	// Example:
 	"EntityValue": {
 		"scope": "typescript",
-		"prefix": "entityvalue",
+		"prefix": "brandedentity",
 		"body": [
-			"export type ${1:YourEntity} = std.Tagged<'${1:YourEntity}', ${2:string}>;",
-			"export const ${1:YourEntity} = std.EntityValue<${1:YourEntity}>('${1:YourEntity}', {",
-			"  schema: S.${2:string},",
-			"})",
+			"export type ${1:YourEntity} = std.Branded<${2:string}>;",
+			"export const ${1:YourEntity} = std.BrandedEntity<${1:YourEntity}>(S.${2:string})",
 		],
-		"description": "Helper to write an entity value"
+		"description": "Helper to write a branded entity"
 	}
 }

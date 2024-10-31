@@ -1,14 +1,14 @@
-import { std } from "@/std"
+import { Email, entity } from "@/std"
 
-export type AccountId = std.Branded<string, "AccountId">
-export const AccountId = std.BrandedId<AccountId>("AccountId")
-
-export type Account = std.Tagged<{
+export type Account = entity.Object<{
   _tag: "Account"
   id: AccountId
-  email: std.Email
+  email: Email
 }>
-export const Account = std.TaggedEntity<Account>("Account", {
+export type AccountId = entity.OfType<string>
+
+export const AccountId = entity.IdFor<AccountId>()
+export const Account = entity.Object<Account>("Account", {
   id: AccountId,
-  email: std.Email,
+  email: Email,
 })

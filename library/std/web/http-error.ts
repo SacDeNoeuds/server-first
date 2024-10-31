@@ -1,6 +1,6 @@
-import { TaggedClass } from "../branded-types"
+import { tagged } from "../branded-types"
 
-export class HttpError extends TaggedClass("HttpError")<{
+export class HttpError extends tagged.Class("HttpError")<{
   readonly code: number
   readonly message?: string
   readonly cause?: unknown

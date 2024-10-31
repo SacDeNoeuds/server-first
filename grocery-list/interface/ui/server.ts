@@ -5,22 +5,19 @@ import {
   staticHandler,
   toNodeListener,
 } from "@/h3"
-import { authentication } from "@grocery-list/context/authentication"
-import {
-  authenticate,
-  logout,
-} from "@grocery-list/context/authentication/interface/ui"
-import { groceryList } from "@grocery-list/context/grocery-list"
-import { addGroceryListItem } from "@grocery-list/context/grocery-list/interface/ui/handler/add-grocery-list-item-:id"
-import { editGroceryListItem } from "@grocery-list/context/grocery-list/interface/ui/handler/edit-grocery-list-item-:id"
-import { joinGroceryList } from "@grocery-list/context/grocery-list/interface/ui/handler/join-grocery-list-:id"
-import { createGroceryList } from "@grocery-list/context/grocery-list/interface/ui/handler/new-grocery-list"
-import { tickGroceryListItem } from "@grocery-list/context/grocery-list/interface/ui/handler/tick-grocery-list-item-:id"
-import { getGroceryListPage } from "@grocery-list/context/grocery-list/interface/ui/page/grocery-list-:id"
-import { getGroceryListsPage } from "@grocery-list/context/grocery-list/interface/ui/page/grocery-lists"
-import { RepositoryInfraFileSystem } from "@grocery-list/infra/repository-infra.file-system"
+import { authentication } from "@domain/authentication"
+import { authenticate, logout } from "@domain/authentication/interface/ui"
+import { groceryList } from "@domain/grocery-list"
+import { addGroceryListItem } from "@domain/grocery-list/interface/ui/handler/add-grocery-list-item-:id"
+import { editGroceryListItem } from "@domain/grocery-list/interface/ui/handler/edit-grocery-list-item-:id"
+import { joinGroceryList } from "@domain/grocery-list/interface/ui/handler/join-grocery-list-:id"
+import { createGroceryList } from "@domain/grocery-list/interface/ui/handler/new-grocery-list"
+import { tickGroceryListItem } from "@domain/grocery-list/interface/ui/handler/tick-grocery-list-item-:id"
+import { getGroceryListPage } from "@domain/grocery-list/interface/ui/page/grocery-list-:id"
+import { getGroceryListsPage } from "@domain/grocery-list/interface/ui/page/grocery-lists"
 import { createServer } from "http"
 import path from "node:path"
+import { RepositoryInfraFileSystem } from "../../infra/repository-infra.file-system"
 import { getHomePage } from "./home"
 
 const repositoryInfra = RepositoryInfraFileSystem()
@@ -32,7 +29,7 @@ groceryList.registerUseCases({
 })
 
 const staticFolder = path.resolve(__dirname, "../../shared/ui/static")
-console.info("static folder", staticFolder)
+// console.info("static folder", staticFolder)
 const app = createApp({ debug: true })
 const router = createRouter()
 app.use("/static", staticHandler(staticFolder))

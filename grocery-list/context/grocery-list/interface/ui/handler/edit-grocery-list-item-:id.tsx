@@ -2,11 +2,11 @@ import { std } from "@/std"
 import { schema as S } from "@/std/schema"
 import { BadRequest } from "@/std/web/http-error"
 import { redirectTo } from "@/std/web/server-handler"
-import { useCase } from "@grocery-list/context/grocery-list/domain"
+import { useCase } from "@domain/grocery-list/domain"
 import {
   ItemName,
   ItemQuantity,
-} from "@grocery-list/context/grocery-list/domain/grocery-list"
+} from "@domain/grocery-list/domain/grocery-list"
 import { withGroceryList } from "../middleware/with-grocery-list"
 
 export const editGroceryListItem = withGroceryList(async (ctx) => {

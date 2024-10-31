@@ -1,4 +1,4 @@
-import { Html } from "@grocery-list/shared/ui/kit/html"
+import { Html } from "@shared/ui/kit/html"
 import type { JSX } from "jsx-server/jsx-runtime"
 
 interface Props {

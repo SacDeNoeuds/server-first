@@ -1,8 +1,13 @@
+import {
+  JsxHandler,
+  redirectTo,
+  type HandlerContext,
+} from "@std/web/server-handler"
 import assert from "assert"
-import { JsxHandler, redirectTo, type HandlerContext } from "./server-handler"
+import type { JSX } from "jsx-server/jsx-runtime"
 
 async function test() {
-  const handler = JsxHandler(async (params) => {
+  const handler = JsxHandler<JSX.Element>(async (params) => {
     if (params.method === "post")
       return redirectTo(new URL("http://localhost:3000/redirection"))
 

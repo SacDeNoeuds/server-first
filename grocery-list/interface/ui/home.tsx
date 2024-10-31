@@ -1,5 +1,5 @@
 import { JsxHandler } from "@/std/web/server-handler"
-import { Html } from "@grocery-list/shared/ui/kit/html"
+import { Html } from "@shared/ui/kit/html"
 
 const styles = /* css */ `
 body {

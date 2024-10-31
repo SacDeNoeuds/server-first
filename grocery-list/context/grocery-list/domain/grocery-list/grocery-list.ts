@@ -1,110 +1,43 @@
-import { std } from "@/std"
+import { entity, std } from "@/std"
 import { schema as S } from "@/std/schema"
-import { authentication } from "@grocery-list/context/authentication"
 
-export type GroceryListId = std.Branded<string, "GroceryListId">
-export const GroceryListId = std.BrandedId<GroceryListId>("GroceryListId")
-
-export type GroceryListParticipant = authentication.AccountId
-export const GroceryListParticipant = authentication.AccountId
-
-export type ListName = std.Branded<string, "ListName">
-export const ListName = std.BrandedEntity<ListName>("ListName", {
-  schema: S.string,
-})
-
-export type ItemName = std.Branded<string, "ItemName">
-export const ItemName = std.BrandedEntity<ItemName>("ItemName", {
-  schema: S.string,
-})
-export type ItemQuantity = std.Branded<number, "ItemQuantity">
-export const ItemQuantity = std.BrandedEntity<ItemQuantity>("ItemQuantity", {
-  schema: S.number,
-})
-
-export type GroceryListItem = {
-  name: ItemName
-  quantity: ItemQuantity
-}
-
-export type GroceryListItems = Map<ItemName, Omit<GroceryListItem, "name">>
-export const GroceryListItems = S.Map<GroceryListItems>(
-  ItemName,
-  S.object({ quantity: ItemQuantity }),
-)
-
-export type GroceryList = std.Tagged<{
+export type GroceryList = entity.Object<{
   _tag: "GroceryList"
   id: GroceryListId
   name: ListName
-  items: GroceryListItems
+  participants: Set<Participant>
+  items: Map<ItemName, { quantity: ItemQuantity }>
   lastUpdate: Date
-  participants: Set<GroceryListParticipant>
 }>
-export const GroceryList = std.TaggedEntity<GroceryList>("GroceryList", {
+export type GroceryListId = entity.Id<string>
+export type ListName = entity.OfType<string>
+export type Participant = entity.OfType<string>
+export type ItemName = entity.OfType<string>
+export type ItemQuantity = entity.OfType<number>
+
+// --- Schemas ---
+export const GroceryListId = entity.IdFor<GroceryListId>()
+export const Participant = entity.fromSchema<Participant>(S.string)
+export const ListName = std.pipe(
+  S.string,
+  S.nonEmpty(),
+  entity.fromSchema<ListName>,
+)
+export const ItemName = std.pipe(
+  S.string,
+  S.nonEmpty(),
+  entity.fromSchema<ItemName>,
+)
+export const ItemQuantity = std.pipe(
+  S.number,
+  S.greaterThan(0, "QuantityMustBeMoreThan1"),
+  entity.fromSchema<ItemQuantity>,
+)
+
+export const GroceryList = entity.Object<GroceryList>("GroceryList", {
   id: GroceryListId,
   name: ListName,
-  items: GroceryListItems,
+  participants: S.Set(Participant),
+  items: S.Map(ItemName, S.object({ quantity: ItemQuantity })),
   lastUpdate: S.date,
-  participants: S.Set(GroceryListParticipant),
 })
-
-export const GroceryListApi = {
-  create,
-  addItem,
-  editItem,
-  tickItem,
-  join,
-}
-
-function create(input: {
-  name: ListName
-  participant: GroceryListParticipant
-}): Omit<GroceryList, "lastUpdate"> {
-  return GroceryList({
-    id: GroceryListId.new(),
-    items: new Map(),
-    name: input.name,
-    lastUpdate: new Date(),
-    participants: new Set([input.participant]),
-  })
-}
-
-function addItem(input: {
-  groceryList: GroceryList
-  item: GroceryListItem
-}): Omit<GroceryList, "lastUpdate"> {
-  const { lastUpdate: _, ...nextGroceryList } = input.groceryList
-  const nextItems: GroceryListItems = new Map(input.groceryList.items)
-  nextItems.set(input.item.name, { quantity: input.item.quantity })
-  return Object.assign(nextGroceryList, { items: nextItems })
-}
-
-function editItem(input: {
-  groceryList: GroceryList
-  previousName: ItemName
-  item: GroceryListItem
-}): Omit<GroceryList, "lastUpdate"> {
-  const nextItems = new Map(input.groceryList.items)
-  nextItems.delete(input.previousName)
-  nextItems.set(input.item.name, { quantity: input.item.quantity })
-
-  const { lastUpdate: _, ...nextGroceryList } = input.groceryList
-  return Object.assign(nextGroceryList, { items: nextItems })
-}
-
-function join(input: {
-  groceryList: GroceryList
-  participant: authentication.AccountId
-}): GroceryList {
-  const participants = new Set(input.groceryList.participants)
-  participants.add(input.participant)
-  return { ...input.groceryList, participants }
-}
-
-function tickItem(input: { groceryList: GroceryList; itemName: ItemName }) {
-  const nextItems = new Map(input.groceryList.items)
-  nextItems.delete(input.itemName)
-  const { lastUpdate: _, ...nextGroceryList } = input.groceryList
-  return Object.assign(nextGroceryList, { items: nextItems })
-}

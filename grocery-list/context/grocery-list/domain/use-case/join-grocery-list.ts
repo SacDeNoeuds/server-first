@@ -1,11 +1,11 @@
-import type { authentication } from "@grocery-list/context/authentication"
+import type { authentication } from "@domain/authentication"
 import {
   GroceryList,
   GroceryListApi,
   GroceryListNotFound,
   type GroceryListRepository,
 } from "../grocery-list"
-import type { GroceryListId } from "../grocery-list/grocery-list"
+import { Participant, type GroceryListId } from "../grocery-list/grocery-list"
 
 export type JoinGroceryList = (input: {
   groceryListId: GroceryListId
@@ -20,7 +20,7 @@ export const JoinGroceryList =
     if (!groceryList) return new GroceryListNotFound(input.groceryListId)
     const nextGroceryList = GroceryListApi.join({
       groceryList,
-      participant: input.account.id,
+      participant: Participant(input.account.id),
     })
     await repository.groceryList.set(
       input.account.email,

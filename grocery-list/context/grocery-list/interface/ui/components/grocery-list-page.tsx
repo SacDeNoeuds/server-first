@@ -1,4 +1,4 @@
-import type { GroceryList } from "@grocery-list/context/grocery-list/domain/grocery-list"
+import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
 import { GroceryListItemFormModal } from "./grocery-list-item-form-modal"
 import { PageLayout } from "./page-layout"
 import { QuantityForm } from "./quantity-form"

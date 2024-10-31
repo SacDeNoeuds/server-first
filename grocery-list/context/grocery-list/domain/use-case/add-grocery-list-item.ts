@@ -1,15 +1,17 @@
-import type { authentication } from "@grocery-list/context/authentication"
+import type { authentication } from "@domain/authentication"
 import {
   GroceryList,
   GroceryListApi,
-  type GroceryListItem,
-} from "../grocery-list/grocery-list"
-import type { GroceryListRepository } from "../grocery-list/grocery-list-repo"
+  ItemName,
+  ItemQuantity,
+  type GroceryListRepository,
+} from "../grocery-list"
 
 export type AddGroceryListItem = (input: {
   account: authentication.Account
   groceryList: GroceryList
-  item: GroceryListItem
+  itemName: ItemName
+  itemQuantity: ItemQuantity
   editedVersion: Date
 }) => Promise<Omit<GroceryList, "lastUpdate">>
 
@@ -18,7 +20,8 @@ export const AddGroceryListItem =
   async (input) => {
     const nextGroceryList = GroceryListApi.addItem({
       groceryList: input.groceryList,
-      item: input.item,
+      name: input.itemName,
+      quantity: input.itemQuantity,
     })
     await repository.groceryList.set(
       input.account.email,

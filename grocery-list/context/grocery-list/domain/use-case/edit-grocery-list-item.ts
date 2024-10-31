@@ -1,4 +1,4 @@
-import type { authentication } from "@grocery-list/context/authentication"
+import type { authentication } from "@domain/authentication"
 import {
   GroceryList,
   GroceryListApi,
@@ -24,7 +24,8 @@ export const EditGroceryListItem =
     const nextGroceryList = GroceryListApi.editItem({
       groceryList: input.groceryList,
       previousName: input.previousName,
-      item: input.item,
+      name: input.item.name,
+      quantity: input.item.quantity,
     })
     await repository.groceryList.set(
       input.account.email,

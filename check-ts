@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+const { concurrently } = require("concurrently")
+const fs = require("fs")
+const path = require("path")
+
+/**
+ * @param {object} options
+ * @param {string} options.directory
+ * @param {string} options.omit
+ * @param {(filePath: string) => void} options.mapper
+ */
+function traverseFileTree({ directory, omit, mapper }) {
+  const files = fs.readdirSync(directory)
+
+  for (const file of files) {
+    const filePath = path.join(directory, file)
+    if (filePath.includes(omit)) continue
+    const stats = fs.statSync(filePath)
+
+    if (stats.isDirectory())
+      traverseFileTree({ directory: filePath, omit, mapper })
+    else mapper(filePath)
+  }
+}
+
+/**
+ * @param {string} rootDir
+ * @param {string} name
+ * @returns {string[]}
+ */
+function findFilesByName(rootDir, name) {
+  /** @type {string[]} */
+  const files = []
+
+  traverseFileTree({
+    directory: rootDir,
+    omit: "node_modules",
+    mapper: (filePath) => {
+      if (filePath.endsWith(name)) files.push(filePath)
+    },
+  })
+  return files
+}
+
+/** @type {(filePath: string) => boolean} */
+const hasAtLeastOneSegment = (filePath) => filePath.includes("/")
+const files = findFilesByName(process.cwd(), "tsconfig.json")
+  .map((filePath) => path.relative(process.cwd(), filePath))
+  .filter(hasAtLeastOneSegment)
+console.info(files)
+
+const colors = [
+  "red",
+  "green",
+  "yellow",
+  "blue",
+  "magenta",
+  "cyan",
+  "white",
+  "gray",
+]
+
+concurrently(
+  files.map((filePath, index) => {
+    return {
+      command: `npx tsc --noEmit -P ${filePath}`,
+      cwd: process.cwd(),
+      name: `check-ts – ${filePath}`,
+      prefixColor: colors[index % colors.length],
+    }
+  }),
+)

@@ -1,4 +1,4 @@
-import { TaggedClass } from "../branded-types"
+import { tagged } from "../branded-types"
 import * as core from "../core"
 
 export interface DecodeIssue {
@@ -8,7 +8,7 @@ export interface DecodeIssue {
   readonly value: unknown
 }
 
-export class DecodeError extends TaggedClass("DecodeError")<{
+export class DecodeError extends tagged.Class("DecodeError")<{
   readonly issues: DecodeIssue[]
 }> {}
 

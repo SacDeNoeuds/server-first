@@ -1,6 +1,6 @@
+import * as GroceryListApi from "./behavior"
 import {
   GroceryList,
-  GroceryListApi,
   GroceryListId,
   ItemName,
   ItemQuantity,
@@ -26,11 +26,13 @@ console.dir(
     updated: GroceryListApi.editItem({
       groceryList: original,
       previousName: ItemName("bread"),
-      item: { name: ItemName("bread"), quantity: ItemQuantity(3) },
+      name: ItemName("bread"),
+      quantity: ItemQuantity(3),
     }),
     added: GroceryListApi.addItem({
       groceryList: original,
-      item: { name: ItemName("butternut"), quantity: ItemQuantity(10) },
+      name: ItemName("butternut"),
+      quantity: ItemQuantity(10),
     }),
   },
   { depth: null },

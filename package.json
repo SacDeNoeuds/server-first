@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "server-first apps",
   "scripts": {
-    "check": "tsc --noEmit -P tsconfig.json",
-    "test-jsx-server": "tsx ./test/jsx-server-spec.tsx"
+    "check": "./check-ts",
+    "test:jsx-server": "tsx --tsconfig ./test/tsconfig.json ./test/jsx-server-spec.tsx"
   },
   "author": "Me",
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/node": "^22.5.4",
+    "concurrently": "^9.0.1",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4"
   }
