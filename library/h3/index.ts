@@ -1,7 +1,3 @@
-import { std } from "../std"
-import { HttpError, NotFound } from "../std/web/http-error"
-import { MimeType, mimeTypeFromExtension } from "../std/web/mime-type"
-import { isRedirect, type Handler } from "../std/web/server-handler"
 import {
   defineEventHandler,
   getCookie,
@@ -15,6 +11,14 @@ import {
 } from "h3"
 import { readFile, stat } from "node:fs/promises"
 import path from "node:path"
+import { std } from "../std"
+import { HttpError, NotFound } from "../std/web/http-error"
+import { MimeType, mimeTypeFromExtension } from "../std/web/mime-type"
+import {
+  isRedirect,
+  type Handler,
+  type Response as HandlerResponse,
+} from "../std/web/server-handler"
 import { parseFormEncodedUrl } from "./parse-form-encoded-url"
 
 function ResponseFromHttpError(error: HttpError) {
@@ -28,7 +32,7 @@ function ResponseFromHttpError(error: HttpError) {
   })
 }
 
-export { createApp, createRouter, toNodeListener } from "h3"
+export { createApp, createRouter, toNodeListener, type Router } from "h3"
 
 export function staticHandler(
   directory: string,
@@ -110,7 +114,7 @@ export function DefineHandler(config: HandlerConfig) {
         if (isRedirect(result))
           return sendRedirect(event, result.location.href, result.code)
 
-        return new Response(result.body, {
+        return new Response(BodyFromHandlerResponse(result), {
           status: statusCode,
           headers: { "Content-Type": result.type },
         })
@@ -127,4 +131,16 @@ function getHrefFromHost(
   host: string | undefined,
 ): string | undefined {
   return host ? `${protocol}://${host}` : undefined
+}
+
+function BodyFromHandlerResponse(
+  response: HandlerResponse,
+): BodyInit | null | undefined {
+  switch (response.type) {
+    case "Html":
+    case "Png":
+      return response.body
+    case "Json":
+      return response.body ? std.json.stringify(response.body) : undefined
+  }
 }

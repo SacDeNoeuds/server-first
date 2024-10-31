@@ -1,4 +1,4 @@
-import type { Email } from "@/std"
+import { tagged, type Email } from "@/std"
 import type { Repository } from "@/std/repository"
 import { Account, AccountId } from "./account"
 
@@ -24,6 +24,10 @@ export class AccountRepository {
   }
 }
 
-export class AccountNotFound {
-  constructor(readonly email: string) {}
+export class AccountNotFound extends tagged.Class("AccountNotFound")<{
+  email?: Email
+  apiKey?: string
+}> {
+  static fromEmail = (email: Email) => new AccountNotFound({ email })
+  static fromApiKey = (apiKey: string) => new AccountNotFound({ apiKey })
 }

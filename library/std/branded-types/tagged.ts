@@ -58,7 +58,7 @@ export function fromTag<T extends Brand<Shape, string>>(tag: T["_tag"]) {
 export function Class<Tag extends string>(
   tag: Tag,
 ): new <Value extends Record<string, any>>(
-  ...args: {} extends Value ? [] : [Value]
+  ...args: {} extends Value ? [Value?] : [Value]
 ) => Tagged<{ _tag: Tag } & Value> {
   return class {
     readonly _tag = tag

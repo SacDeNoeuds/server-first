@@ -1,12 +1,13 @@
 import { object } from "../core"
 import type { CookieOptions } from "./cookie"
 import { HttpError } from "./http-error"
-import { MimeType } from "./mime-type"
+import { MimeType, type MimeTypeOf } from "./mime-type"
 
 // Let's just add what we will use for now.
 export type Response =
-  | { type: MimeType.Html; body: string }
-  | { type: MimeType.Png; body: Blob }
+  | { type: MimeTypeOf<"Html">; body: string }
+  | { type: MimeTypeOf<"Png">; body: Blob }
+  | { type: MimeTypeOf<"Json">; body: unknown }
 
 export type Redirect = {
   code: 301 | 302
@@ -47,7 +48,9 @@ export type Handler<Res = Response, AddedContext = {}> = (
 
 const Handler =
   <T extends MimeType>(type: T) =>
-  (handler: Handler<(Response & { type: T })["body"]>): Handler =>
+  <C>(
+    handler: Handler<(Response & { type: T })["body"], C>,
+  ): Handler<Response, C> =>
   async (ctx) => {
     const body = await handler(ctx)
     if (body instanceof HttpError) return body
@@ -55,17 +58,19 @@ const Handler =
     return { type, body } as Response
   }
 
-export const HtmlHandler = Handler(MimeType.Html)
-export const PngHandler = Handler(MimeType.Png)
+export const HtmlHandler = Handler("Html")
+export const PngHandler = Handler("Png")
 
 // a bit more difficult, we want to render to string in the process
 export const JsxHandler =
-  <Element extends { toString(): string }>(
-    handler: Handler<Element>,
-  ): Handler =>
+  <Element extends { toString(): string }, C = {}>(
+    handler: Handler<Element, C>,
+  ): Handler<Response, C> =>
   async (ctx) => {
     const jsx = await handler(ctx)
     if (jsx instanceof HttpError) return jsx
     if (isRedirect(jsx)) return jsx
-    return { type: MimeType.Html, body: jsx.toString() }
+    return { type: "Html", body: jsx.toString() }
   }
+
+export const JsonHandler = Handler("Json")
