@@ -1,13 +1,12 @@
 import { pipe } from "../core"
-import { schema as S } from "../schema"
+import * as S from "../schema"
 import type { Brand, ValueOf, ValueOf as ValueOfBranded } from "./brand"
 
 export type ValueEntity<E extends Brand<unknown, string>> = S.Schema<E> & {
   (value: ValueOf<E>): E
 }
 
-export { For as for }
-function For<E extends Brand<unknown, any>>(
+export function fromSchema<E extends Brand<unknown, any>>(
   inputSchema: S.Schema<ValueOf<E>>,
 ): ValueEntity<E> {
   const schema = pipe(

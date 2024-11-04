@@ -5,6 +5,6 @@ export {
   InMemoryRepository,
   type Repository,
 } from "./repository"
-export { schema } from "./schema"
+export * as schema from "./schema"
 export type { Simplify } from "./types"
 export { defineUseCases, type DepsOf, type UseCasesOf } from "./use-cases"

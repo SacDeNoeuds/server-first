@@ -4,7 +4,7 @@ import { InMemoryRepository } from "@/std/repository"
 import { schema as S } from "@/std/schema"
 import { AccountRepository } from "@domain/authentication/domain/account"
 import { groceryList } from "@domain/grocery-list"
-import { GroceryListRepository } from "@domain/grocery-list/domain/grocery-list"
+import { GroceryListRepository } from "@domain/grocery-list/domain"
 import type { RepositoryInfra } from "./repository-infra"
 
 export const RepositoryInfraInMemory = (): RepositoryInfra => ({

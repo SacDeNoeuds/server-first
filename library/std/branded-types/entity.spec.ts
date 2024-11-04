@@ -1,5 +1,5 @@
 import { pipe } from "../core"
-import { schema as S } from "../schema"
+import * as S from "../schema"
 import * as entity from "./entity"
 
 type PersonName = entity.OfType<string>

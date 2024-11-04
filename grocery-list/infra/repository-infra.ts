@@ -1,5 +1,5 @@
 import type { AccountRepository } from "@domain/authentication/domain/account"
-import type { GroceryListRepository } from "../context/grocery-list/domain/grocery-list/grocery-list-repo"
+import type { GroceryListRepository } from "@domain/grocery-list/domain"
 
 export type RepositoryInfra = {
   account: AccountRepository

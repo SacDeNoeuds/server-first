@@ -13,7 +13,7 @@
     "paths": {
       "jsx-server/*": ["../library/jsx-server/*"],
       "@/*": ["../library/*"],
-      "@domain/*": ["./context/*"],
+      "@domain/*": ["./core/*"],
       "@shared/*": ["./shared/*"],
     },
   }

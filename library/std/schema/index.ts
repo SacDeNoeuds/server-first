@@ -1,1 +1,1 @@
-export * as schema from "./in-house"
+export * from "./in-house"

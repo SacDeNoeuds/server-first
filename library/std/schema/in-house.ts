@@ -321,12 +321,13 @@ object.concat = function concat<Value extends Record<PropertyKey, any>>(
 }
 
 object.omit = function omit<T, K extends keyof T>(...keys: K[]) {
-  return (schema: ObjectSchema<T>) =>
-    core.pipe(
+  return (schema: ObjectSchema<T>) => {
+    return core.pipe(
       schema.props as any,
       core.object.omit(...keys),
       object<Omit<T, K>>,
     )
+  }
 }
 
 export interface MapSchema<T extends Map<any, any>> extends Schema<T> {
