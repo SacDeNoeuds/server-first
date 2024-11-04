@@ -1,7 +1,7 @@
 import { readFile, readdir, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { json } from "../core"
-import { schema as S } from "../schema"
+import * as S from "../schema"
 import type { Repository } from "./definition"
 
 type Init<T> = {

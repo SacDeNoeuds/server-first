@@ -1,6 +1,6 @@
 import assert from "node:assert"
 import { pipe } from "../core"
-import { schema as S } from "./index"
+import * as S from "./index"
 
 const PersonName = pipe(
   S.string,

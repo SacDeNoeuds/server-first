@@ -1,4 +1,4 @@
-import { schema as S } from "@/std/schema"
+import { schema as S } from "@/std"
 import { BadRequest } from "@/std/web/http-error"
 import { redirectTo } from "@/std/web/server-handler"
 import { ItemName } from "@domain/grocery-list/domain"

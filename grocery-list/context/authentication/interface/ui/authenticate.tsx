@@ -1,7 +1,6 @@
-import { Email } from "@/std"
-import { schema as S } from "@/std/schema"
+import { Email, schema as S } from "@/std"
 import { JsxHandler, redirectTo } from "@/std/web/server-handler"
-import { useCase } from "../../domain"
+import { useCase } from "@domain/authentication/use-case"
 import { AuthForm } from "./components/auth-form"
 import { AuthPage } from "./components/auth-page"
 

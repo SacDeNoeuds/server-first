@@ -1,4 +1,4 @@
-import { schema as S } from "@/std/schema"
+import { schema as S } from "@/std"
 import { redirectTo } from "@/std/web/server-handler"
 import { withAuthWall } from "@domain/authentication/interface/ui"
 import { ListName } from "@domain/grocery-list/domain"

@@ -1,0 +1,13 @@
+echo "Generate dependency graph of $1"
+
+replace_slash() {
+    local original="$1"
+    local replacement="$2"
+    
+    # Use parameter expansion to replace all '/' with the replacement character
+    echo "${original//\//$replacement}"
+}
+
+OUTFILE=$(replace_slash $1 "--")
+
+npx depcruise --max-depth 5 --exclude "node_modules|library|test.*|\\spec\\.ts$" --output-type dot "$1" | dot -T svg > "./docs/$OUTFILE.svg"

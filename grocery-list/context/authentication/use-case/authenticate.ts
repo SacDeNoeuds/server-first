@@ -1,5 +1,5 @@
 import type { Email } from "@/std"
-import type { Account, AccountRepository } from "../account"
+import type { Account, AccountRepository } from "../domain"
 
 export type Authenticate = (email: Email) => Promise<Account | undefined>
 export const Authenticate =

@@ -4,7 +4,7 @@ import type {
   HandlerContext,
   Response,
 } from "@/std/web/server-handler"
-import { type Account } from "@domain/authentication/domain"
+import type { Account } from "@domain/authentication/domain"
 
 async function authenticateByApiKey(
   apiKey: string,

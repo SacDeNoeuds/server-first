@@ -9,8 +9,31 @@ This is a collection of server-side jsx projects. The structure:
 npm run check # or ./check-ts
 
 # start grocery-list:
-npx tsx --watch --tsconfig ./grocery-list/tsconfig.json ./grocery-list/interface/server.ts
+cd grocery-list
+npx tsx --watch --tsconfig ./tsconfig.json ./interface/server.ts
+
+# generate a graph of dependencies for a single file:
+./graph-of context/grocery-list/use-case/join-grocery-list.ts
+./graph-of context/grocery-list/interface/ui/handler/tick-grocery-list-item-:id.tsx
 ```
+
+<details>
+  <summary>
+    grocery-list/interface/ui/handler/join-grocery-list-:id
+  </summary>
+
+![grocery-list/interface/ui/handler/join-grocery-list-:id](./grocery-list/docs/context--grocery-list--interface--ui--handler--join-grocery-list-:id.tsx.svg)
+
+</details>
+
+<details>
+<summary>
+grocery-list/interface/ui/handler/tick-grocery-item-list-:id
+</summary>
+
+![grocery-list/interface/ui/handler/tick-grocery-item-list-:id](./grocery-list/docs/context--grocery-list--interface--ui--handler--tick-grocery-list-item-:id.tsx.svg)
+
+</details>
 
 ```txt
 server-first/
@@ -20,7 +43,7 @@ server-first/
 │   ├── json-patch/ -> collection of json-patch tools exposed in a unified stable API.
 │   └── jsx-server/ -> my implementation of server-side jsx that TS can understand.
 └── [project: grocery-list]/
-    ├── core/
+    ├── context/
     │   └── [context-name]/
     │       ├── domain/[domain-name]/ -> entities, repo specs, synchronous behavior logic.
     │       ├── use-case/ -> use-cases requiring infrastructure as dependency
