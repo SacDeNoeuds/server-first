@@ -2,13 +2,13 @@ import { pipe } from "../core"
 import * as S from "../schema"
 import type { Brand, ValueOf, ValueOf as ValueOfBranded } from "./brand"
 
-export type ValueEntity<E extends Brand<unknown, string>> = S.Schema<E> & {
+export type EntityValue<E extends Brand<unknown, string>> = S.Schema<E> & {
   (value: ValueOf<E>): E
 }
 
 export function fromSchema<E extends Brand<unknown, any>>(
   inputSchema: S.Schema<ValueOf<E>>,
-): ValueEntity<E> {
+): EntityValue<E> {
   const schema = pipe(
     inputSchema,
     S.map((value) => value as E),
@@ -16,5 +16,5 @@ export function fromSchema<E extends Brand<unknown, any>>(
   const fn = (value: ValueOfBranded<E>) => S.unsafeDecode(value, schema)
   return Object.assign(fn, {
     ...schema,
-  }) as unknown as ValueEntity<E>
+  }) as unknown as EntityValue<E>
 }

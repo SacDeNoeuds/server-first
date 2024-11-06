@@ -1,4 +1,4 @@
-import { TaggedClass } from "../branded-types/tagged-weird-idea-I-keep-for-history"
+import * as tagged from "../branded-types/tagged"
 import * as core from "../core"
 
 export interface Issue {
@@ -8,11 +8,11 @@ export interface Issue {
   readonly value: unknown
 }
 
-class Failure extends TaggedClass("Failure")<{ readonly issues: Issue[] }> {}
+class Failure extends tagged.Class("Failure")<{ readonly issues: Issue[] }> {}
 export type { Failure }
-export const isFailure = core.isInstanceOf(Failure)
+export const isFailure = tagged.isTaggedAs<Failure>("Failure")
 
-class Success<T> extends TaggedClass("Success")<{ value: T }> {}
+class Success<T> extends tagged.Class("Success")<{ value: T }> {}
 export type { Success }
 export const isSuccess = core.isInstanceOf(Success)
 
@@ -50,12 +50,13 @@ export interface Schema<T> {
   // is: (value: unknown) => value is T
   decode: (value: unknown, context?: DecodeContext) => Result<T>
 }
+export type ValueOf<T> = T extends Schema<infer U> ? U : never
 
 export function unsafeDecode<T>(value: unknown, schema: Schema<T>): T {
   const result = schema.decode(value)
-  if (result instanceof Failure)
-    throw new Error("decode failure", { cause: result.issues })
-  return result.value
+  if (result instanceof Success) return result.value
+  console.error("failed to decode:", value, schema.type, result.issues)
+  throw new Error("decode failure", { cause: result.issues })
 }
 
 export type InferValue<T> = T extends Schema<infer S> ? S : never
@@ -93,9 +94,12 @@ export function fromPredicate<Value>(
   }
 }
 
-export function refine<Value>(name: string, refine: (value: Value) => boolean) {
-  return (schema: Schema<Value>): Schema<Value> => ({
-    type: schema.type,
+export function refine<S extends Schema<any>>(
+  name: string,
+  refine: (value: ValueOf<S>) => boolean,
+) {
+  return (schema: S): S => ({
+    ...schema,
     refinements: [...schema.refinements, name],
     decode: (value, context = createDecodeContext()) => {
       const [err, result] = resultToTuple(schema.decode(value, context))
@@ -113,8 +117,7 @@ export const refineTo = refine as <T, U extends T>(
 
 export function map<Input, Output>(mapper: (input: Input) => Output) {
   return (schema: Schema<Input>): Schema<Output> => ({
-    type: schema.type,
-    refinements: schema.refinements,
+    ...schema,
     decode: (value, context = createDecodeContext()) => {
       const [err, result] = resultToTuple(schema.decode(value, context))
       return err ? err : success(context, mapper(result))
@@ -368,20 +371,20 @@ export function greaterThan<T extends { valueOf(): number }>(
   min: T,
   reason: string,
 ) {
-  return refine<T>(reason, (value) => value.valueOf() > min.valueOf())
+  return refine<Schema<T>>(reason, (value) => value.valueOf() > min.valueOf())
 }
 export function lowerThan<T extends { valueOf(): number }>(
   max: T,
   reason: string,
 ) {
-  return refine<T>(reason, (value) => value.valueOf() < max.valueOf())
+  return refine<Schema<T>>(reason, (value) => value.valueOf() < max.valueOf())
 }
 export function between<T extends { valueOf(): number }>(
   min: T,
   max: T,
   reason: string,
 ) {
-  return refine<T>(reason, (value) => {
+  return refine<Schema<T>>(reason, (value) => {
     return value.valueOf() > min.valueOf() && value.valueOf() < max.valueOf()
   })
 }
@@ -397,10 +400,10 @@ export function size<T extends { size: number } | { length: number }>(options: {
   max?: number
   reason: string
 }) {
-  return refine<T>(options.reason, (value) => {
+  return refine<Schema<T>>(options.reason, (value) => {
     const size: number = (value as any)?.length ?? (value as any)?.size
     const min = options.min ?? -Infinity
     const max = options.max ?? Infinity
-    return size >= min && size < max
+    return size >= min && size <= max
   })
 }

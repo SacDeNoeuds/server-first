@@ -1,28 +1,34 @@
 import { BadRequest } from "@/std/web/http-error"
-import type { Handler } from "@/std/web/server-handler"
+import type { ServerHandler } from "@/std/web/server-handler"
 import type { authentication } from "@domain/authentication"
-import { withAuthWall } from "@domain/authentication/interface/ui"
+import type { GroceryList } from "@domain/grocery-list/domain"
 import { Participant, type GroceryListId } from "@domain/grocery-list/domain"
-import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
-import { useCase } from "@domain/grocery-list/use-case"
+import type { FindGroceryList } from "@domain/grocery-list/use-case/find-grocery-list"
 import type { JSX } from "jsx-server/jsx-runtime"
 import { NotFoundPage } from "../components/not-found-page"
 
-export const withGroceryList = (
-  handler: Handler<
-    JSX.Element,
-    { account: authentication.Account; groceryList: GroceryList }
-  >,
-): Handler =>
-  withAuthWall(async (ctx) => {
-    const id = ctx.params.id as GroceryListId | undefined
-    if (!id) return BadRequest({ message: "please provide an id" })
+export type WithGroceryList = ReturnType<typeof WithGroceryList>
 
-    const groceryList = await useCase.findGroceryList(id)
-    const participant = Participant(ctx.account.id)
-    if (!groceryList || !groceryList.participants.has(participant)) {
-      ctx.setStatus(404)
-      return <NotFoundPage message={`grocery list "${id}" does not exist 🧐`} />
+export const WithGroceryList =
+  (deps: { findGroceryList: FindGroceryList }) =>
+  (
+    handler: ServerHandler<
+      JSX.Element,
+      { account: authentication.Account; groceryList: GroceryList }
+    >,
+  ): ServerHandler<JSX.Element, { account: authentication.Account }> => {
+    return async (ctx) => {
+      const id = ctx.params.id as GroceryListId | undefined
+      if (!id) return BadRequest({ message: "please provide an id" })
+
+      const participant = Participant(ctx.account.id)
+      const groceryList = await deps.findGroceryList(id, participant)
+      if (!groceryList) {
+        ctx.setStatus(404)
+        return (
+          <NotFoundPage message={`grocery list "${id}" does not exist 🧐`} />
+        )
+      }
+      return handler({ ...ctx, groceryList })
     }
-    return handler({ ...ctx, groceryList })
-  })
+  }

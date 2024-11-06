@@ -1,11 +1,8 @@
 import * as GroceryListApi from "./behavior"
-import {
-  GroceryList,
-  GroceryListId,
-  ItemName,
-  ItemQuantity,
-  ListName,
-} from "./grocery-list"
+import { GroceryList, GroceryListId } from "./entity/grocery-list"
+import { ItemName } from "./entity/item-name"
+import { ItemQuantity } from "./entity/item-quantity"
+import { ListName } from "./entity/list-name"
 
 const make = (parts?: Partial<GroceryList>) =>
   GroceryList({

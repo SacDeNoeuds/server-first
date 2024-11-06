@@ -1,10 +1,7 @@
 export * as GroceryListBehavior from "./behavior"
-export {
-  GroceryList,
-  GroceryListId,
-  ItemName,
-  ItemQuantity,
-  ListName,
-  Participant,
-} from "./grocery-list"
+export { GroceryList, GroceryListId } from "./entity/grocery-list"
+export { ItemName } from "./entity/item-name"
+export { ItemQuantity } from "./entity/item-quantity"
+export { ListName } from "./entity/list-name"
+export { Participant } from "./entity/participant"
 export { GroceryListNotFound, GroceryListRepository } from "./grocery-list-repo"

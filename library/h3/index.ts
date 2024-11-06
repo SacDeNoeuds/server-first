@@ -16,8 +16,8 @@ import { HttpError, NotFound } from "../std/web/http-error"
 import { MimeType, mimeTypeFromExtension } from "../std/web/mime-type"
 import {
   isRedirect,
-  type Handler,
   type Response as HandlerResponse,
+  type ServerHandler,
 } from "../std/web/server-handler"
 import { parseFormEncodedUrl } from "./parse-form-encoded-url"
 
@@ -38,8 +38,8 @@ export function staticHandler(
   directory: string,
   options?: Omit<ServeStaticOptions, "getMeta" | "getContents">,
 ) {
-  return defineEventHandler((event) =>
-    serveStatic(event, {
+  return defineEventHandler((event) => {
+    return serveStatic(event, {
       ...options,
       getMeta: async (id) => {
         const stats = await stat(path.join(directory, id))
@@ -52,16 +52,18 @@ export function staticHandler(
           ...(type && { type }),
         }
       },
-      getContents: (id) => readFile(path.join(directory, id), "utf8"),
-    }),
-  )
+      getContents: (id) => {
+        return readFile(path.join(directory, id), "utf8")
+      },
+    })
+  })
 }
 
 export type HandlerConfig = {
   protocol: "http" | "https"
 }
 export function DefineHandler(config: HandlerConfig) {
-  return function defineHandler(handler: Handler) {
+  return function defineHandler(handler: ServerHandler) {
     return defineEventHandler(async (event) => {
       const method = event.method.toLowerCase()
       if (method !== "get" && method !== "post")

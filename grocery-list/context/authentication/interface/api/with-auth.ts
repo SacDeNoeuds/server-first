@@ -1,8 +1,8 @@
 import type { HttpError } from "@/std/web/http-error"
 import type {
-  Handler,
-  HandlerContext,
   Response,
+  ServerHandler,
+  ServerHandlerContext,
 } from "@/std/web/server-handler"
 import type { Account } from "@domain/authentication/domain"
 
@@ -12,14 +12,15 @@ async function authenticateByApiKey(
   return undefined
 }
 
-export function withAuth<A extends Response>(options: {
-  handler: Handler<A, { account: Account }>
-  error: (ctx: HandlerContext) => HttpError
-}): Handler<A> {
-  return async (ctx) => {
-    const apiKey = ctx.getHeader("X-API-KEY")
-    const account = apiKey && (await authenticateByApiKey(apiKey))
+export function withAuth(error: (ctx: ServerHandlerContext) => HttpError) {
+  return <A extends Response>(
+    handler: ServerHandler<A, { account: Account }>,
+  ): ServerHandler<A> => {
+    return async (ctx) => {
+      const apiKey = ctx.getHeader("X-API-KEY")
+      const account = apiKey && (await authenticateByApiKey(apiKey))
 
-    return account ? options.handler({ ...ctx, account }) : options.error(ctx)
+      return account ? handler({ ...ctx, account }) : error(ctx)
+    }
   }
 }

@@ -2,7 +2,7 @@ import type {
   GroceryList,
   ItemName,
   ItemQuantity,
-} from "@domain/grocery-list/domain/grocery-list"
+} from "@domain/grocery-list/domain"
 import { IntegerInput } from "@shared/ui/kit/integer-input"
 
 interface Props {

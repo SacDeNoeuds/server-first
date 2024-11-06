@@ -171,6 +171,19 @@ expectSuccess({
   value: { name: "hello", age: 42 },
 })
 
+expectSuccess({
+  because: "why not",
+  schema: pipe(
+    S.object({ name: S.string, age: S.number }),
+    S.refine("must be major", ({ name, age }) => {
+      if (name === "toto") return age >= 18
+      return age >= 21
+    }),
+    (v) => v,
+  ),
+  value: { name: "toto", age: 12 },
+})
+
 // const subtractYears = (date: Date, n: number) => {
 //   const copy = new Date(date)
 //   copy.setFullYear(copy.getFullYear() - n)

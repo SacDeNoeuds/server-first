@@ -1,2 +1,2 @@
 export { GroceryList } from "./domain"
-export { registerUseCases, useCase } from "./use-case"
+export { useCases, type UseCases } from "./use-case"

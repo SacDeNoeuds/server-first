@@ -1,4 +1,4 @@
-import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
+import type { GroceryList } from "@domain/grocery-list/domain"
 import { NewGroceryListForm } from "./new-grocery-list-form"
 import { PageLayout } from "./page-layout"
 

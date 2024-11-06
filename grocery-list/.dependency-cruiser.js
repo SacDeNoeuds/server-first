@@ -323,7 +323,7 @@ module.exports = {
            collapses everything in node_modules to one folder deep so you see
            the external modules, but their innards.
          */
-        collapsePattern: "node_modules/(?:@[^/]+/[^/]+|[^/]+)",
+        collapsePattern: "node_modules/(?:@[^/]+/[^/]+|[^/]+)|@/std",
 
         /* Options to tweak the appearance of your graph.See
            https://github.com/sverweij/dependency-cruiser/blob/main/doc/options-reference.md#reporteroptions

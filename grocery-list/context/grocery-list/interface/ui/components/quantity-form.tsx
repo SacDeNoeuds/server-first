@@ -1,4 +1,4 @@
-import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
+import type { GroceryList } from "@domain/grocery-list/domain"
 import { IntegerInput } from "@shared/ui/kit/integer-input"
 
 interface Props {

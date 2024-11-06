@@ -1,35 +1,27 @@
 import type { Brand, ValueOf as ValueOfBranded } from "./brand"
 
 export type Shape = { readonly _tag: string }
-export type Tagged<Value extends Shape> = Brand<Value, Value["_tag"]>
+export type Object<Value extends Shape> = Brand<Value, Value["_tag"]>
 export type ValueOf<Value extends Brand<Shape, string>> = Omit<
   ValueOfBranded<Value>,
   "_tag"
 >
 
-// function isTaggedAs
-//   <Target extends KindedShape>(tag: TagOf<Target>) {
-//     return (input: Tagged<any, any> | Target): input is Target => {
-//       // @ts-ignore
-//       return input?.[symbolForTag] === tag
-//     }
-//   }
-
 /**
  * @example
- * type BirthDate = Tagged<"BirthDate", Date>
- * const BirthDate = Tagged<BirthDate>("BirthDate")
- * const birthDate = BirthDate(new Date())
+ * import { tagged } from '@/std'
  *
- * type PersonName = Tagged<"PersonName", string>
- * const PersonName = Tagged<PersonName>("PersonName")
- *
- * type Person = Kinded<{
+ * type Person = tagged.Object<{
  *   _tag: "Person"
  *   name: PersonName
  *   birthDate: BirthDate
  * }>
- * const Person = Tagged<Person>("Person")
+ * const Person = fromTag<Person>("Person")
+ * const Jack = Person({
+ *   name: "jack" as PersonName,
+ *   birthDate: new Date(),
+ *   age: 12,
+ *})
  */
 export function fromTag<T extends Brand<Shape, string>>(tag: T["_tag"]) {
   return (value: Omit<ValueOfBranded<T>, "_tag">): T => {
@@ -37,18 +29,45 @@ export function fromTag<T extends Brand<Shape, string>>(tag: T["_tag"]) {
   }
 }
 
+export function isTaggedAs<Target extends Shape>(tag: Target["_tag"]) {
+  return <Input extends Shape>(input: Input | Target): input is Target => {
+    return input._tag === tag
+  }
+}
+
+export function mapOnly<T extends Shape>(tag: T["_tag"]) {
+  const isT = isTaggedAs(tag)
+  return <Output>(mapper: (input: T) => Output) => {
+    return <Input extends Shape>(input: Input | T) => {
+      return isT(input) ? mapper(input) : input
+    }
+  }
+}
+
+export function mapNot<T extends Shape>(tag: T["_tag"]) {
+  const isT = isTaggedAs(tag)
+  return <Input extends Shape, Output>(mapper: (input: Input) => Output) => {
+    return (input: Input | T) => {
+      return isT(input) ? input : mapper(input)
+    }
+  }
+}
+
 /**
  * @example
- * class PersonNotFound extends TaggedClass("PersonNotFound")<{
+ * import { tagged } from '@/std'
+ *
+ * class PersonNotFound extends tagged.Class("PersonNotFound")<{
  *   name: PersonName
  * }> {}
  * const error = new PersonNotFound({ name: PersonName("Jack") })
  *
- * class Person extends TaggedClass("Person")<{
+ * class Person extends tagged.Class("Person")<{
  *   name: PersonName
  *   birthDate: BirthDate
  *   age: PersonAge
  * }> {}
+ *
  * const Jack = new Person({
  *   name: PersonName("Jack"),
  *   birthDate: BirthDate(new Date()),
@@ -59,7 +78,7 @@ export function Class<Tag extends string>(
   tag: Tag,
 ): new <Value extends Record<string, any>>(
   ...args: {} extends Value ? [Value?] : [Value]
-) => Tagged<{ _tag: Tag } & Value> {
+) => Object<{ _tag: Tag } & Value> {
   return class {
     readonly _tag = tag
     constructor(value?: Record<string, any>) {
@@ -74,13 +93,13 @@ type InputCases<Input extends Shape> = {
   ) => any
 }
 
-type ReturnsTypeOr<T, Fallback> = [T] extends [never]
+type ReturnTypeOr<T, Fallback> = [T] extends [never]
   ? Fallback
   : T extends (...args: any[]) => infer R
   ? R
   : Fallback
 type CaseReturnTypes<Input extends Shape, Cases extends {}> = {
-  [Tag in Input["_tag"]]: ReturnsTypeOr<
+  [Tag in Input["_tag"]]: ReturnTypeOr<
     Cases[Extract<Tag, keyof Cases>],
     Extract<Input, { readonly _tag: Tag }>
   >
@@ -104,11 +123,9 @@ export function match<
 
 /**
  * @example
- * declare const input: Person | PersonName | BirthDate | PersonNotFound
+ * declare const input: Person | PersonNotFound
  * const result = tagged.matchAll(value, {
- *    BirthDate: (date) => date.valueOf(),
  *    Person: (person) => person.name.length,
- *    PersonName: (name) => name.length,
  *    PersonNotFound: (err) => err.name,
  *  })
  * // number | PersonName
@@ -123,17 +140,15 @@ export function matchAll<Input extends Shape, Cases extends InputCases<Input>>(
 
 /**
  * @example
- * declare const input: Person | PersonName | BirthDate | PersonNotFound
+ * declare const input: Person | PersonNotFound
  * const result = std.pipe(
  *   input,
  *   tagged.foldAll({
- *     BirthDate: (date) => date.valueOf(),
  *     Person: (person) => person.name,
- *     PersonName: (name) => name.length,
  *     PersonNotFound: (err) => err.name,
  *   }),
  * )
- * // number | PersonName
+ * // PersonName
  */
 export function foldAll<Input extends Shape, Cases extends InputCases<Input>>(
   cases: Cases,
@@ -143,14 +158,14 @@ export function foldAll<Input extends Shape, Cases extends InputCases<Input>>(
 
 /**
  * @example
- * declare const input: Person | PersonName | BirthDate | PersonNotFound
+ * declare const input: Person | PersonNotFound
  * const result = std.pipe(
  *   value,
  *   tagged.fold({
  *     Person: (person) => person.name.valueOf(),
  *   }),
  * )
- * // string | PersonName | BirthDate | PersonNotFound
+ * // string | PersonNotFound
  */
 export function fold<
   Input extends Shape,

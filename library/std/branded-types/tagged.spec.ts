@@ -5,13 +5,15 @@ import {
   fold,
   foldAll,
   fromTag,
+  mapNot,
+  mapOnly,
   match,
   matchAll,
-  type Tagged,
+  type Object,
 } from "./tagged"
 
 type PersonName = Brand<string, "PersonName">
-type Person = Tagged<{
+type Person = Object<{
   _tag: "Person"
   name: PersonName
   birthDate: Date
@@ -62,3 +64,25 @@ console.info({
     }),
   ),
 })
+
+console.info("--- mapOnly ---")
+const mapPerson = mapOnly<Person>("Person")
+console.info({
+  mapped: pipe(
+    input,
+    mapPerson((person) => person.name),
+    (v) => v,
+  ),
+})
+console.info()
+
+console.info("--- mapNot ---")
+const mapNotPerson = mapNot<Person>("Person")
+console.info({
+  mapped: pipe(
+    input,
+    mapNotPerson((err) => err.name),
+    (v) => v,
+  ),
+})
+console.info()

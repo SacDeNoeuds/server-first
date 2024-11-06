@@ -56,6 +56,11 @@ export const concat =
   <S2 extends AnyObject>(s2: S2) =>
   <S1 extends AnyObject>(s1: S1): S1 & S2 => ({ ...s1, ...s2 })
 
+// export const assign =
+//   <T extends Record<PropertyKey, any>>(value: T) =>
+//   <U extends object>(target: U): U & T =>
+//     Object.assign(target, value)
+
 export const assignTo =
   <Key extends string, Value>(key: Key) =>
   (value: Value) =>

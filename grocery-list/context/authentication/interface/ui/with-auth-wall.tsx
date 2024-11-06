@@ -1,15 +1,18 @@
 import { Email, schema as S } from "@/std"
-import { JsxHandler, type Handler } from "@/std/web/server-handler"
+import { type ServerHandler } from "@/std/web/server-handler"
 import type { Account } from "@domain/authentication/domain"
-import { useCase } from "@domain/authentication/use-case"
+import type { Authenticate } from "@domain/authentication/use-case/authenticate"
 import type { JSX } from "jsx-server/jsx-runtime"
 import { AuthForm } from "./components/auth-form"
 import { AuthPage } from "./components/auth-page"
 
-export const withAuthWall = (
-  handler: Handler<JSX.Element, { account: Account }>,
-): Handler =>
-  JsxHandler(async (ctx) => {
+export type WithAuthWall = ReturnType<typeof WithAuthWall>
+export const WithAuthWall =
+  (useCase: { authenticate: Authenticate }) =>
+  (
+    handler: ServerHandler<JSX.Element, { account: Account }>,
+  ): ServerHandler<JSX.Element, {}> =>
+  async (ctx) => {
     const email = Email.decode(ctx.getCookie("account-id"))
     const account =
       S.isSuccess(email) && (await useCase.authenticate(email.value))
@@ -21,4 +24,4 @@ export const withAuthWall = (
         <AuthForm redirectTo={referrer} />
       </AuthPage>
     )
-  })
+  }

@@ -25,7 +25,7 @@ export const redirectPermanentlyTo = (location: URL): Redirect => ({
   location,
 })
 
-export type HandlerContext = {
+export type ServerHandlerContext = {
   url: URL
   // only 'get' and 'post' are supported when working with HTML forms
   method: "get" | "post"
@@ -42,15 +42,22 @@ export type HandlerContext = {
   /** can be mutated in the handlers */
   setStatus: (code: number) => void
 }
-export type Handler<Res = Response, AddedContext = {}> = (
-  context: HandlerContext & AddedContext,
+export type ServerHandler<Res = Response, AddedContext = {}> = (
+  context: ServerHandlerContext & AddedContext,
 ) => Promise<HttpError | Res | Redirect>
+
+export type ServerMiddleware<
+  R,
+  Context extends { current: any; added: any },
+> = (
+  handler: ServerHandler<R, Context["current"] & Context["added"]>,
+) => ServerHandler<R, Context["current"]>
 
 const Handler =
   <T extends MimeType>(type: T) =>
   <C>(
-    handler: Handler<(Response & { type: T })["body"], C>,
-  ): Handler<Response, C> =>
+    handler: ServerHandler<(Response & { type: T })["body"], C>,
+  ): ServerHandler<Response, C> =>
   async (ctx) => {
     const body = await handler(ctx)
     if (body instanceof HttpError) return body
@@ -64,8 +71,8 @@ export const PngHandler = Handler("Png")
 // a bit more difficult, we want to render to string in the process
 export const JsxHandler =
   <Element extends { toString(): string }, C = {}>(
-    handler: Handler<Element, C>,
-  ): Handler<Response, C> =>
+    handler: ServerHandler<Element, C>,
+  ): ServerHandler<Response, C> =>
   async (ctx) => {
     const jsx = await handler(ctx)
     if (jsx instanceof HttpError) return jsx

@@ -1,4 +1,4 @@
-import type { GroceryList } from "@domain/grocery-list/domain/grocery-list"
+import type { GroceryList } from "@domain/grocery-list/domain"
 import type { JSX } from "jsx-server/jsx-runtime"
 
 interface Props {

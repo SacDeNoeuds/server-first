@@ -1,11 +1,8 @@
-import {
-  GroceryList,
-  GroceryListId,
-  ItemName,
-  ItemQuantity,
-  type ListName,
-  type Participant,
-} from "./grocery-list"
+import { GroceryList, GroceryListId } from "./entity/grocery-list"
+import type { ItemName } from "./entity/item-name"
+import type { ItemQuantity } from "./entity/item-quantity"
+import type { ListName } from "./entity/list-name"
+import type { Participant } from "./entity/participant"
 
 export function create(input: {
   name: ListName

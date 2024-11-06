@@ -7,7 +7,7 @@ body {
 }
 `.trim()
 
-export const getHomePage = JsxHandler(async (ctx) => {
+export const getHomePageHandler = JsxHandler(async (ctx) => {
   return (
     <Html>
       <style>{styles}</style>
