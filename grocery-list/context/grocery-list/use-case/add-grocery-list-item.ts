@@ -1,9 +1,9 @@
 import {
   GroceryList,
-  GroceryListBehavior,
-  ItemName,
-  ItemQuantity,
+  GroceryListAggregate,
   type GroceryListRepository,
+  type ItemName,
+  type ItemQuantity,
 } from "../domain"
 
 export type AddGroceryListItem = (input: {
@@ -17,7 +17,7 @@ export type AddGroceryListItem = (input: {
 export const AddGroceryListItem =
   (repository: { groceryList: GroceryListRepository }): AddGroceryListItem =>
   async (input) => {
-    const nextGroceryList = GroceryListBehavior.addItem({
+    const nextGroceryList = GroceryListAggregate.addItem({
       groceryList: input.groceryList,
       name: input.itemName,
       quantity: input.itemQuantity,

@@ -1,6 +1,6 @@
 import type { JsonPatchRepository } from "@/json-patch/repository"
-import type { GroceryList } from "./entity/grocery-list"
-import type { Participant } from "./entity/participant"
+import type { GroceryList } from "../grocery-list"
+import type { Participant } from "../value-object/participant"
 
 export class GroceryListRepository {
   constructor(

@@ -1,4 +1,10 @@
-export { Email, entity, tagged } from "./branded-types"
+export {
+  Email,
+  entity,
+  tagged,
+  valueObject,
+  valueObjectId,
+} from "./branded-types"
 export * as std from "./core"
 export {
   FileSystemRepository,

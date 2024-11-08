@@ -1,14 +1,14 @@
-import { Email, entity } from "@/std"
+import { Email, entity, valueObjectId } from "@/std"
 
-export type Account = entity.Object<{
+export type Account = entity.Of<{
   _tag: "Account"
   id: AccountId
   email: Email
 }>
-export type AccountId = entity.Value<string, "AccountId">
+export type AccountId = valueObjectId.Of<string, "AccountId">
 
-export const AccountId = entity.Id<AccountId>()
-export const Account = entity.Object<Account>("Account", {
+export const AccountId = valueObjectId.for<AccountId>()
+export const Account = entity.for<Account>("Account", {
   id: AccountId,
   email: Email,
 })

@@ -1,10 +1,10 @@
 import {
   GroceryList,
-  GroceryListBehavior,
+  GroceryListAggregate,
   GroceryListNotFound,
-  Participant,
   type GroceryListId,
   type GroceryListRepository,
+  type Participant,
 } from "../domain"
 
 export type JoinGroceryList = (input: {
@@ -19,9 +19,9 @@ export const JoinGroceryList =
   async (input) => {
     const groceryList = await repository.groceryList.find(input.groceryListId)
     if (!groceryList) return new GroceryListNotFound(input.groceryListId)
-    const nextGroceryList = GroceryListBehavior.join({
+    const nextGroceryList = GroceryListAggregate.join({
       groceryList,
-      participant: Participant(input.participant),
+      participant: input.participant,
     })
     await repository.groceryList.set(
       input.author,

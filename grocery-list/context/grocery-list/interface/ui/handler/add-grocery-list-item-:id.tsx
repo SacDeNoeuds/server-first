@@ -3,9 +3,9 @@ import { BadRequest } from "@/std/web/http-error"
 import { redirectTo, type ServerHandler } from "@/std/web/server-handler"
 import type { authentication } from "@domain/authentication"
 import {
+  type GroceryList,
   ItemName,
   ItemQuantity,
-  type GroceryList,
 } from "@domain/grocery-list/domain"
 import type { AddGroceryListItem } from "@domain/grocery-list/use-case/add-grocery-list-item"
 import type { JSX } from "jsx-server/jsx-runtime"

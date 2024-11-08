@@ -1,11 +1,11 @@
 import isEmail from "is-email"
 import { pipe } from "../core"
 import * as S from "../schema"
-import * as entity from "./entity"
+import * as valueObject from "./value-object"
 
-export type Email = entity.Value<string, "Email">
+export type Email = valueObject.Of<string, "Email">
 export const Email = pipe(
   S.string,
   S.refine("Email", isEmail),
-  entity.fromSchema<Email>,
+  valueObject.fromSchema<Email>,
 )

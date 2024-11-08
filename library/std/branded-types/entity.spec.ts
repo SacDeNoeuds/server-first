@@ -1,19 +1,20 @@
 import { pipe } from "../core"
 import * as S from "../schema"
 import * as entity from "./entity"
+import * as valueObject from "./value-object"
 
-type Name = entity.Value<string, "Name">
-const Name = entity.fromSchema<Name>(S.string)
+type Name = valueObject.Of<string, "Name">
+const Name = valueObject.fromSchema<Name>(S.string)
 
 const result1 = Name.decode("hello")
 console.dir({ result1 }, { depth: null })
 
 // const Nationality: S.Schema<Nationality> = S.literal("US", "FR")
-type Nationality = entity.Value<"FR" | "US", "Nationality">
-const Nationality = entity.fromSchema<Nationality>(S.literal("US", "FR"))
+type Nationality = valueObject.Of<"FR" | "US", "Nationality">
+const Nationality = valueObject.fromSchema<Nationality>(S.literal("US", "FR"))
 
 const getMajorityAgePerNationality = (nationality: Nationality): number => {
-  switch (nationality as entity.ValueOf<Nationality>) {
+  switch (nationality as valueObject.ValueOf<Nationality>) {
     case "FR":
       return 18
     case "US":
@@ -21,8 +22,8 @@ const getMajorityAgePerNationality = (nationality: Nationality): number => {
   }
 }
 
-type BirthDate = entity.Value<Date, "BirthDate">
-const BirthDate = entity.fromSchema<BirthDate>(S.date)
+type BirthDate = valueObject.Of<Date, "BirthDate">
+const BirthDate = valueObject.fromSchema<BirthDate>(S.date)
 
 const subtractYears = (date: Date, n: number) => {
   const copy = new Date(date)
@@ -33,7 +34,7 @@ const subtractYears = (date: Date, n: number) => {
 const result2 = BirthDate.decode(new Date("1992-09-15T00:00:00.000Z"))
 console.dir({ result2 }, { depth: null })
 
-type Person = entity.Object<{
+type Person = entity.Of<{
   _tag: "Person"
   name: Name
   birthDate: Date
@@ -52,7 +53,7 @@ const isNotCalamityJane = (person: Pick<Person, "name">): boolean => {
 }
 
 const Person = pipe(
-  entity.Object<Person>("Person", {
+  entity.for<Person>("Person", {
     name: Name,
     birthDate: BirthDate,
     nationality: Nationality,

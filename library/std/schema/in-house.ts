@@ -237,7 +237,7 @@ export function or<B>(b: Schema<B>) {
 export const optional = or(literal(undefined))
 export const nil = or(literal(undefined, null))
 
-interface ArraySchema<T> extends Schema<T[]> {
+export interface ArraySchema<T> extends Schema<T[]> {
   readonly item: Schema<T>
 }
 export function array<T>(item: Schema<T>): ArraySchema<T> {
@@ -259,7 +259,7 @@ export function array<T>(item: Schema<T>): ArraySchema<T> {
   }
 }
 
-interface SetSchema<T> extends Schema<Set<T>> {
+export interface SetSchema<T> extends Schema<Set<T>> {
   readonly item: Schema<T>
 }
 

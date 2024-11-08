@@ -1,11 +1,12 @@
-import * as GroceryListApi from "./behavior"
-import { GroceryList, GroceryListId } from "./entity/grocery-list"
-import { ItemName } from "./entity/item-name"
-import { ItemQuantity } from "./entity/item-quantity"
-import { ListName } from "./entity/list-name"
+import * as GroceryListApi from "./aggregate"
+import { GroceryList } from "./grocery-list"
+import { GroceryListId } from "./value-object/grocery-list-id"
+import { ItemName } from "./value-object/item-name"
+import { ItemQuantity } from "./value-object/item-quantity"
+import { ListName } from "./value-object/list-name"
 
-const make = (parts?: Partial<GroceryList>) =>
-  GroceryList({
+const make = (parts?: Partial<GroceryList>) => {
+  return GroceryList({
     id: GroceryListId("toto"),
     name: ListName("Le chateau"),
     participants: new Set(),
@@ -13,6 +14,7 @@ const make = (parts?: Partial<GroceryList>) =>
     lastUpdate: new Date(),
     ...parts,
   })
+}
 
 const original = make({
   items: new Map([[ItemName("bread"), { quantity: ItemQuantity(2) }]]),
