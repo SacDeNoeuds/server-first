@@ -6,13 +6,18 @@ import { GroceryListPage } from "../components/grocery-list-page"
 
 type Handler = ServerHandler<
   JSX.Element,
-  { account: authentication.Account; groceryList: GroceryList }
+  {
+    account: authentication.Account
+    groceryList: GroceryList
+    lastGroceryListUpdate: Date
+  }
 >
 
 export const getGroceryListPageHandler: Handler = async (ctx) => {
   return (
     <GroceryListPage
       groceryList={ctx.groceryList}
+      lastGroceryListUpdate={ctx.lastGroceryListUpdate}
       joinUrl={new URL(`/join-grocery-list/${ctx.groceryList.id}`, ctx.url)}
     />
   )

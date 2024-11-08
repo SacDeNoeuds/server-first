@@ -3,29 +3,28 @@ import type { GroceryList } from "../grocery-list"
 import type { Participant } from "../value-object/participant"
 
 export class GroceryListRepository {
-  constructor(
-    private repo: JsonPatchRepository<Omit<GroceryList, "lastUpdate">>,
-  ) {}
+  constructor(private repo: JsonPatchRepository<GroceryList>) {}
 
-  #revive = (item: {
-    value: Omit<GroceryList, "lastUpdate">
-    lastUpdate: Date
-  }): GroceryList => ({
-    ...item.value,
-    lastUpdate: item.lastUpdate,
-  })
+  // #revive = (item: {
+  //   value: Omit<GroceryList, "lastUpdate">
+  //   lastUpdate: Date
+  // }): GroceryList => ({
+  //   ...item.value,
+  //   lastUpdate: item.lastUpdate,
+  // })
 
   set = async (
     author: string,
     at: Date,
-    groceryList: Omit<GroceryList, "lastUpdate">,
+    groceryList: GroceryList,
   ): Promise<void> => {
     await this.repo.set(author, at, groceryList.id, groceryList)
   }
 
-  find = async (id: string): Promise<GroceryList | undefined> => {
-    const item = await this.repo.findById(id)
-    return item && this.#revive(item)
+  find = async (
+    id: string,
+  ): Promise<{ value: GroceryList; lastUpdate: Date } | undefined> => {
+    return this.repo.findById(id)
   }
 
   remove = (id: string): Promise<void> => {
@@ -34,11 +33,9 @@ export class GroceryListRepository {
 
   listByParticipant = async (
     participant: Participant,
-  ): Promise<GroceryList[]> => {
+  ): Promise<{ value: GroceryList; lastUpdate: Date }[]> => {
     const list = await this.repo.list()
-    return list
-      .filter((item) => item.value.participants.has(participant))
-      .map(this.#revive)
+    return list.filter((item) => item.value.participants.has(participant))
   }
 }
 

@@ -14,7 +14,11 @@ export const WithGroceryList =
   (
     handler: ServerHandler<
       JSX.Element,
-      { account: authentication.Account; groceryList: GroceryList }
+      {
+        account: authentication.Account
+        groceryList: GroceryList
+        lastGroceryListUpdate: Date
+      }
     >,
   ): ServerHandler<JSX.Element, { account: authentication.Account }> => {
     return async (ctx) => {
@@ -29,6 +33,10 @@ export const WithGroceryList =
           <NotFoundPage message={`grocery list "${id}" does not exist 🧐`} />
         )
       }
-      return handler({ ...ctx, groceryList })
+      return handler({
+        ...ctx,
+        groceryList: groceryList.value,
+        lastGroceryListUpdate: groceryList.lastUpdate,
+      })
     }
   }

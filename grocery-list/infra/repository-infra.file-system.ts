@@ -1,6 +1,6 @@
 import type { JsonPatchHistory } from "@/json-patch/history"
 import { JsonPatchRepository } from "@/json-patch/repository"
-import { schema as S, std } from "@/std"
+import { schema as S } from "@/std"
 import { FileSystemRepository } from "@/std/repository"
 import { authentication } from "@domain/authentication"
 import { AccountRepository } from "@domain/authentication/domain"
@@ -24,7 +24,7 @@ export const RepositoryInfraFileSystem = (): RepositoryInfra => ({
         directory: db("grocery-list"),
         schema: S.cast<JsonPatchHistory>("JsonPatchHistory"),
       }),
-      schema: std.pipe(groceryList.GroceryList, S.object.omit("lastUpdate")),
+      schema: groceryList.GroceryList,
     }),
   ),
 })

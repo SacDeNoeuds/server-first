@@ -11,7 +11,6 @@ export type GroceryList = entity.Of<{
   name: ListName
   participants: Set<Participant>
   items: Map<ItemName, { quantity: ItemQuantity }>
-  lastUpdate: Date
 }>
 
 export const GroceryList = entity.for<GroceryList>("GroceryList", {
@@ -19,5 +18,4 @@ export const GroceryList = entity.for<GroceryList>("GroceryList", {
   name: ListName,
   participants: S.Set(Participant),
   items: S.Map(ItemName, S.object({ quantity: ItemQuantity })),
-  lastUpdate: S.date,
 })

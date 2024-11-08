@@ -13,7 +13,6 @@ export function create(input: {
     id: GroceryListId.new(),
     items: new Map(),
     name: input.name,
-    lastUpdate: new Date(),
     participants: new Set([input.participant]),
   })
 }
@@ -23,10 +22,9 @@ export function addItem(input: {
   name: ItemName
   quantity: ItemQuantity
 }): Omit<GroceryList, "lastUpdate"> {
-  const { lastUpdate: _, ...nextGroceryList } = input.groceryList
   const nextItems = new Map(input.groceryList.items)
   nextItems.set(input.name, { quantity: input.quantity })
-  return Object.assign(nextGroceryList, { items: nextItems })
+  return { ...input.groceryList, items: nextItems }
 }
 
 export function editItem(input: {
@@ -39,8 +37,7 @@ export function editItem(input: {
   nextItems.delete(input.previousName)
   nextItems.set(input.name, { quantity: input.quantity })
 
-  const { lastUpdate: _, ...nextGroceryList } = input.groceryList
-  return Object.assign(nextGroceryList, { items: nextItems })
+  return { ...input.groceryList, items: nextItems }
 }
 
 export function join(input: {
@@ -58,6 +55,5 @@ export function tickItem(input: {
 }): Omit<GroceryList, "lastUpdate"> {
   const nextItems = new Map(input.groceryList.items)
   nextItems.delete(input.itemName)
-  const { lastUpdate: _, ...nextGroceryList } = input.groceryList
-  return Object.assign(nextGroceryList, { items: nextItems })
+  return { ...input.groceryList, items: nextItems }
 }

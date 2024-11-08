@@ -1,8 +1,9 @@
-import type { GroceryList } from "@domain/grocery-list/domain"
+import type { GroceryListId } from "@domain/grocery-list/domain"
 import { IntegerInput } from "@shared/ui/kit/integer-input"
 
 interface Props {
-  groceryList: Pick<GroceryList, "id" | "lastUpdate">
+  groceryListId: GroceryListId
+  lastGroceryListUpdate: Date
   values: {
     quantity: number
     name: string
@@ -14,14 +15,14 @@ export function QuantityForm(props: Props) {
       <form
         class="quantity-form"
         method="post"
-        action={`/edit-grocery-list-item/${props.groceryList.id}`}
+        action={`/edit-grocery-list-item/${props.groceryListId}`}
       >
         <input type="hidden" name="previousName" value={props.values.name} />
         <input type="hidden" name="name" value={props.values.name} />
         <input
           type="hidden"
           name="editedVersion"
-          value={props.groceryList.lastUpdate.toISOString()}
+          value={props.lastGroceryListUpdate.toISOString()}
         />
         <div class="flex gap-xs align-center">
           <div class="flex align-center">

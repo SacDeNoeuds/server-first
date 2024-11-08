@@ -20,7 +20,7 @@ export const JoinGroceryList =
     const groceryList = await repository.groceryList.find(input.groceryListId)
     if (!groceryList) return new GroceryListNotFound(input.groceryListId)
     const nextGroceryList = GroceryListAggregate.join({
-      groceryList,
+      groceryList: groceryList.value,
       participant: input.participant,
     })
     await repository.groceryList.set(

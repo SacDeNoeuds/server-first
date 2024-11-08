@@ -3,7 +3,7 @@ import { GroceryListItemForm } from "./grocery-list-item-form"
 
 type FormProps = Pick<
   ComponentProps<typeof GroceryListItemForm>,
-  "groceryList" | "values"
+  "groceryListId" | "lastGroceryListUpdate" | "values"
 >
 interface Props extends FormProps {
   class?: string
@@ -34,7 +34,8 @@ export function GroceryListItemFormModal(props: Props) {
         <main>
           <GroceryListItemForm
             id={formId}
-            groceryList={props.groceryList}
+            groceryListId={props.groceryListId}
+            lastGroceryListUpdate={props.lastGroceryListUpdate}
             values={props.values}
           />
         </main>

@@ -1,5 +1,4 @@
 import { JsonPatchRepository } from "@/json-patch/repository"
-import { schema as S, std } from "@/std"
 import { InMemoryRepository } from "@/std/repository"
 import { AccountRepository } from "@domain/authentication/domain"
 import { groceryList } from "@domain/grocery-list"
@@ -11,7 +10,7 @@ export const RepositoryInfraInMemory = (): RepositoryInfra => ({
   groceryList: new GroceryListRepository(
     new JsonPatchRepository({
       repo: new InMemoryRepository(),
-      schema: std.pipe(groceryList.GroceryList, S.object.omit("lastUpdate")),
+      schema: groceryList.GroceryList,
     }),
   ),
 })

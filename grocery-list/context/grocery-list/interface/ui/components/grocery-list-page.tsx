@@ -7,9 +7,14 @@ import { TickGroceryListItemButton } from "./tick-grocery-list-item-button"
 
 interface Props {
   groceryList: GroceryList
+  lastGroceryListUpdate: Date
   joinUrl: URL
 }
-export function GroceryListPage({ groceryList, joinUrl }: Props) {
+export function GroceryListPage({
+  groceryList,
+  lastGroceryListUpdate,
+  joinUrl,
+}: Props) {
   return (
     <PageLayout class="card column gap-l" heading={groceryList.name}>
       <Sandbox />
@@ -25,20 +30,23 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
             <span style="min-inline-size: 5em">{itemName}</span>
 
             <QuantityForm
-              groceryList={groceryList}
+              groceryListId={groceryList.id}
+              lastGroceryListUpdate={lastGroceryListUpdate}
               values={{ name: itemName, ...item }}
             />
 
             <small class="flex align-center gap-xs">
               <GroceryListItemFormModal
-                groceryList={groceryList}
+                groceryListId={groceryList.id}
+                lastGroceryListUpdate={lastGroceryListUpdate}
                 values={{ name: itemName, ...item }}
               >
                 Edit
               </GroceryListItemFormModal>
               <span>{"•"}</span>
               <TickGroceryListItemButton
-                groceryList={groceryList}
+                groceryListId={groceryList.id}
+                lastGroceryListUpdate={lastGroceryListUpdate}
                 itemName={itemName}
               />
             </small>
@@ -46,7 +54,10 @@ export function GroceryListPage({ groceryList, joinUrl }: Props) {
         ))}
       </div>
 
-      <GroceryListItemFormModal groceryList={groceryList}>
+      <GroceryListItemFormModal
+        groceryListId={groceryList.id}
+        lastGroceryListUpdate={lastGroceryListUpdate}
+      >
         Add
       </GroceryListItemFormModal>
 

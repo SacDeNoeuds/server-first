@@ -8,11 +8,11 @@ import type {
 export type FindGroceryList = (
   id: GroceryListId,
   participant: Participant,
-) => Promise<GroceryList | undefined>
+) => Promise<{ value: GroceryList; lastUpdate: Date } | undefined>
 
 export const FindGroceryList =
   (repository: { groceryList: GroceryListRepository }): FindGroceryList =>
   async (id, participant) => {
     const list = await repository.groceryList.find(id)
-    return list?.participants.has(participant) ? list : undefined
+    return list?.value.participants.has(participant) ? list : undefined
   }

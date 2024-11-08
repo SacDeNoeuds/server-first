@@ -3,7 +3,7 @@ import { NewGroceryListForm } from "./new-grocery-list-form"
 import { PageLayout } from "./page-layout"
 
 interface Props {
-  groceryLists: GroceryList[]
+  groceryLists: { value: GroceryList; lastUpdate: Date }[]
 }
 export function GroceryListsPage(props: Props) {
   const formatter = new Intl.DateTimeFormat("fr-FR", {
@@ -21,8 +21,9 @@ export function GroceryListsPage(props: Props) {
             <ul>
               {props.groceryLists.map((groceryList) => (
                 <li class="flex gap-m justify-between">
-                  <a href={`/grocery-list/${groceryList.id}`}>
-                    {groceryList.name} ({groceryList.items.size} items)
+                  <a href={`/grocery-list/${groceryList.value.id}`}>
+                    {groceryList.value.name} ({groceryList.value.items.size}{" "}
+                    items)
                   </a>
                   <span>
                     Last Update: {formatter.format(groceryList.lastUpdate)}

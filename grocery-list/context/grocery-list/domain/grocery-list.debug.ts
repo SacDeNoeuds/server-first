@@ -11,7 +11,6 @@ const make = (parts?: Partial<GroceryList>) => {
     name: ListName("Le chateau"),
     participants: new Set(),
     items: new Map(),
-    lastUpdate: new Date(),
     ...parts,
   })
 }
