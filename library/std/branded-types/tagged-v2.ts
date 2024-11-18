@@ -2,6 +2,12 @@ import { object } from "../core"
 
 export type Shape = { readonly _tag: string }
 type As<Tag extends string = string> = { readonly _tag: Tag }
+
+/**
+ * Use `interface` instead of `type` keyword to make TS keep the displayed name.
+ * @example
+ * interface extends Object<{}> {}
+ */
 export type Object<Value extends As> = Readonly<Value>
 export type Value<Tag extends string, T> = Object<{ _tag: Tag; value: T }>
 
@@ -103,9 +109,10 @@ export function Class<Tag extends string>(
  *   age: 12,
  *})
  */
-export function fromObject<T extends Shape>(_tag: T["_tag"]) {
+function fromObject<T extends Shape>(_tag: T["_tag"]) {
   return object.concat({ _tag }) as (value: Omit<T, keyof Shape>) => T
 }
+export { fromObject as object }
 
 /**
  * @example
@@ -158,7 +165,12 @@ export function match<
 >(input: Input, cases: Cases): CaseReturnTypes<Input, Cases>[Input["_tag"]] {
   const mapper = (cases as any)[input._tag]
   const caseInput =
-    "value" in input && Object.keys(input).length === 2 ? input.value : input
+    input &&
+    typeof input === "object" &&
+    "value" in input &&
+    Object.keys(input).length === 2
+      ? input.value
+      : input
   return mapper ? mapper(caseInput) : caseInput
 }
 
@@ -177,7 +189,12 @@ export function matchAll<
 >(input: Input, cases: Cases): ReturnType<Cases[keyof Cases]> {
   const mapper = (cases as any)[input._tag]
   const caseInput =
-    "value" in input && Object.keys(input).length === 2 ? input.value : input
+    input &&
+    typeof input === "object" &&
+    "value" in input &&
+    Object.keys(input).length === 2
+      ? input.value
+      : input
   return mapper(caseInput)
 }
 

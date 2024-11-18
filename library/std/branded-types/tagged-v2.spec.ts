@@ -3,14 +3,13 @@ import * as branded from "./branded"
 import * as tagged from "./tagged-v2"
 
 type PersonName = branded.Type<string, "PersonName">
-type Person = tagged.Object<{
-  _tag: "Person"
+class Person extends tagged.Class("Person")<{
   name: PersonName
   birthDate: Date
   age: number
-}>
-const Person = tagged.fromObject<Person>("Person")
-const Jack = Person({
+}> {}
+// const Person = tagged.object<Person>("Person")
+const Jack = new Person({
   name: "jack" as PersonName,
   birthDate: new Date(),
   age: 12,
@@ -33,13 +32,16 @@ type Input = Person | PersonNotFound
 const input = Jack as Input
 console.info("--- match ---")
 console.info({
+  // match: PersonName | PersonNotFound
   match: tagged.match(input, {
     Person: (person) => person.name,
   }),
+  // matchAll: PersonName
   matchAll: tagged.matchAll(input, {
     Person: (person) => person.name,
     PersonNotFound: (err) => err.name,
   }),
+  // fold: PersonName | PersonNotFound
   fold: pipe(
     input,
     tagged.fold({
@@ -47,33 +49,4 @@ console.info({
       PersonNotFound: (err) => err,
     }),
   ),
-  // foldAll: pipe(
-  //   input,
-  //   tagged.foldAll({
-  //     Person: (person) => person.name,
-  //     PersonNotFound: (err) => err._tag,
-  //   }),
-  // ),
 })
-
-// console.info("--- mapOnly ---")
-// const mapPerson = mapOnly<Person>("Person")
-// console.info({
-//   mapped: pipe(
-//     input,
-//     mapPerson((person) => person.name),
-//     (v) => v,
-//   ),
-// })
-// console.info()
-
-// console.info("--- mapNot ---")
-// const mapNotPerson = mapNot<Person>("Person")
-// console.info({
-//   mapped: pipe(
-//     input,
-//     mapNotPerson((err) => err.name),
-//     (v) => v,
-//   ),
-// })
-// console.info()

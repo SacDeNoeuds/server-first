@@ -23,7 +23,7 @@ export function make<E extends tagged.Object<tagged.Shape>>(
   tag: E["_tag"],
   props: S.PropsOf<Omit<tagged.ValueOf<E>, "_tag">>,
 ): Entity<E> {
-  const from = tagged.fromObject<E>(tag)
+  const from = tagged.object<E>(tag)
   const schema = pipe(
     S.object({ _tag: S.literal(tag) }),
     S.object.concat(props),
