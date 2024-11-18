@@ -1,22 +1,18 @@
 import { pipe } from "../core"
 import * as S from "../schema"
-import type { Brand, ValueOf, ValueOf as ValueOfBranded } from "./brand"
+import * as branded from "./branded"
 
-export type ValueObject<E extends Brand<unknown, string>> = S.Schema<E> & {
-  (value: ValueOf<E>): E
+export interface Type<T extends branded.Type<unknown, any>> {
+  from: (base: branded.BaseOf<T>) => T
+  schema: S.Schema<T>
 }
 
-export type { Brand as Of, ValueOf } from "./brand"
-
-export function fromSchema<E extends Brand<unknown, any>>(
-  inputSchema: S.Schema<ValueOf<E>>,
-): ValueObject<E> {
-  const schema = pipe(
-    inputSchema,
-    S.map((value) => value as E),
-  )
-  const fn = (value: ValueOfBranded<E>) => S.unsafeDecode(value, schema)
-  return Object.assign(fn, {
-    ...schema,
-  }) as unknown as ValueObject<E>
+export function fromSchema<T extends branded.Type<unknown, any>>(
+  schema: S.Schema<branded.BaseOf<T>>,
+) {
+  const from = branded.castAs<T>
+  return {
+    from,
+    schema: pipe(schema, S.map(from)),
+  }
 }

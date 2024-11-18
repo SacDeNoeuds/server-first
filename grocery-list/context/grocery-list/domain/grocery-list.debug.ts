@@ -6,9 +6,9 @@ import { ItemQuantity } from "./value-object/item-quantity"
 import { ListName } from "./value-object/list-name"
 
 const make = (parts?: Partial<GroceryList>) => {
-  return GroceryList({
-    id: GroceryListId("toto"),
-    name: ListName("Le chateau"),
+  return GroceryList.from({
+    id: GroceryListId.new(),
+    name: ListName.from("Le chateau"),
     participants: new Set(),
     items: new Map(),
     ...parts,
@@ -16,21 +16,23 @@ const make = (parts?: Partial<GroceryList>) => {
 }
 
 const original = make({
-  items: new Map([[ItemName("bread"), { quantity: ItemQuantity(2) }]]),
+  items: new Map([
+    [ItemName.from("bread"), { quantity: ItemQuantity.from(2) }],
+  ]),
 })
 console.dir(
   {
     original,
     updated: GroceryListApi.editItem({
       groceryList: original,
-      previousName: ItemName("bread"),
-      name: ItemName("bread"),
-      quantity: ItemQuantity(3),
+      previousName: ItemName.from("bread"),
+      name: ItemName.from("bread"),
+      quantity: ItemQuantity.from(3),
     }),
     added: GroceryListApi.addItem({
       groceryList: original,
-      name: ItemName("butternut"),
-      quantity: ItemQuantity(10),
+      name: ItemName.from("butternut"),
+      quantity: ItemQuantity.from(10),
     }),
   },
   { depth: null },
@@ -38,7 +40,7 @@ console.dir(
 
 console.dir(
   {
-    decoded: GroceryList.decode({
+    decoded: GroceryList.schema.decode({
       _kind: "GroceryList",
       id: "f6s46bshkuj",
       items: new Map(),

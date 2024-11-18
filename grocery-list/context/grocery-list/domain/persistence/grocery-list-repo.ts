@@ -1,24 +1,23 @@
 import type { JsonPatchRepository } from "@/json-patch/repository"
+import { tagged } from "@/std"
+import type { GroceryListJsonTransferObject } from "../data-transfer-object/json"
 import type { GroceryList } from "../grocery-list"
 import type { Participant } from "../value-object/participant"
 
 export class GroceryListRepository {
-  constructor(private repo: JsonPatchRepository<GroceryList>) {}
-
-  // #revive = (item: {
-  //   value: Omit<GroceryList, "lastUpdate">
-  //   lastUpdate: Date
-  // }): GroceryList => ({
-  //   ...item.value,
-  //   lastUpdate: item.lastUpdate,
-  // })
+  constructor(
+    private repo: JsonPatchRepository<
+      GroceryList,
+      GroceryListJsonTransferObject
+    >,
+  ) {}
 
   set = async (
     author: string,
-    at: Date,
+    editedVersion: Date,
     groceryList: GroceryList,
   ): Promise<void> => {
-    await this.repo.set(author, at, groceryList.id, groceryList)
+    await this.repo.set(author, editedVersion, groceryList.id, groceryList)
   }
 
   find = async (
@@ -39,6 +38,6 @@ export class GroceryListRepository {
   }
 }
 
-export class GroceryListNotFound {
-  constructor(public readonly id: string) {}
-}
+export class GroceryListNotFound extends tagged.Class("GroceryListNotFound")<{
+  id: string
+}> {}

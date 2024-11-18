@@ -1,20 +1,24 @@
 import { pipe } from "../core"
 import * as S from "../schema"
+import * as branded from "./branded"
 import * as entity from "./entity"
 import * as valueObject from "./value-object"
 
-type Name = valueObject.Of<string, "Name">
-const Name = valueObject.fromSchema<Name>(S.string)
+type Name = branded.Type<string, "Name">
+const Name = pipe(S.string, valueObject.fromSchema<Name>)
 
-const result1 = Name.decode("hello")
+const result1 = Name.schema.decode("hello")
 console.dir({ result1 }, { depth: null })
 
 // const Nationality: S.Schema<Nationality> = S.literal("US", "FR")
-type Nationality = valueObject.Of<"FR" | "US", "Nationality">
-const Nationality = valueObject.fromSchema<Nationality>(S.literal("US", "FR"))
+type Nationality = branded.Type<"FR" | "US", "Nationality">
+const Nationality = pipe(
+  S.literal("US", "FR"),
+  valueObject.fromSchema<Nationality>,
+)
 
 const getMajorityAgePerNationality = (nationality: Nationality): number => {
-  switch (nationality as valueObject.ValueOf<Nationality>) {
+  switch (nationality as branded.BaseOf<Nationality>) {
     case "FR":
       return 18
     case "US":
@@ -22,8 +26,8 @@ const getMajorityAgePerNationality = (nationality: Nationality): number => {
   }
 }
 
-type BirthDate = valueObject.Of<Date, "BirthDate">
-const BirthDate = valueObject.fromSchema<BirthDate>(S.date)
+type BirthDate = branded.Type<Date, "BirthDate">
+const BirthDate = pipe(S.date, valueObject.fromSchema<BirthDate>)
 
 const subtractYears = (date: Date, n: number) => {
   const copy = new Date(date)
@@ -31,10 +35,10 @@ const subtractYears = (date: Date, n: number) => {
   return copy
 }
 
-const result2 = BirthDate.decode(new Date("1992-09-15T00:00:00.000Z"))
+const result2 = BirthDate.schema.decode(new Date("1992-09-15T00:00:00.000Z"))
 console.dir({ result2 }, { depth: null })
 
-type Person = entity.Of<{
+type Person = entity.Object<{
   _tag: "Person"
   name: Name
   birthDate: Date
@@ -53,10 +57,10 @@ const isNotCalamityJane = (person: Pick<Person, "name">): boolean => {
 }
 
 const Person = pipe(
-  entity.for<Person>("Person", {
-    name: Name,
-    birthDate: BirthDate,
-    nationality: Nationality,
+  entity.object<Person>("Person", {
+    name: Name.schema,
+    birthDate: BirthDate.schema,
+    nationality: Nationality.schema,
   }),
   entity.applyRules({
     isMajor,
@@ -64,24 +68,24 @@ const Person = pipe(
   }),
 )
 
-const result3 = Person.decode({
+const result3 = Person.schema.decode({
   _tag: "Person",
   name: "hello",
   birthDate: new Date("1992-09-15T00:00:00.000Z"),
 })
 
 const personLike = {
-  name: Name("Toto"),
-  birthDate: BirthDate(new Date()),
+  name: Name.from("Toto"),
+  birthDate: BirthDate.from(new Date()),
   nationality: "FR" as Nationality,
 }
 const errors = entity.validate(personLike, Person.rules)
 
 console.dir({ result3 }, { depth: null })
 
-const person = Person({
-  birthDate: BirthDate(new Date("1992-09-15T00:00:00Z")),
-  nationality: Nationality("FR"),
-  name: Name("hello"),
+const person = Person.from({
+  birthDate: BirthDate.from(new Date("1992-09-15T00:00:00Z")),
+  nationality: Nationality.from("FR"),
+  name: Name.from("hello"),
 })
 console.dir({ person })

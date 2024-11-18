@@ -10,7 +10,8 @@ export const RepositoryInfraInMemory = (): RepositoryInfra => ({
   groceryList: new GroceryListRepository(
     new JsonPatchRepository({
       repo: new InMemoryRepository(),
-      schema: groceryList.GroceryList,
+      schema: groceryList.dto.GroceryListJson.schema,
+      encode: groceryList.dto.GroceryListJson.toJson,
     }),
   ),
 })

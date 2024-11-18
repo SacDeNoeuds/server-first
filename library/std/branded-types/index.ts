@@ -1,5 +1,5 @@
-export { Email } from "./email"
+export * as branded from "./branded"
 export * as entity from "./entity"
-export * as tagged from "./tagged"
+export { StringId } from "./id"
+export * as tagged from "./tagged-v2"
 export * as valueObject from "./value-object"
-export * as valueObjectId from "./value-object-id"

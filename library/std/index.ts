@@ -1,11 +1,7 @@
-export {
-  Email,
-  entity,
-  tagged,
-  valueObject,
-  valueObjectId,
-} from "./branded-types"
+export { StringId, branded, entity, tagged, valueObject } from "./branded-types"
+export type { CommandHandler } from "./command-handler"
 export * as std from "./core"
+export { Email } from "./email"
 export {
   FileSystemRepository,
   InMemoryRepository,

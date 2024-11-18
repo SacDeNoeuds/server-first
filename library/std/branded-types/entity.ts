@@ -1,59 +1,39 @@
 import { pipe } from "../core"
 import * as S from "../schema"
-import type { ValueOf } from "./brand"
-import * as tagged from "./tagged"
+import * as tagged from "./tagged-v2"
 
-export type Entity<
-  T extends tagged.Object<tagged.Shape>,
+export type Satisfies<Raw, Tagged> = Tagged extends Raw
+  ? Exclude<keyof Tagged, "_tag"> extends keyof Raw
+    ? Tagged
+    : never
+  : never
+
+export interface Entity<
+  T extends tagged.Shape,
   Rules extends RulesFor<T> = Record<string, never>,
-> = S.ObjectSchema<T> & {
-  (value: Omit<ValueOf<T>, "_tag"> & { _tag?: T["_tag"] }): T
+> {
+  from: (value: Omit<tagged.ValueOf<T>, "_tag"> & { _tag?: T["_tag"] }) => T
+  schema: S.ObjectSchema<T>
   rules: Rules
 }
 
-// interface EntityClass<Tag extends string, Props extends Record<string, any>> {
-//   new (props: Props): Props & { _tag: Tag }
-//   rules: RulesFor<Props>
-//   props: Props
-//   decode: S.Schema<this>["decode"]
-// }
-
-// declare const Person: EntityClass<"Person", { age: number; test: string }>
-
-// export function Class<
-//   Tag extends string,
-//   Props extends Record<string, S.Schema<any>>,
-// >(tag: Tag, props: Props) {
-//   class Entity {
-//     static _tag = tag
-//     static schema = pipe(
-//       S.object({ _tag: S.literal(tag) }),
-//       S.object.concat(props),
-//     ) as S.ObjectSchema<T>
-//     static rules = {}
-
-//     constructor(properties: any) {
-//       Object.assign(this, properties)
-//     }
-//   }
-//   return Entity as unknown as EntityClass<T>
-// }
-
-export type Of<E extends tagged.Shape> = tagged.Object<E>
-export { make as for }
+export type Object<E extends tagged.Shape> = tagged.Object<E>
+export { make as object }
 export function make<E extends tagged.Object<tagged.Shape>>(
   tag: E["_tag"],
-  props: S.PropsOf<Omit<ValueOf<E>, "_tag">>,
+  props: S.PropsOf<Omit<tagged.ValueOf<E>, "_tag">>,
 ): Entity<E> {
-  const fn = tagged.fromTag<E>(tag)
+  const from = tagged.fromObject<E>(tag)
   const schema = pipe(
     S.object({ _tag: S.literal(tag) }),
     S.object.concat(props),
   ) as S.ObjectSchema<E>
 
-  return Object.assign(fn, {
-    ...schema,
-  }) as Entity<E>
+  return {
+    schema,
+    from,
+    rules: {},
+  } as Entity<E>
 }
 
 function refine<T extends tagged.Object<tagged.Shape>>(
@@ -61,8 +41,8 @@ function refine<T extends tagged.Object<tagged.Shape>>(
   refiner: (value: T) => boolean,
 ) {
   return (entity: Entity<T>): Entity<T> => {
-    const schema = pipe(entity, S.refine(name, refiner))
-    return Object.assign(entity, schema)
+    const schema = pipe(entity.schema, S.refine(name, refiner))
+    return { ...entity, schema }
   }
 }
 
@@ -76,7 +56,7 @@ export function applyRules<
     let acc = entity
     for (const [key, value] of Object.entries(rules))
       acc = refine(key, value)(acc)
-    return Object.assign(acc, { rules })
+    return { ...acc, rules }
   }
 }
 

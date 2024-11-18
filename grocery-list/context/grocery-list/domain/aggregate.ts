@@ -5,11 +5,11 @@ import type { ItemQuantity } from "./value-object/item-quantity"
 import type { ListName } from "./value-object/list-name"
 import type { Participant } from "./value-object/participant"
 
-export function create(input: {
+export function createList(input: {
   name: ListName
   participant: Participant
 }): Omit<GroceryList, "lastUpdate"> {
-  return GroceryList({
+  return GroceryList.from({
     id: GroceryListId.new(),
     items: new Map(),
     name: input.name,
@@ -40,7 +40,7 @@ export function editItem(input: {
   return { ...input.groceryList, items: nextItems }
 }
 
-export function join(input: {
+export function addParticipant(input: {
   groceryList: GroceryList
   participant: Participant
 }): GroceryList {

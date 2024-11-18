@@ -1,12 +1,13 @@
 import { readFile, readdir, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
-import { json } from "../core"
 import * as S from "../schema"
 import type { Repository } from "./definition"
 
 type Init<T> = {
   directory: string
   schema: S.Schema<T>
+  stringify: (value: T) => string
+  parse: (value: string) => unknown
 }
 
 export class FileSystemRepository<T extends Record<string, any>>
@@ -18,7 +19,7 @@ export class FileSystemRepository<T extends Record<string, any>>
     const filePath = this.#getFilePath(id)
     const content = await readFile(filePath, "utf-8").catch(() => undefined)
     if (!content) return undefined
-    return S.unsafeDecode(json.parse(content), this.options.schema)
+    return S.unsafeDecode(this.options.parse(content), this.options.schema)
   }
 
   findByKey = async <Key extends keyof T>(key: Key, value: T[Key]) => {
@@ -28,7 +29,7 @@ export class FileSystemRepository<T extends Record<string, any>>
 
   set = async (id: string, item: T): Promise<T> => {
     const filePath = this.#getFilePath(id)
-    await writeFile(filePath, json.stringify(item), "utf-8")
+    await writeFile(filePath, this.options.stringify(item), "utf-8")
     return item
   }
 

@@ -1,6 +1,10 @@
 export { pipe as flow, pipeWith as pipe } from "pipe-ts"
 export { length as lengthOfStringId }
 
+export function identity<T>(value: T): T {
+  return value
+}
+
 export function isInstanceOf<T>(constructor: new (...args: any[]) => T) {
   return (value: unknown): value is T => value instanceof constructor
 }
@@ -23,4 +27,8 @@ export function StringId(): string {
   return Math.random()
     .toString(36)
     .substring(2, 2 + length)
+}
+
+export function andThen<T, U>(mapper: (value: T) => U) {
+  return (promise: Promise<T>) => promise.then(mapper)
 }

@@ -8,12 +8,12 @@ export const parse = <T = unknown>(value: string) => {
   return JSON.parse(value, reviver) as T
 }
 
-export function toUnRevived<T = unknown, U = unknown>(value: T): U {
-  return JSON.parse(stringify(value))
-}
-export function toRevived<T = unknown, U = unknown>(value: T): U {
-  return parse(JSON.stringify(value))
-}
+// export function toUnRevived<T = unknown, U = unknown>(value: T): U {
+//   return JSON.parse(stringify(value))
+// }
+// export function toRevived<T = unknown, U = unknown>(value: T): U {
+//   return parse(JSON.stringify(value))
+// }
 
 const replacer = (_: string, value: unknown): any => {
   if (typeof value === "bigint")

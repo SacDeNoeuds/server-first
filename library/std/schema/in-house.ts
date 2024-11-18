@@ -1,4 +1,4 @@
-import * as tagged from "../branded-types/tagged"
+import * as tagged from "../branded-types/tagged-v2"
 import * as core from "../core"
 
 export interface Issue {
@@ -8,7 +8,11 @@ export interface Issue {
   readonly value: unknown
 }
 
-class Failure extends tagged.Class("Failure")<{ readonly issues: Issue[] }> {}
+class Failure extends tagged.Class("Failure")<{
+  readonly rootType: string
+  readonly rootValue: unknown
+  readonly issues: Issue[]
+}> {}
 export type { Failure }
 export const isFailure = tagged.isTaggedAs<Failure>("Failure")
 
@@ -36,11 +40,19 @@ function failure(
   // The context will be created upon the first `decode` function of the chain
   // and the `issues` reference will be kept all along.
   context.issues.push(issue)
-  return new Failure({ issues: context.issues })
+  return new Failure({
+    rootType: context.rootType,
+    rootValue: context.rootValue,
+    issues: context.issues,
+  })
 }
 function success<T>(context: DecodeContext, value: T): Result<T> {
   return context.issues.length > 0
-    ? new Failure({ issues: context.issues })
+    ? new Failure({
+        rootType: context.rootType,
+        rootValue: context.rootValue,
+        issues: context.issues,
+      })
     : new Success({ value })
 }
 
@@ -61,12 +73,19 @@ export function unsafeDecode<T>(value: unknown, schema: Schema<T>): T {
 
 export type InferValue<T> = T extends Schema<infer S> ? S : never
 interface DecodeContext {
+  readonly rootValue: unknown
+  readonly rootType: string
   readonly path: PropertyKey[]
   readonly parent: unknown
   readonly issues: Issue[]
 }
-function createDecodeContext(): DecodeContext {
+function createDecodeContext(
+  rootValue: unknown,
+  rootType: string,
+): DecodeContext {
   return {
+    rootValue,
+    rootType,
     issues: [],
     path: [],
     parent: undefined,
@@ -86,7 +105,7 @@ export function fromPredicate<Value>(
   return {
     type: name,
     refinements: [],
-    decode: (input, context = createDecodeContext()) => {
+    decode: (input, context = createDecodeContext(input, name)) => {
       return predicate(input)
         ? success(context, input)
         : failure(context, input, "string")
@@ -101,7 +120,7 @@ export function refine<S extends Schema<any>>(
   return (schema: S): S => ({
     ...schema,
     refinements: [...schema.refinements, name],
-    decode: (value, context = createDecodeContext()) => {
+    decode: (value, context = createDecodeContext(value, schema.type)) => {
       const [err, result] = resultToTuple(schema.decode(value, context))
       if (err) return err
       return refine(result)
@@ -118,8 +137,8 @@ export const refineTo = refine as <T, U extends T>(
 export function map<Input, Output>(mapper: (input: Input) => Output) {
   return (schema: Schema<Input>): Schema<Output> => ({
     ...schema,
-    decode: (value, context = createDecodeContext()) => {
-      const [err, result] = resultToTuple(schema.decode(value, context))
+    decode: (input, context = createDecodeContext(input, schema.type)) => {
+      const [err, result] = resultToTuple(schema.decode(input, context))
       return err ? err : success(context, mapper(result))
     },
   })
@@ -147,14 +166,17 @@ export function cast<T>(name: string): Schema<T> {
 // }
 
 export function compose<Output>(target: Schema<Output>) {
-  return <Input>(schema: Schema<Input>): Schema<Output> => ({
-    type: `${schema.type} |> ${target.type}`,
-    refinements: [...schema.refinements, ...target.refinements],
-    decode: (input, context = createDecodeContext()) => {
-      const [err, value] = resultToTuple(schema.decode(input, context))
-      return err ? err : target.decode(value, context)
-    },
-  })
+  return <Input>(schema: Schema<Input>): Schema<Output> => {
+    const type = `${schema.type} |> ${target.type}`
+    return {
+      type,
+      refinements: [...schema.refinements, ...target.refinements],
+      decode: (input, context = createDecodeContext(input, type)) => {
+        const [err, value] = resultToTuple(schema.decode(input, context))
+        return err ? err : target.decode(value, context)
+      },
+    }
+  }
 }
 
 // export function lazy<T>(lazy: () => Schema<T>): Schema<T> {
@@ -215,7 +237,7 @@ export function union<T extends [Schema<any>, ...Schema<any>[]]>(
     type: name,
     schemas,
     refinements: [],
-    decode: (input, context = createDecodeContext()) => {
+    decode: (input, context = createDecodeContext(input, name)) => {
       // remove reference in case a schema matches.
       const nestedIssues: Issue[][] = []
       for (const schema of schemas) {
@@ -241,11 +263,12 @@ export interface ArraySchema<T> extends Schema<T[]> {
   readonly item: Schema<T>
 }
 export function array<T>(item: Schema<T>): ArraySchema<T> {
+  const type = `${item.type}[]`
   return {
-    type: `${item.type}[]`,
+    type,
     refinements: [],
     item,
-    decode: (input, context = createDecodeContext()) => {
+    decode: (input, context = createDecodeContext(input, type)) => {
       if (!Array.isArray(input)) return failure(context, input, "array")
       const array = input.map((value, index) => {
         const ctx = addContextPathSegment(context, index)
@@ -265,11 +288,12 @@ export interface SetSchema<T> extends Schema<Set<T>> {
 
 export { Set_ as Set }
 function Set_<T>(item: Schema<T>): SetSchema<T> {
+  const type = `Set<${item.type}>`
   return {
-    type: `Set<${item.type}>`,
+    type,
     refinements: [],
     item,
-    decode: (input, context = createDecodeContext()) => {
+    decode: (input, context = createDecodeContext(input, type)) => {
       if (!core.set.isSet(input)) return failure(context, input, "array")
       const array = Array.from(input).map((value, index) => {
         const ctx = addContextPathSegment(context, index)
@@ -292,11 +316,12 @@ export interface ObjectSchema<Value> extends Schema<Value> {
 }
 
 export function object<Value>(props: PropsOf<Value>): ObjectSchema<Value> {
+  const type = "object"
   return {
-    type: "object",
+    type,
     props,
     refinements: [],
-    decode: (input, context = createDecodeContext()) => {
+    decode: (input, context = createDecodeContext(input, type)) => {
       if (!core.object.isObject(input)) return failure(context, input, "object")
       const acc = {} as Value
       for (const key of core.object.keys(props)) {
@@ -333,6 +358,37 @@ object.omit = function omit<T, K extends keyof T>(...keys: K[]) {
   }
 }
 
+export interface RecordSchema<T extends Record<PropertyKey, any>>
+  extends Schema<T> {
+  readonly key: Schema<keyof T>
+  readonly value: Schema<T[keyof T]>
+}
+export function record<T extends Record<PropertyKey, any>>(
+  key: Schema<keyof T>,
+  value: Schema<T[keyof T]>,
+): RecordSchema<T> {
+  const type = `Record<${key.type}, ${value.type}>`
+  return {
+    type,
+    refinements: [],
+    key,
+    value,
+    decode: (input, context = createDecodeContext(input, type)) => {
+      if (!core.object.isObject(input)) return failure(context, input, type)
+      const acc = {} as T
+      Object.entries(input).forEach(([k, v]) => {
+        const ctx = addContextPathSegment(context, k as PropertyKey)
+        const [keyErr, keyResult] = resultToTuple(key.decode(k, ctx))
+        const [itemErr, itemResult] = resultToTuple(value.decode(v, ctx))
+        // if undefined, an issue will be added to the context
+        // and the error will be taken from context at `success()` step.
+        if (!keyErr && !itemErr) acc[keyResult] = itemResult
+      })
+      return success(context, acc)
+    },
+  }
+}
+
 export interface MapSchema<T extends Map<any, any>> extends Schema<T> {
   readonly key: Schema<MapKey<T>>
   readonly value: Schema<MapValue<T>>
@@ -344,14 +400,14 @@ function Map_<T extends Map<PropertyKey, any>>(
   key: Schema<MapKey<T>>,
   value: Schema<MapValue<T>>,
 ): MapSchema<T> {
-  const name = `Map<${key.type}, ${value.type}>`
+  const type = `Map<${key.type}, ${value.type}>`
   return {
-    type: name,
+    type,
     key,
     value,
     refinements: [],
-    decode: (input, context = createDecodeContext()) => {
-      if (!core.map.isMap(input)) return failure(context, input, name)
+    decode: (input, context = createDecodeContext(input, type)) => {
+      if (!core.map.isMap(input)) return failure(context, input, type)
 
       const acc = new Map() as T
       input.forEach((v, k) => {

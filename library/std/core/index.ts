@@ -1,6 +1,6 @@
 export * as boolean from "./boolean"
 export * as date from "./date"
-export { flow, isInstanceOf, panic, pipe, tryOr } from "./functions"
+export { andThen, flow, isInstanceOf, panic, pipe, tryOr } from "./functions"
 export * as iterable from "./iterable"
 export * as json from "./json"
 export * as map from "./map"

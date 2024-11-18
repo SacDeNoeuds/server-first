@@ -1,6 +1,6 @@
 import type { JsonPatchHistory } from "@/json-patch/history"
 import { JsonPatchRepository } from "@/json-patch/repository"
-import { schema as S } from "@/std"
+import { schema as S, std } from "@/std"
 import { FileSystemRepository } from "@/std/repository"
 import { authentication } from "@domain/authentication"
 import { AccountRepository } from "@domain/authentication/domain"
@@ -15,7 +15,9 @@ export const RepositoryInfraFileSystem = (): RepositoryInfra => ({
   account: new AccountRepository(
     new FileSystemRepository({
       directory: db("account"),
-      schema: authentication.Account,
+      schema: authentication.Account.schema,
+      parse: std.json.parse,
+      stringify: std.json.stringify,
     }),
   ),
   groceryList: new GroceryListRepository(
@@ -23,8 +25,11 @@ export const RepositoryInfraFileSystem = (): RepositoryInfra => ({
       repo: new FileSystemRepository({
         directory: db("grocery-list"),
         schema: S.cast<JsonPatchHistory>("JsonPatchHistory"),
+        parse: std.json.parse,
+        stringify: std.json.stringify,
       }),
-      schema: groceryList.GroceryList,
+      schema: groceryList.dto.GroceryListJson.schema,
+      encode: groceryList.dto.GroceryListJson.toJson,
     }),
   ),
 })

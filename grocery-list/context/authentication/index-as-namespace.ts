@@ -1,2 +1,8 @@
-export { Account, type AccountId } from "./domain/account"
-export { useCases, type UseCases } from "./use-case"
+export {
+  Account,
+  AccountRepository,
+  commands,
+  queries,
+  type Commands,
+  type Queries,
+} from "./domain"

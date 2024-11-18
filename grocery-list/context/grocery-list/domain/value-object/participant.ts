@@ -1,4 +1,6 @@
-import { schema as S, valueObject } from "@/std"
+import { valueObject } from "@/std"
+import type { branded } from "@/std/branded-types"
+import { AccountId } from "@shared/value-object/account-id"
 
-export type Participant = valueObject.Of<string, "Participant">
-export const Participant = valueObject.fromSchema<Participant>(S.string)
+export type Participant = branded.Type<AccountId, "Participant">
+export const Participant = valueObject.fromSchema<Participant>(AccountId.schema)
