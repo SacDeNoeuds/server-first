@@ -60,8 +60,12 @@ const expectSuccess = (options: {
   value: any
 }) => {
   const result = options.schema.decode(options.value)
-  if (S.isFailure(result)) console.dir(result?.issues, { depth: 3 })
-  assert.deepStrictEqual(result, options.value, options.because)
+  if (S.isFailure(result)) {
+    console.dir(result?.issues, { depth: 3 })
+    // console.error(result)
+    throw new Error("schema failure", { cause: result })
+  }
+  assert.deepStrictEqual(result.value, options.value, options.because)
 }
 const expectFailure = (options: {
   because: string
@@ -171,7 +175,7 @@ expectSuccess({
   value: { name: "hello", age: 42 },
 })
 
-expectSuccess({
+expectFailure({
   because: "why not",
   schema: pipe(
     S.object({ name: S.string, age: S.number }),
@@ -183,6 +187,37 @@ expectSuccess({
   ),
   value: { name: "toto", age: 12 },
 })
+
+expectFailure({
+  because: "not an array",
+  schema: S.tuple(S.string, S.number),
+  value: 42,
+})
+expectFailure({
+  because: "tuple input is not an array",
+  schema: S.tuple(S.string, S.number),
+  value: 42,
+})
+
+expectFailure({
+  because: "tuple input has different length",
+  schema: S.tuple(S.string, S.number),
+  value: [42],
+})
+
+expectFailure({
+  because: "tuple input has invalid content",
+  schema: S.tuple(S.string, S.number),
+  value: [42, 42],
+})
+
+expectSuccess({
+  because: "tuple input is tuple",
+  schema: S.tuple(S.string, S.number),
+  value: ["hello", 42],
+})
+
+console.info("All tests passed 🎉")
 
 // const subtractYears = (date: Date, n: number) => {
 //   const copy = new Date(date)

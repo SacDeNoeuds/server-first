@@ -389,6 +389,33 @@ export function record<T extends Record<PropertyKey, any>>(
   }
 }
 
+export interface TupleSchema<T> extends Schema<T> {
+  readonly items: { [Key in keyof T]: Schema<T> }
+}
+export function tuple<T extends [any, ...any[]]>(
+  ...items: { [K in keyof T]: Schema<T[K]> }
+): TupleSchema<T> {
+  const type = `[${items.map((schema) => schema.type).join(", ")}]`
+  return {
+    type,
+    refinements: [],
+    items,
+    decode: (input, context = createDecodeContext(input, type)) => {
+      if (!Array.isArray(input)) return failure(context, input, type)
+      if (input.length !== items.length) return failure(context, input, type)
+      const tuple = input.map((value, index) => {
+        const itemSchema = items[index]!
+        const ctx = addContextPathSegment(context, index)
+        const [_, result] = resultToTuple(itemSchema.decode(value, ctx))
+        // if undefined, an issue will be added to the context
+        // and the error will be taken from context at `success()` step.
+        return result
+      })
+      return success(context, tuple as T)
+    },
+  }
+}
+
 export interface MapSchema<T extends Map<any, any>> extends Schema<T> {
   readonly key: Schema<MapKey<T>>
   readonly value: Schema<MapValue<T>>
